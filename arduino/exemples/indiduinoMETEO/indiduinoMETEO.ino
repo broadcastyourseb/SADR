@@ -15,13 +15,13 @@ IMPORTANT: Customize following values to match your setup
 
 //Comment out if you setup don't include some sensor.
 #define USE_DHT_SENSOR   //USE DHT HUMITITY SENSOR. Comment if not.
-#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
-#define USE_P_SENSOR   //USE BMP085 PRESSURE SENSOR. Comment if not.
+//#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
+//#define USE_P_SENSOR   //USE BMP085 PRESSURE SENSOR. Comment if not.
 
 //All sensors (Thr=DHT22,Tir=MELEXIS and Tp=BMP085) include a ambient temperature
 //Chosse  that sensor, only one, is going to use for main Ambient Temperature:
-//#define T_MAIN_Thr
-#define T_MAIN_Tir  
+#define T_MAIN_Thr
+//#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
