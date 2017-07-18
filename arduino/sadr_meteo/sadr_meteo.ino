@@ -1,5 +1,6 @@
-/* INDIDUINOMETEO FIRMWARE.
+/* SADRMETEO FIRMWARE based on INDIDUINOMETEO FIRMWARE.
 NACHO MAS 2013. http://indiduino.wordpress.com
+BROADCASTYOURSEB http://www.sadr.fr
 
 Several modifications over indiduinoTemplate:
 .- Include  "i2cmaster.h",  "Adafruit_BMP085.h" and  "dht.h" libraries 
@@ -14,13 +15,18 @@ IMPORTANT: Customize following values to match your setup
 */
 
 //Comment out if you setup don't include some sensor.
-#define USE_DHT_SENSOR   //USE DHT HUMITITY SENSOR. Comment if not.
+//#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
+#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
 //#define USE_P_SENSOR   //USE BMP085 PRESSURE SENSOR. Comment if not.
+//#define USE_WIND_SENSOR   //USE SWITCH ANEMOMETER. Comment if not.
+#define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
+//#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
-//All sensors (Thr=DHT22,Tir=MELEXIS and Tp=BMP085) include a ambient temperature
-//Chosse  that sensor, only one, is going to use for main Ambient Temperature:
-#define T_MAIN_Thr
+//All sensors (ThrI=DHT22 INT,ThrE=DHT22 EXT,Tir=MELEXIS and Tp=BMP085) include a ambient temperature
+//Choose  that sensor, only one, is going to use for main Ambient Temperature:
+#define T_MAIN_ThrE
+//#define T_MAIN_ThrI
 //#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
@@ -47,7 +53,7 @@ IMPORTANT: Customize following values to match your setup
 
 
 
-/*END OFF CUSTOMITATION. YOU SHOULT NOT NEED TO CHANGE ANYTHING BELOW */
+/*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
 
 
 /*
@@ -71,8 +77,8 @@ IMPORTANT: Customize following values to match your setup
   mapAndSendAnalog(int pin):
 
 	Change the value returned by readAnalog before send through
-	firmata protocol. By this you can adapt the 0-1024 stadard ADC range
-	to more apropiate range (i.e phisical range of a sensor). Also you 
+	firmata protocol. By this you can adapt the 0-1024 standard ADC range
+	to more apropriate range (i.e physical range of a sensor). Also you 
 	can do some logic or event sent a variable value instead of 
 	readAnalog. 
 
@@ -111,38 +117,48 @@ IMPORTANT: Customize following values to match your setup
 #include <Firmata.h>
 
 
-#ifdef USE_IR_SENSOR
-  #include "i2cmaster.h"
-#endif //USE_IR_SENSOR
+                    /*#ifdef USE_IR_SENSOR
+                      #include "i2cmaster.h"
+                    #endif //USE_IR_SENSOR*/
 
-#ifdef USE_DHT_SENSOR
+#ifdef USE_DHT_SENSOR_INTERNAL
   #include "DHT.h"
-  #define DHTPIN 2         // what pin we're connected DHT22 to
-  #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
-  DHT dht(DHTPIN, DHTTYPE);
-#endif //USE_DHT_SENSOR
+  #define DHT_INT_PIN 2         // what pin we're connected DHT22 to
+  #define DHT_INT_TYPE DHT22   // DHT 22  (AM2302), AM2321
+  DHT dhtInt(DHT_INT_PIN, DHT_INT_TYPE);
+#endif //USE_DHT_SENSOR_INTERNAL
 
-#ifdef USE_P_SENSOR
-  #include "Adafruit_BMP085.h"
-  Adafruit_BMP085 bmp;
-#endif //USE_P_SENSOR
+#ifdef USE_DHT_SENSOR_EXTERNAL
+  #include "DHT.h"
+  #define DHT_EXT_PIN 4         // what pin we're connected DHT22 to
+  #define DHT_EXT_TYPE DHT22   // DHT 22  (AM2302), AM2321
+  DHT dhtExt(DHTPIN, DHTTYPE);
+#endif //USE_DHT_SENSOR_EXTERNAL
 
-
+                    /*#ifdef USE_P_SENSOR
+                      #include "Adafruit_BMP085.h"
+                      Adafruit_BMP085 bmp;
+                    #endif //USE_P_SENSOR*/
 
 float P,HR,IR,T,Tp,Thr,Tir,Dew,Light,Clouds,skyT;
-int cloudy,dewing,frezzing,windy,rainy;
+int cloudy,dewing,frezzing,windy,rainy,luminous;
 
 #define TOTAL_ANALOG_PINS       11
 #define TOTAL_PINS              25
 
 void setupMeteoStation(){
-#ifdef USE_P_SENSOR
-  bmp.begin();
-#endif //USE_P_SENSOR
 
-#ifdef USE_DHT_SENSOR
-  dht.begin();
-#endif //USE_DHT_SENSOR
+        /*#ifdef USE_P_SENSOR
+          bmp.begin();
+        #endif //USE_P_SENSOR*/
+
+#ifdef USE_DHT_SENSOR_INTERNAL
+  dhtInt.begin();
+#endif //USE_DHT_SENSOR_INTERNAL
+
+#ifdef USE_DHT_SENSOR_EXTERNAL
+  dhtExt.begin();
+#endif //USE_DHT_SENSOR_EXTERNAL
 
 }
 
