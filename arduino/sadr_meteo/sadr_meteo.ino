@@ -16,7 +16,7 @@ IMPORTANT: Customize following values to match your setup
 
 //Comment out if you setup don't include some sensor.
 //#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
-#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
+//#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
 //#define USE_P_SENSOR   //USE BMP085 PRESSURE SENSOR. Comment if not.
 //#define USE_WIND_SENSOR   //USE SWITCH ANEMOMETER. Comment if not.
@@ -49,7 +49,10 @@ IMPORTANT: Customize following values to match your setup
 //Totally cover sky corrected temperature (temp above means 100% clouds)
 #define CLOUD_TEMP_OVERCAST  0  
 //Activation treshold for cloudFlag (%)
-#define CLOUD_FLAG_PERCENT  30 
+#define CLOUD_FLAG_PERCENT  30
+
+// Activation threshold for daylight (between 0 and 1024)
+#define DAYLIGHT_FLAG_TRIGGER 5
 
 
 
@@ -132,7 +135,7 @@ IMPORTANT: Customize following values to match your setup
   #include "DHT.h"
   #define DHT_EXT_PIN 4         // what pin we're connected DHT22 to
   #define DHT_EXT_TYPE DHT22   // DHT 22  (AM2302), AM2321
-  DHT dhtExt(DHTPIN, DHTTYPE);
+  DHT dhtExt(DHT_EXT_PIN, DHT_EXT_TYPE);
 #endif //USE_DHT_SENSOR_EXTERNAL
 
                     /*#ifdef USE_P_SENSOR
@@ -140,8 +143,10 @@ IMPORTANT: Customize following values to match your setup
                       Adafruit_BMP085 bmp;
                     #endif //USE_P_SENSOR*/
 
-float P,HR,IR,T,Tp,Thr,Tir,Dew,Light,Clouds,skyT;
-int cloudy,dewing,frezzing,windy,rainy,luminous;
+/*float HR,Thr,P,IR,T,Tp,Tir,Dew,Light,Clouds,skyT;*/
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light;
+float T,IR,Clouds,skyT,Tir;
+int cloudy,dewing,frezzing,windy,rainy,daylight;
 
 #define TOTAL_ANALOG_PINS       11
 #define TOTAL_PINS              25
@@ -167,7 +172,7 @@ void setupMeteoStation(){
  *============================================================================*/
 void runMeteoStation() {
   
-#ifdef USE_IR_SENSOR  
+/*#ifdef USE_IR_SENSOR  
     double tempData = 0x0000; // zero out the data
     int dev = 0x5A<<1;
     int data_low = 0;
@@ -216,43 +221,69 @@ void runMeteoStation() {
 #else
     //set IR sensor fail flag
     digitalWrite(PIN_TO_DIGITAL(7), HIGH); 
-#endif //USE_IR_SENSOR  
+#endif //USE_IR_SENSOR */ 
 
-#ifdef USE_P_SENSOR
+/*#ifdef USE_P_SENSOR
     Tp=bmp.readTemperature();
     P=bmp.readPressure(); 
 #else
     //set P sensor fail flag
     digitalWrite(PIN_TO_DIGITAL(9), HIGH);     
-#endif //USE_P_SENSOR  
+#endif //USE_P_SENSOR  */
 
-#ifdef USE_DHT_SENSOR
-    HR=dht.readHumidity();  
-    Thr=dht.readTemperature();
+#ifdef USE_DHT_SENSOR_INTERNAL
+    Hr22int=dhtInt.readHumidity();  
+    T22int=dhtInt.readTemperature();
     // Check if any reads failed and exit early (to try again).
-    if (isnan(HR) || isnan(Thr)) {
+    if (isnan(Hr22int) || isnan(T22int)) {
       //set HR sensor fail flag
-      digitalWrite(PIN_TO_DIGITAL(8), HIGH); 
+      digitalWrite(PIN_TO_DIGITAL(13), HIGH); 
     } else {
       //OK.clear HR sensor fail flag       
-      digitalWrite(PIN_TO_DIGITAL(8), LOW); 
+      digitalWrite(PIN_TO_DIGITAL(13), LOW); 
     }
 
-    Dew=dewPoint(Thr,HR);
-    if (Thr<=Dew+2) { 
+    DewInt=dewPoint(T22int,Hr22int);
+    if (T22int<=DewInt+2) { 
        dewing=1;
     } else {
        dewing=0;
     }
-#else
-    //set HR sensor fail flag
-    digitalWrite(PIN_TO_DIGITAL(8), HIGH); 
-#endif //USE_DHT_SENSOR    
+#endif //USE_DHT_SENSOR_INTERNAL
 
+#ifdef USE_DHT_SENSOR_EXTERNAL
+    Hr22ext=dhtExt.readHumidity();  
+    T22ext=dhtExt.readTemperature();
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(Hr22ext) || isnan(T22ext)) {
+      //set HR sensor fail flag
+      digitalWrite(PIN_TO_DIGITAL(13), HIGH); 
+    } else {
+      //OK.clear HR sensor fail flag       
+      digitalWrite(PIN_TO_DIGITAL(13), LOW); 
+    }
+
+    DewExt=dewPoint(T22ext,Hr22ext);
+    if (T22ext<=DewExt+2) { 
+       dewing=1;
+    } else {
+       dewing=0;
+    }
+#endif //USE_DHT_SENSOR_EXTERNAL    
+
+#ifdef USE_LIGHT_SENSOR
     Light=analogRead(A0);
+    if (Light > DAYLIGHT_FLAG_TRIGGER) {
+        daylight=1;
+    } else {
+        daylight=0;
+    }
+#endif //USE_LIGHT_SENSOR
 
-#if defined T_MAIN_Thr
-    T=Thr;
+#if defined T_MAIN_Thre
+    T=Thre;
+#elif defined T_MAIN_Thri
+    T=Thri;
 #elif defined T_MAIN_Tir  
     T=Tir;
 #elif defined T_MAIN_Tp
@@ -286,7 +317,7 @@ void checkMeteo() {
        digitalWrite(PIN_TO_DIGITAL(7), LOW); // disable internal pull-ups 
     }   
   
-    if (Light>500) {
+    if (daylight == 1) {
        digitalWrite(PIN_TO_DIGITAL(8), HIGH); // enable internal pull-ups 
     } else {
        digitalWrite(PIN_TO_DIGITAL(8), LOW); // disable internal pull-ups  
@@ -304,7 +335,7 @@ void checkMeteo() {
 
 }
 
-#ifdef USE_DHT_SENSOR
+#if defined(USE_DHT_SENSOR_INTERNAL) || defined(USE_DHT_SENSOR_EXTERNAL)
 // dewPoint function NOAA
 // reference: http://wahiduddin.net/calc/density_algorithms.htm 
 double dewPoint(double celsius, double humidity)
@@ -331,7 +362,7 @@ double dewPointFast(double celsius, double humidity)
         double Td = (b * temp) / (a - temp);
         return Td;
 }
-#endif //USE_DHT_SENSOR
+#endif //USE_DHT_SENSOR_INTERNAL || USE_DHT_SENSOR_EXTERNAL
 
 #ifdef USE_IR_SENSOR
 //From AAG Cloudwatcher formula. Need to improve futher.
@@ -372,25 +403,25 @@ int mapAndSendAnalog(int pin) {
   switch(pin) {
       //PIN 14->A0, 24->A10
        case 0:     
-               result=(IR+273)*20;
+               //result=(IR+273)*20;
                break;       
        case 1:     
-               result=(Tir+273)*20;
+               //result=(Tir+273)*20;
                break;   
        case 2:     
-               result=(P/10);
+               //result=(P/10);
                break;       
        case 3:     
-               result=(Tp+273)*20;
+               //result=(Tp+273)*20;
                break;                      
        case 4:     
-               result=HR*100;
+               result=Hr22ext*100;
                break;       
        case 5:     
-               result=(Thr+273)*20;
+               result=(T22ext+273)*20;
                break;                      
        case 6:     
-               result=(Dew+273)*20;
+               result=(DewExt+273)*20;
                break;       
        case 7:     
                result=Light;
