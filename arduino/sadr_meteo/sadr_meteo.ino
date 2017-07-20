@@ -3,7 +3,7 @@ NACHO MAS 2013. http://indiduino.wordpress.com
 BROADCASTYOURSEB http://www.sadr.fr
 
 Several modifications over indiduinoTemplate:
-.- Include  "i2cmaster.h",  "Adafruit_BMP085.h" and  "dht.h" libraries 
+.- Include  "i2cmaster.h",  "Adafruit_BME280.h" and  "dht.h" libraries 
    to read the sensors.
 .- Several additional functions to read the sensor and calculate flags,
    cloudcover and dew point.
@@ -18,17 +18,21 @@ IMPORTANT: Customize following values to match your setup
 //#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
-//#define USE_P_SENSOR   //USE BMP085 PRESSURE SENSOR. Comment if not.
+#define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
 //#define USE_WIND_SENSOR   //USE SWITCH ANEMOMETER. Comment if not.
 #define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
 //#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
-//All sensors (ThrI=DHT22 INT,ThrE=DHT22 EXT,Tir=MELEXIS and Tp=BMP085) include a ambient temperature
+//All sensors (ThrI=DHT22 INT,ThrE=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
 #define T_MAIN_ThrE
 //#define T_MAIN_ThrI
 //#define T_MAIN_Tir  
 //#define T_MAIN_Tp
+
+// Defin I2C address of the pressure sensor
+#undef BME280_ADDRESS         // Undef BME280_ADDRESS from the BME280 library to easily override I2C address
+#define BME280_ADDRESS (0x76)// address I2C du BME280
 
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
 //is a good indicator to estimate cloud cover. However IR really meassure the
@@ -118,6 +122,8 @@ IMPORTANT: Customize following values to match your setup
 #include <Servo.h>
 #include <Wire.h>
 #include <Firmata.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
 
 
                     /*#ifdef USE_IR_SENSOR
@@ -138,13 +144,13 @@ IMPORTANT: Customize following values to match your setup
   DHT dhtExt(DHT_EXT_PIN, DHT_EXT_TYPE);
 #endif //USE_DHT_SENSOR_EXTERNAL
 
-                    /*#ifdef USE_P_SENSOR
-                      #include "Adafruit_BMP085.h"
-                      Adafruit_BMP085 bmp;
-                    #endif //USE_P_SENSOR*/
+#ifdef USE_P_SENSOR
+  #include <Adafruit_BME280.h>
+  Adafruit_BME280 bme; // I2C
+#endif //USE_P_SENSOR*/
 
 /*float HR,Thr,P,IR,T,Tp,Tir,Dew,Light,Clouds,skyT;*/
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light;
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P;
 float T,IR,Clouds,skyT,Tir;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 
@@ -153,9 +159,9 @@ int cloudy,dewing,frezzing,windy,rainy,daylight;
 
 void setupMeteoStation(){
 
-        /*#ifdef USE_P_SENSOR
-          bmp.begin();
-        #endif //USE_P_SENSOR*/
+#ifdef USE_P_SENSOR
+  bme.begin(BME280_ADDRESS);
+#endif //USE_P_SENSOR
 
 #ifdef USE_DHT_SENSOR_INTERNAL
   dhtInt.begin();
@@ -223,9 +229,9 @@ void runMeteoStation() {
     digitalWrite(PIN_TO_DIGITAL(7), HIGH); 
 #endif //USE_IR_SENSOR */ 
 
-/*#ifdef USE_P_SENSOR
-    Tp=bmp.readTemperature();
-    P=bmp.readPressure(); 
+#ifdef USE_P_SENSOR
+    Tp=bme.readTemperature();
+    P=bme.readPressure(); 
 #else
     //set P sensor fail flag
     digitalWrite(PIN_TO_DIGITAL(9), HIGH);     
@@ -409,7 +415,7 @@ int mapAndSendAnalog(int pin) {
                //result=(Tir+273)*20;
                break;   
        case 2:     
-               //result=(P/10);
+               result=P;
                break;       
        case 3:     
                //result=(Tp+273)*20;
