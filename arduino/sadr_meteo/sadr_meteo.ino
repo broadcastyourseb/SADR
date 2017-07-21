@@ -17,9 +17,9 @@ IMPORTANT: Customize following values to match your setup
 //Comment out if you setup don't include some sensor.
 //#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
-//#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
+#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
 #define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
-//#define USE_WIND_SENSOR   //USE SWITCH ANEMOMETER. Comment if not.
+#define USE_WIND_SENSOR   //USE SWITCH ANEMOMETER. Comment if not.
 #define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
 //#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
@@ -122,9 +122,9 @@ IMPORTANT: Customize following values to match your setup
 #include <Adafruit_Sensor.h>
 
 
-                    /*#ifdef USE_IR_SENSOR
-                      #include "i2cmaster.h"
-                    #endif //USE_IR_SENSOR*/
+#ifdef USE_IR_SENSOR
+  #include <Adafruit_MLX90614.h>
+#endif //USE_IR_SENSOR
 
 #ifdef USE_DHT_SENSOR_INTERNAL
   #include "DHT.h"
@@ -148,6 +148,15 @@ IMPORTANT: Customize following values to match your setup
   Adafruit_BME280 bme; // I2C
 #endif //USE_P_SENSOR*/
 
+#ifdef USE_IR_SENSOR
+  // Initialize MLX906 sensor.
+  Adafruit_MLX90614 mlx = Adafruit_MLX90614();
+#endif //USE_IR_SENSOR*/
+
+#ifdef USE_WIND_SENSOR
+   #include <math.h>
+#endif //USE_WIND_SENSOR*/
+
 /*float HR,Thr,P,IR,T,Tp,Tir,Dew,Light,Clouds,skyT;*/
 float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P;
 float T,IR,Clouds,skyT,Tir;
@@ -170,6 +179,10 @@ void setupMeteoStation(){
   dhtExt.begin();
 #endif //USE_DHT_SENSOR_EXTERNAL
 
+#ifdef USE_IR_SENSOR
+   mlx.begin();
+#endif //USE_IR_SENSOR*/
+
 }
 
 /*==============================================================================
@@ -177,45 +190,11 @@ void setupMeteoStation(){
  *============================================================================*/
 void runMeteoStation() {
   
-/*#ifdef USE_IR_SENSOR  
-    double tempData = 0x0000; // zero out the data
-    int dev = 0x5A<<1;
-    int data_low = 0;
-    int data_high = 0;
-    int pec = 0;
+#ifdef USE_IR_SENSOR  
+    
+    IR = mlx.readObjectTempC() - 273.15; // Sky temperature in K
 
-    i2c_start_wait(dev+I2C_WRITE);
-    i2c_write(0x07);
-    
-    // read
-    i2c_rep_start(dev+I2C_READ);
-    data_low = i2c_readAck(); //Read 1 byte and then send ack
-    data_high = i2c_readAck(); //Read 1 byte and then send ack
-    pec = i2c_readNak();
-    i2c_stop();
-       
-    // This masks off the error bit of the high byte, then moves it left 8 bits and adds the low byte.
-    tempData = (double)(((data_high & 0x007F) << 8) + data_low);
-    tempData = (tempData /50);
-    
-    IR = tempData - 273.15;
-
-    i2c_start_wait(dev+I2C_WRITE);
-    i2c_write(0x06);
-    
-    // read
-    i2c_rep_start(dev+I2C_READ);
-    data_low = i2c_readAck(); //Read 1 byte and then send ack
-    data_high = i2c_readAck(); //Read 1 byte and then send ack
-    pec = i2c_readNak();
-    i2c_stop();
-  
-  
-    // This masks off the error bit of the high byte, then moves it left 8 bits and adds the low byte.
-    tempData = (double)(((data_high & 0x007F) << 8) + data_low);
-    tempData = (tempData /50);
-    
-    Tir = tempData - 273.15;
+    Tir = mlx.readAmbientTempC() - 273.15; // Ambiant temperature in K
     Clouds=cloudIndex();
     skyT=skyTemp();
     if (Clouds >CLOUD_FLAG_PERCENT) {
@@ -225,15 +204,15 @@ void runMeteoStation() {
     }
 #else
     //set IR sensor fail flag
-    digitalWrite(PIN_TO_DIGITAL(7), HIGH); 
-#endif //USE_IR_SENSOR */ 
+    digitalWrite(PIN_TO_DIGITAL(13), HIGH);
+#endif //USE_IR_SENSOR  
 
 #ifdef USE_P_SENSOR
     Tp=bme.readTemperature();
     P=bme.readPressure()/ 100; 
 #else
     //set P sensor fail flag
-    digitalWrite(PIN_TO_DIGITAL(9), HIGH);     
+    digitalWrite(PIN_TO_DIGITAL(13), HIGH);     
 #endif //USE_P_SENSOR  */
 
 #ifdef USE_DHT_SENSOR_INTERNAL
@@ -408,16 +387,16 @@ int mapAndSendAnalog(int pin) {
   switch(pin) {
       //PIN 14->A0, 24->A10
        case 0:     
-               //result=(IR+273)*20;
+               result=(IR+273)*20;
                break;       
        case 1:     
-               //result=(Tir+273)*20;
+               result=(Tir+273)*20;
                break;   
        case 2:     
                result=P;
                break;       
        case 3:     
-               //result=(Tp+273)*20;
+               result=(Tp+273)*20;
                break;                      
        case 4:     
                result=Hr22ext*100;
