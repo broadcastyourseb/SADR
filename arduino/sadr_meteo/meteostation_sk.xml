@@ -10,8 +10,8 @@
 0
     </defNumber>
 
-    <defNumber name="P" label="mBars" format="%4.2f" min="0" max="10240" step="1">
-    <indiduino pin="16" type="input" mul="0.1" add="0"/>
+    <defNumber name="P" label="hPa" format="%4.2f" min="920" max="1080" step="1">
+    <indiduino pin="16" type="input" mul="1" add="0"/>
 0
     </defNumber>
     <defNumber name="DEW" label="DEW.POINT" format="%4.2f" min="-100" max="100" step="1">
@@ -87,10 +87,10 @@ On
 0
     </defNumber>
 </defNumberVector>
-<defNumberVector device="Arduino MeteoStation" name="Presure" label="Presure Sensor" group="Raw Sensors" state="Idle" perm="ro" timeout="60">
+<defNumberVector device="Arduino MeteoStation" name="Pressure" label="Pressure Sensor" group="Raw Sensors" state="Idle" perm="ro" timeout="60">
 
-    <defNumber name="P" label="mBars" format="%4.2f" min="0" max="10240" step="1">
-    <indiduino pin="16" type="input" mul="0.1" add="0"/>
+    <defNumber name="P" label="hPa" format="%4.2f" min="920" max="1080" step="1">
+    <indiduino pin="16" type="input" mul="1" add="0"/>
 0
     </defNumber>
     <defNumber name="T" label="Celsius" format="%4.2f" min="-100" max="100" step="1">

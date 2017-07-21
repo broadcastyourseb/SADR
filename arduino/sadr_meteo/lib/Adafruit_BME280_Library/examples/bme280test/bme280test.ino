@@ -19,8 +19,12 @@
 #include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
-#undef BME280_ADDRESS         // Undef BME280_ADDRESS from the BME280 library to easily override I2C address
-#define BME280_ADDRESS (0x76)// address I2C du BME280
+
+#define BME_SCK 13
+#define BME_MISO 12
+#define BME_MOSI 11
+#define BME_CS 10
+
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 Adafruit_BME280 bme; // I2C
@@ -29,28 +33,6 @@ Adafruit_BME280 bme; // I2C
 
 unsigned long delayTime;
 
-void printValues() {
-    Serial.print("Temperature = ");
-    Serial.print(bme.readTemperature());
-    Serial.println(" *C");
-
-    Serial.print("Pressure = ");
-    
-    Serial.print(bme.readPressure());
-    //Serial.print(bme.readPressure() / 100.0F);
-    Serial.println(" hPa");
-
-    Serial.print("Approx. Altitude = ");
-    Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
-    Serial.println(" m");
-
-    Serial.print("Humidity = ");
-    Serial.print(bme.readHumidity());
-    Serial.println(" %");
-
-    Serial.println();
-}
-
 void setup() {
     Serial.begin(9600);
     Serial.println(F("BME280 test"));
@@ -58,8 +40,7 @@ void setup() {
     bool status;
     
     // default settings
-    //status = bme.begin();
-    status = bme.begin(BME280_ADDRESS);
+    status = bme.begin();
     if (!status) {
         Serial.println("Could not find a valid BME280 sensor, check wiring!");
         while (1);
@@ -75,4 +56,26 @@ void setup() {
 void loop() { 
     printValues();
     delay(delayTime);
+}
+
+
+void printValues() {
+    Serial.print("Temperature = ");
+    Serial.print(bme.readTemperature());
+    Serial.println(" *C");
+
+    Serial.print("Pressure = ");
+
+    Serial.print(bme.readPressure() / 100.0F);
+    Serial.println(" hPa");
+
+    Serial.print("Approx. Altitude = ");
+    Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+    Serial.println(" m");
+
+    Serial.print("Humidity = ");
+    Serial.print(bme.readHumidity());
+    Serial.println(" %");
+
+    Serial.println();
 }

@@ -1,4 +1,7 @@
-build-uno/sadr_meteo.ino.o: sadr_meteo.ino \
+build-uno/libs/DHT_sensor_library/DHT_U.cpp.o: \
+ /usr/share/arduino/libraries/DHT_sensor_library/DHT_U.cpp \
+ /usr/share/arduino/libraries/DHT_sensor_library/DHT_U.h \
+ /usr/share/arduino/libraries/Adafruit_Unified_Sensor/Adafruit_Sensor.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/WCharacter.h \
@@ -9,12 +12,5 @@ build-uno/sadr_meteo.ino.o: sadr_meteo.ino \
  /usr/share/arduino/hardware/arduino//cores/arduino/Printable.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/new.h \
  /usr/share/arduino/hardware/arduino//variants/standard/pins_arduino.h \
- /usr/share/arduino/libraries/Servo/Servo.h \
- /usr/share/arduino/libraries/Wire/Wire.h \
- /usr/share/arduino/hardware/arduino//cores/arduino/Stream.h \
- /usr/share/arduino/libraries/Firmata/Firmata.h \
- /usr/share/arduino/libraries/Firmata/Boards.h \
- /usr/share/arduino/libraries/SPI18/SPI.h \
- /usr/share/arduino/libraries/Adafruit_Unified_Sensor/Adafruit_Sensor.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/Print.h \
- /usr/share/arduino/libraries/Adafruit_BME280_Library/Adafruit_BME280.h
+ /usr/share/arduino/libraries/DHT_sensor_library/DHT.h

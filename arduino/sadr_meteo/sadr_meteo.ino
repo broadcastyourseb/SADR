@@ -30,10 +30,6 @@ IMPORTANT: Customize following values to match your setup
 //#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
-// Defin I2C address of the pressure sensor
-#undef BME280_ADDRESS         // Undef BME280_ADDRESS from the BME280 library to easily override I2C address
-#define BME280_ADDRESS (0x76)// address I2C du BME280
-
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
 //is a good indicator to estimate cloud cover. However IR really meassure the
 //temperatura of all the air column above increassing with ambient temperature.
@@ -146,6 +142,9 @@ IMPORTANT: Customize following values to match your setup
 
 #ifdef USE_P_SENSOR
   #include <Adafruit_BME280.h>
+  // Define I2C address of the pressure sensor
+  #undef BME280_ADDRESS         // Undef BME280_ADDRESS from the BME280 library to easily override I2C address
+  #define BME280_ADDRESS (0x76)// address I2C du BME280
   Adafruit_BME280 bme; // I2C
 #endif //USE_P_SENSOR*/
 
@@ -231,7 +230,7 @@ void runMeteoStation() {
 
 #ifdef USE_P_SENSOR
     Tp=bme.readTemperature();
-    P=bme.readPressure(); 
+    P=bme.readPressure()/ 100; 
 #else
     //set P sensor fail flag
     digitalWrite(PIN_TO_DIGITAL(9), HIGH);     
