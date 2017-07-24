@@ -98,19 +98,36 @@ On
 0
     </defNumber>
 </defNumberVector>
+
 <defNumberVector device="Arduino MeteoStation" name="HR" label="HR Sensor" group="Raw Sensors" state="Idle" perm="ro" timeout="60">
-    <defNumber name="HR" label="HR" format="%4.2f" min="0" max="10240" step="1">
+    <defNumber name="Hr22ext" label="Ext HR" format="%4.2f" min="0" max="10240" step="1">
     <indiduino pin="18" type="input" mul="0.01" add="0"/>
 0
     </defNumber>
-    <defNumber name="T" label="Celsius" format="%4.2f" min="-100" max="100" step="1">
+    <defNumber name="T22ext" label="Ext Celsius" format="%4.2f" min="-100" max="100" step="1">
     <indiduino pin="19" type="input" mul="0.05" add="-273"/>
 0
     </defNumber>
+
+    <defNumber name="Hr22int" label="Int HR" format="%4.2f" min="0" max="10240" step="1">
+    <indiduino pin="26" type="input" mul="0.01" add="0"/>
+0
+    </defNumber>
+    <defNumber name="T22int" label="Int Celsius" format="%4.2f" min="-100" max="100" step="1">
+    <indiduino pin="27" type="input" mul="0.05" add="-273"/>
+0
+    </defNumber>
 </defNumberVector>
+
 <defNumberVector device="Arduino MeteoStation" name="LIGHT" label="Irradiance" group="Raw Sensors" state="Idle" perm="ro" timeout="60">
-    <defNumber name="LIGHT" label="LIGHT" format="%5.0f" min="0" max="1024" step="1">
+    <defNumber name="LIGHT" label="lum" format="%5.0f" min="0" max="1024" step="1">
     <indiduino pin="21" type="input" mul="1" add="0"/>
+0
+    </defNumber>
+</defNumberVector>
+<defNumberVector device="Arduino MeteoStation" name="WIND" label="Anemometer" group="Raw Sensors" state="Idle" perm="ro" timeout="60">
+    <defNumber name="WIND" label="km/h" format="%5.0f" min="0" max="100" step="1">
+    <indiduino pin="25" type="input" mul="1" add="0"/>
 0
     </defNumber>
 </defNumberVector>
