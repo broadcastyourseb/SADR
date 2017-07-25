@@ -15,18 +15,18 @@ IMPORTANT: Customize following values to match your setup
 */
 
 //Comment out if you setup don't include some sensor.
-#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
+//#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
 //#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
 //#define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
 //#define USE_WIND_SENSOR   //USE ANEMOMETER type SWITCH. Comment if not.
-//#define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
+#define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
 //#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
 //All sensors (T22int=DHT22 INT,T22ext=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
-//#define T_MAIN_T22ext
-#define T_MAIN_T22int
+#define T_MAIN_T22ext
+//#define T_MAIN_T22int
 //#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
@@ -168,19 +168,19 @@ int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long Rotations; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
 
-#define TOTAL_ANALOG_PINS       15
-#define TOTAL_PINS              29
+#define TOTAL_ANALOG_PINS       16
+#define TOTAL_PINS              30
 
 #if defined(USE_DHT_SENSOR_INTERNAL) || defined(USE_DHT_SENSOR_EXTERNAL)
 // dewPoint function NOAA
 // reference: http://wahiduddin.net/calc/density_algorithms.htm 
 double dewPoint(double celsius, double humidity)
 {
-        double A0= 373.15/(273.15 + celsius);
-        double SUM = -7.90298 * (A0-1);
-        SUM += 5.02808 * log10(A0);
-        SUM += -1.3816e-7 * (pow(10, (11.344*(1-1/A0)))-1) ;
-        SUM += 8.1328e-3 * (pow(10,(-3.49149*(A0-1)))-1) ;
+        double AZERO= 373.15/(273.15 + celsius);
+        double SUM = -7.90298 * (AZERO-1);
+        SUM += 5.02808 * log10(AZERO);
+        SUM += -1.3816e-7 * (pow(10, (11.344*(1-1/AZERO)))-1) ;
+        SUM += 8.1328e-3 * (pow(10,(-3.49149*(AZERO-1)))-1) ;
         SUM += log10(1013.246);
         double VP = pow(10, SUM-3) * humidity;
         double T = log(VP/0.61078);   // temp var
@@ -269,9 +269,9 @@ void runMeteoStation() {
   
 #ifdef USE_IR_SENSOR  
     
-    IR = mlx.readObjectTempC() - 273.15; // Sky temperature in K
+    IR = mlx.readObjectTempC(); // Sky temperature in K
 
-    Tir = mlx.readAmbientTempC() - 273.15; // Ambiant temperature in K
+    Tir = mlx.readAmbientTempC(); // Ambiant temperature in K
     Clouds=cloudIndex();
     skyT=skyTemp();
     if (Clouds >CLOUD_FLAG_PERCENT) {
@@ -296,33 +296,33 @@ void runMeteoStation() {
     Hr22int=dhtInt.readHumidity();  
     T22int=dhtInt.readTemperature();
     // Check if any reads failed and exit early (to try again).
-    if (isnan(Hr22int) || isnan(T22int)) {
+    /*if (isnan(Hr22int) || isnan(T22int)) {
       //set HR sensor fail flag
       digitalWrite(PIN_TO_DIGITAL(13), HIGH); 
     } else {
       //OK.clear HR sensor fail flag       
       digitalWrite(PIN_TO_DIGITAL(13), LOW); 
-    }
+    }*/
 
-    DewInt=dewPoint(T22int,Hr22int);
+    /*DewInt=dewPoint(T22int,Hr22int);
     if (T22int<=DewInt+2) { 
        dewing=1;
     } else {
        dewing=0;
-    }
+    }*/
 #endif //USE_DHT_SENSOR_INTERNAL
 
 #ifdef USE_DHT_SENSOR_EXTERNAL
     Hr22ext=dhtExt.readHumidity();  
     T22ext=dhtExt.readTemperature();
     // Check if any reads failed and exit early (to try again).
-    if (isnan(Hr22ext) || isnan(T22ext)) {
+    /*if (isnan(Hr22ext) || isnan(T22ext)) {
       //set HR sensor fail flag
       digitalWrite(PIN_TO_DIGITAL(13), HIGH); 
     } else {
       //OK.clear HR sensor fail flag       
       digitalWrite(PIN_TO_DIGITAL(13), LOW); 
-    }
+    }*/
 
     DewExt=dewPoint(T22ext,Hr22ext);
     if (T22ext<=DewExt+2) { 
@@ -332,14 +332,14 @@ void runMeteoStation() {
     }
 #endif //USE_DHT_SENSOR_EXTERNAL    
 
-#ifdef USE_LIGHT_SENSOR
-    Light=analogRead(A0);
+//#ifdef USE_LIGHT_SENSOR
+    Light=analogRead(0);
     if (Light > DAYLIGHT_FLAG_TRIGGER) {
         daylight=1;
     } else {
         daylight=0;
     }
-#endif //USE_LIGHT_SENSOR
+//#endif //USE_LIGHT_SENSOR
 
 #if defined T_MAIN_T22ext
     T=T22ext;
@@ -430,52 +430,66 @@ int mapAndSendAnalog(int pin) {
   int result=0;
  
   switch(pin) {
-      //PIN 14->A0, 24->A10
+      //PIN 14->A0, 24->A10, 33->A19
+      
        case 0:     
-               result=(IR+273)*20;
-               break;       
-       case 1:     
-               result=(Tir+273)*20;
+               result=Light;
+               break;
+       /*case 1:     
                break;   
        case 2:     
-               result=P;
                break;       
        case 3:     
-               result=(Tp+273)*20;
                break;                      
        case 4:     
-               result=Hr22ext*100;
                break;       
        case 5:     
-               result=(T22ext+273)*20;
-               break;                      
+               break;                   
        case 6:     
-               result=(DewExt+273)*20;
-               break;       
+               result=(IR+273)*20;
+               break;     
        case 7:     
-               result=Light;
-               break;       
+               result=(Tir+273)*20;
+               break;   
        case 8:     
-               result=Clouds;
-               break;   
+               result=P;
+               break;       
        case 9:     
-               result=(skyT+273)*20;
-               break;   
+               result=(Tp+273)*20;
+               break;                      
        case 10:     
-               result=(T+273)*20;
-               break;   
+               result=Hr22ext*100;
+               break;
        case 11:     
-               result=WindSpeed;
+               result=(T22ext+273)*20;
                break;
        case 12:     
+               result=(DewExt+273)*20;
+               break;              
+       case 13:     
+               result=Clouds;
+               break;   
+       case 14:     
+               result=(skyT+273)*20;
+               break;
+       case 15:     
+               result=(T+273)*20;
+               break;
+       case 16:     
+               result=WindSpeed;
+               break;
+       case 17:     
                result=Hr22int*100;
                break;       
-       case 13:     
+       case 18:     
                result=(T22int+273)*20;
-               break;                      
-       case 14:     
+               break;                  
+       case 19:     
                result=(DewInt+273)*20;
-               break;        
+               break;   
+       case 20:     
+               result=100;
+               break; */    
                
        default:
              result=value;
@@ -1117,10 +1131,10 @@ void loop()
       }
     }
     // report i2c data for all device with read continuous mode enabled
-    if (queryIndex > -1) {
+    /*if (queryIndex > -1) {
       for (byte i = 0; i < queryIndex + 1; i++) {
         readAndReportData(query[i].addr, query[i].reg, query[i].bytes);
       }
-    }
+    }*/
   }
 }
