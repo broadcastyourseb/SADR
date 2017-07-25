@@ -16,18 +16,18 @@ IMPORTANT: Customize following values to match your setup
 
 //Comment out if you setup don't include some sensor.
 //#define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
-//#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
-//#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
-//#define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
+#define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
+#define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
+#define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
 //#define USE_WIND_SENSOR   //USE ANEMOMETER type SWITCH. Comment if not.
 #define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
 //#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
 //All sensors (T22int=DHT22 INT,T22ext=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
-#define T_MAIN_T22ext
+//#define T_MAIN_T22ext
 //#define T_MAIN_T22int
-//#define T_MAIN_Tir  
+#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
@@ -204,11 +204,13 @@ double dewPointFast(double celsius, double humidity)
 //From AAG Cloudwatcher formula. Need to improve futher.
 //http://www.aagware.eu/aag/cloudwatcher700/WebHelp/index.htm#page=Operational%20Aspects/23-TemperatureFactor-.htm
 //https://azug.minpet.unibas.ch/wikiobsvermes/index.php/AAG_cloud_sensor#Snow_on_the_sky_temperature_sensor
+//Td  = (K1 / 100) * (Ta - K2 / 10) + (K3 / 100) * (Exp (K4 / 1000*Ta)) ^ (K5 / 100)
+//Tsky=Ts – Td 
 double skyTemp() {
   //Constant defined above
   double Td = (K1 / 100.) * (T - K2 / 10) + (K3 / 100.) * pow((exp (K4 / 1000.* T)) , (K5 / 100.));
-  double Tsky=IR-Td;
-  return Tsky;
+  double Tsky=IR-Td; // in °C
+  return Tsky; //in °C
 }
 
 
@@ -269,9 +271,9 @@ void runMeteoStation() {
   
 #ifdef USE_IR_SENSOR  
     
-    IR = mlx.readObjectTempC(); // Sky temperature in K
+    IR = mlx.readObjectTempC(); // Sky temperature in °C
 
-    Tir = mlx.readAmbientTempC(); // Ambiant temperature in K
+    Tir = mlx.readAmbientTempC(); // Ambiant temperature in °C
     Clouds=cloudIndex();
     skyT=skyTemp();
     if (Clouds >CLOUD_FLAG_PERCENT) {
@@ -286,7 +288,7 @@ void runMeteoStation() {
 
 #ifdef USE_P_SENSOR
     Tp=bme.readTemperature();
-    P=bme.readPressure()/ 100; 
+    P=bme.readPressure()/ 100; // in hPa
 #else
     //set P sensor fail flag
     digitalWrite(PIN_TO_DIGITAL(13), HIGH);     
@@ -324,12 +326,6 @@ void runMeteoStation() {
       digitalWrite(PIN_TO_DIGITAL(13), LOW); 
     }*/
 
-    DewExt=dewPoint(T22ext,Hr22ext);
-    if (T22ext<=DewExt+2) { 
-       dewing=1;
-    } else {
-       dewing=0;
-    }
 #endif //USE_DHT_SENSOR_EXTERNAL    
 
 //#ifdef USE_LIGHT_SENSOR
@@ -356,6 +352,15 @@ if (T <=2) {
 } else {
   frezzing=0;
 }
+
+#ifdef USE_DHT_SENSOR_EXTERNAL
+    DewExt=dewPoint(T,Hr22ext);
+    if (T<=DewExt+2) { 
+       dewing=1;
+    } else {
+       dewing=0;
+    }
+#endif //USE_DHT_SENSOR_EXTERNAL
 
 #ifdef USE_WIND_SENSOR
   Rotations = 0; // Set Rotations count to 0 ready for calculations
@@ -433,28 +438,33 @@ int mapAndSendAnalog(int pin) {
       //PIN 14->A0, 24->A10, 33->A19
       
        case 0:     
-               result=Light;
+               result=Light; // Luminosity from 0 to 1023
                break;
-       /*case 1:     
-               break;   
-       case 2:     
-               break;       
-       case 3:     
+       case 1:     
+               result=T; // Temperature in celcius from -30°C to +50°C
+               break;  
+       case 2:
+               result=skyT; // Temperature in celcius from T° Clear sky (-8°C) to totally cover sky corrected temperature (0°C)  
+               break;
+       case 3:
+               result=P; // pressure from 920hPa to 1080hPa
                break;                      
        case 4:     
+               result = Hr22ext; // Humidity from 0 to 100%Hr
                break;       
-       case 5:     
+       case 5:
+               result = DewExt; // Dew temperature in °C
                break;                   
        case 6:     
-               result=(IR+273)*20;
+               result = WindSpeed; //Windseep in km/h from 0 to 130 km/h
                break;     
        case 7:     
-               result=(Tir+273)*20;
-               break;   
-       case 8:     
-               result=P;
-               break;       
-       case 9:     
+               result=Clouds; // relative cloud from 0 (clear sky) to 100 (cloudy sky);
+               break; 
+       /*case 8:
+               result = ; // 
+               break;*/        
+       /*case 9:     
                result=(Tp+273)*20;
                break;                      
        case 10:     
@@ -462,33 +472,15 @@ int mapAndSendAnalog(int pin) {
                break;
        case 11:     
                result=(T22ext+273)*20;
-               break;
+               break;               
        case 12:     
-               result=(DewExt+273)*20;
-               break;              
-       case 13:     
-               result=Clouds;
-               break;   
-       case 14:     
-               result=(skyT+273)*20;
-               break;
-       case 15:     
-               result=(T+273)*20;
-               break;
-       case 16:     
-               result=WindSpeed;
-               break;
-       case 17:     
                result=Hr22int*100;
                break;       
-       case 18:     
+       case 13:     
                result=(T22int+273)*20;
                break;                  
-       case 19:     
+       case 14:     
                result=(DewInt+273)*20;
-               break;   
-       case 20:     
-               result=100;
                break; */    
                
        default:
