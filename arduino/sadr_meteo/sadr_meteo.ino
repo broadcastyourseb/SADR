@@ -21,7 +21,7 @@ IMPORTANT: Customize following values to match your setup
 #define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
 //#define USE_WIND_SENSOR   //USE ANEMOMETER type SWITCH. Comment if not.
 #define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
-//#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
+#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
 //All sensors (T22int=DHT22 INT,T22ext=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
@@ -58,6 +58,13 @@ IMPORTANT: Customize following values to match your setup
 #define WIND_FLAG_TRIGGER 10
 // Rotation count period to estimate the wind speed in millisecond
 #define WIND_MEAN_TIME 3000
+
+//Rain sensor
+//Calibrate this value using known capacitor.
+#define IN_STRAY_CAP_TO_GND 31
+#define IN_CAP_TO_GND  31
+#define MAX_ADC_VALUE 1023
+#define RAIN_FLAG_TRIGGER 120 //if above this capacity then rainy
 
 /*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
 
@@ -163,7 +170,12 @@ IMPORTANT: Customize following values to match your setup
    #define  ANEMOMETER_PIN 3    // the pin that the pushbutton is attached to
 #endif //USE_WIND_SENSOR*/
 
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed;
+#ifdef USE_RAIN_SENSOR
+    #define RAIN_OUT_PIN = A2;
+    #define RAIN_IN_PIN = A1;
+#endif //USE_RAIN_SENSOR*/
+
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,Capacity;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long Rotations; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
@@ -236,6 +248,33 @@ void isr_rotation () {
 }
 #endif //USE_WIND_SENSOR
 
+#ifdef USE_RAIN_SENSOR
+float rain(int integration) {
+  //Capacitor under test between RAIN_OUT_PIN and RAIN_IN_PIN
+
+    float moyenne = 0, capacitance = 0;
+  
+    for (int i = 0; i < integration; i++) {
+      
+      //Rising high edge on RAIN_OUT_PIN
+      pinMode(RAIN_IN_PIN, INPUT);
+      digitalWrite(RAIN_OUT_PIN, HIGH);
+      int val = analogRead(RAIN_IN_PIN);
+      digitalWrite(RAIN_OUT_PIN, LOW);
+  
+      //Low value capacitor
+      //Clear everything for next measurement
+      pinMode(RAIN_IN_PIN, OUTPUT);
+  
+      //Calculate and print result
+      capacitance = (float)val * IN_CAP_TO_GND / (float)(MAX_ADC_VALUE - val);
+      moyenne += capacitance;
+    }
+    moyenne = moyenne / integration;
+    return moyenne;
+}
+#endif //USE_RAIN_SENSOR
+
 // This is the function called to initialize each activate sensor
 void setupMeteoStation(){
 
@@ -261,6 +300,11 @@ void setupMeteoStation(){
   // interrupt when switch contact is closed
   attachInterrupt(digitalPinToInterrupt(ANEMOMETER_PIN), isr_rotation, FALLING);
 #endif //USE_WIND_SENSOR*/
+
+#ifdef USE_RAIN_SENSOR
+  pinMode(RAIN_OUT_PIN, OUTPUT);
+  pinMode(RAIN_IN_PIN, OUTPUT);
+#endif //USE_RAIN_SENSOR*/
 
 }
 
@@ -328,14 +372,14 @@ void runMeteoStation() {
 
 #endif //USE_DHT_SENSOR_EXTERNAL    
 
-//#ifdef USE_LIGHT_SENSOR
+#ifdef USE_LIGHT_SENSOR
     Light=analogRead(0);
     if (Light > DAYLIGHT_FLAG_TRIGGER) {
         daylight=1;
     } else {
         daylight=0;
     }
-//#endif //USE_LIGHT_SENSOR
+#endif //USE_LIGHT_SENSOR
 
 #if defined T_MAIN_T22ext
     T=T22ext;
@@ -361,6 +405,15 @@ if (T <=2) {
        dewing=0;
     }
 #endif //USE_DHT_SENSOR_EXTERNAL
+
+#ifdef USE_RAIN_SENSOR
+    Capacity = rain(120);
+    if (Capacity > RAIN_FLAG_TRIGGER) {
+      rainy=1;
+    } else {
+      rainy=0;
+    }
+#endif //USE_RAIN_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
   Rotations = 0; // Set Rotations count to 0 ready for calculations
@@ -437,33 +490,33 @@ int mapAndSendAnalog(int pin) {
   switch(pin) {
       //PIN 14->A0, 24->A10, 33->A19
       
-       case 0:     
-               result=Light; // Luminosity from 0 to 1023
+       case 0://14
+               result = Light; // Luminosity from 0 to 1023
                break;
-       case 1:     
-               result=T; // Temperature in celcius from -30°C to +50°C
-               break;  
-       case 2:
-               result=skyT; // Temperature in celcius from T° Clear sky (-8°C) to totally cover sky corrected temperature (0°C)  
+       case 1://15
+               result = T; // Temperature in celcius from -30°C to +50°C
                break;
-       case 3:
-               result=P; // pressure from 920hPa to 1080hPa
-               break;                      
-       case 4:     
+       case 2://16
+               result = skyT; // Temperature in celcius from T° Clear sky (-8°C) to totally cover sky corrected temperature (0°C)
+               break;
+       case 3://17
+               result = P; // pressure from 920hPa to 1080hPa
+               break;
+       case 4://18
                result = Hr22ext; // Humidity from 0 to 100%Hr
-               break;       
-       case 5:
+               break;
+       case 5://19
                result = DewExt; // Dew temperature in °C
-               break;                   
-       case 6:     
+               break;
+       case 6://20    
                result = WindSpeed; //Windseep in km/h from 0 to 130 km/h
-               break;     
-       case 7:     
-               result=Clouds; // relative cloud from 0 (clear sky) to 100 (cloudy sky);
-               break; 
-       /*case 8:
-               result = ; // 
-               break;*/        
+               break;
+       case 7://21    
+               result = Clouds; // relative cloud from 0 (clear sky) to 100 (cloudy sky);
+               break;
+       case 8://22
+               result = Capacity; // Capacity of the rain sensor. High value means water.
+               break;      
        /*case 9:     
                result=(Tp+273)*20;
                break;                      
