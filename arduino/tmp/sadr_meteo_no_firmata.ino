@@ -19,9 +19,9 @@ IMPORTANT: Customize following values to match your setup
 #define USE_DHT_SENSOR_EXTERNAL   //USE EXTERNAL DHT HUMITITY SENSOR. Comment if not.
 #define USE_IR_SENSOR   //USE MELEXIS IR SENSOR. Comment if not.
 #define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
-//#define USE_WIND_SENSOR   //USE ANEMOMETER type SWITCH. Comment if not.
+#define USE_WIND_SENSOR   //USE ANEMOMETER type SWITCH. Comment if not.
 #define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
-//#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
+#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
 //All sensors (T22int=DHT22 INT,T22ext=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
