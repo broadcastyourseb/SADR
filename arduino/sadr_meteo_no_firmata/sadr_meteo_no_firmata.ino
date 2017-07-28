@@ -41,26 +41,29 @@ IMPORTANT: Customize following values to match your setup
 #define  K5 100.
 
 //Clear sky corrected temperature (temp below means 0% clouds)
-#define CLOUD_TEMP_CLEAR  -8 
+#define CLOUD_TEMP_CLEAR  -10
 //Totally cover sky corrected temperature (temp above means 100% clouds)
 #define CLOUD_TEMP_OVERCAST  0  
 //Activation treshold for cloudFlag (%)
 #define CLOUD_FLAG_PERCENT  30
 
-// Activation threshold for daylight (between 0 and 1024)
-#define DAYLIGHT_FLAG_TRIGGER 5
+//Light sensor
+// Activation threshold for daylight (between 0 and 5000mV)
+#define DAYLIGHT_FLAG_TRIGGER 1
 
+// Wind sensor
 // Activation threshold for wind in km/h
 #define WIND_FLAG_TRIGGER 10
-// Rotation count period to estimate the wind speed in millisecond
-#define WIND_MEAN_TIME 3000
+// A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
+#define ANEMOMETER_COEF 2.4  // Relation between windspeed in km/h and switch frequency
+#define ANEMOMETER_BOUNCE_TIME 50 //Below this value, no count is adding
 
 //Rain sensor
 //Calibrate this value using known capacitor.
 #define IN_STRAY_CAP_TO_GND 31
 #define IN_CAP_TO_GND  31
 #define MAX_ADC_VALUE 1023
-#define RAIN_FLAG_TRIGGER 90 //if above this capacity then rainy
+#define RAIN_FLAG_TRIGGER 110 //if above this capacity then rainy
 // which analog pin to connect
 #define THERMISTORPIN A3       
 // resistance at 25 degrees C
@@ -77,7 +80,7 @@ IMPORTANT: Customize following values to match your setup
 // On contrôle avec la broche 11
 #define OUTP 11
 // Target temperature
-#define COLD_TEMPERATURE_TARGET 15
+#define COLD_TEMPERATURE_TARGET 25
 #define HOT_TEMPERATURE_TARGET 50
 
 /*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
@@ -147,11 +150,11 @@ IMPORTANT: Customize following values to match your setup
   PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,Capacity;
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long Rotations; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
-unsigned long tempo;
+unsigned long tempo, TimeStamp;
 
 #if defined(USE_DHT_SENSOR_INTERNAL) || defined(USE_DHT_SENSOR_EXTERNAL)
 // dewPoint function NOAA
@@ -209,10 +212,20 @@ double cloudIndex() {
 #ifdef USE_WIND_SENSOR
 // This is the function that the interrupt calls to increment the rotation count
 void isr_rotation () {
-  if ((millis() - ContactBounceTime) > 15 ) { // debounce the switch contact.
+  TimeStamp = millis();
+  if ((TimeStamp - ContactBounceTime) > ANEMOMETER_BOUNCE_TIME ) { // debounce the switch contact.
     Rotations++;
-    ContactBounceTime = millis();
+    if ((TimeStamp - ContactBounceTime) < MiniTime) {
+        MiniTime = TimeStamp - ContactBounceTime;
+    }
+    ContactBounceTime = TimeStamp ;
   }
+  // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
+  // V = R / 3 * 2.4 = R * 0.8
+  MaxWindSpeed = ANEMOMETER_COEF * 1 / MiniTime;
+  MaxWindSpeed = MaxWindSpeed * 1000;
+  WindSpeed = ANEMOMETER_COEF * Rotations / SERIAL_DELAY;
+  WindSpeed = WindSpeed * 1000;
 }
 #endif //USE_WIND_SENSOR
 
@@ -233,6 +246,7 @@ float rain(int integration) {
       //Low value capacitor
       //Clear everything for next measurement
       pinMode(RAIN_IN_PIN, OUTPUT);
+      //delay(10);
   
       //Calculate and print result
       capacitance = (float)val * IN_CAP_TO_GND / (float)(MAX_ADC_VALUE - val);
@@ -362,35 +376,11 @@ void runMeteoStation() {
 #ifdef USE_DHT_SENSOR_INTERNAL
     Hr22int=dhtInt.readHumidity();  
     T22int=dhtInt.readTemperature();
-    // Check if any reads failed and exit early (to try again).
-    /*if (isnan(Hr22int) || isnan(T22int)) {
-      //set HR sensor fail flag
-      digitalWrite(PIN_TO_DIGITAL(13), HIGH); 
-    } else {
-      //OK.clear HR sensor fail flag       
-      digitalWrite(PIN_TO_DIGITAL(13), LOW); 
-    }*/
-
-    /*DewInt=dewPoint(T22int,Hr22int);
-    if (T22int<=DewInt+2) { 
-       dewing=1;
-    } else {
-       dewing=0;
-    }*/
 #endif //USE_DHT_SENSOR_INTERNAL
 
 #ifdef USE_DHT_SENSOR_EXTERNAL
     Hr22ext=dhtExt.readHumidity();  
     T22ext=dhtExt.readTemperature();
-    // Check if any reads failed and exit early (to try again).
-    /*if (isnan(Hr22ext) || isnan(T22ext)) {
-      //set HR sensor fail flag
-      digitalWrite(PIN_TO_DIGITAL(13), HIGH); 
-    } else {
-      //OK.clear HR sensor fail flag       
-      digitalWrite(PIN_TO_DIGITAL(13), LOW); 
-    }*/
-
 #endif //USE_DHT_SENSOR_EXTERNAL    
 
 #ifdef USE_LIGHT_SENSOR
@@ -428,7 +418,7 @@ if (T <=2) {
 #endif //USE_DHT_SENSOR_EXTERNAL
 
 #ifdef USE_RAIN_SENSOR
-    Capacity = rain(120);
+    Capacity = rain(NUMSAMPLES);
     if (Capacity > RAIN_FLAG_TRIGGER) {
       rainy=1;
     } else {
@@ -437,18 +427,6 @@ if (T <=2) {
 #endif //USE_RAIN_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
-  //Rotations = 0; // Set Rotations count to 0 ready for calculations
-  
-  //sei(); // Enables interrupts
-  //delay (WIND_MEAN_TIME); // Wait x seconds to average
-  //cli(); // Disable interrupts
-  
-  // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
-  // V = R / 3 * 2.4 = R * 0.8
-  
-  //Rotations = isr_rotation();
-  WindSpeed = Rotations * 0.75;
-  
   if (WindSpeed > WIND_FLAG_TRIGGER) {
         windy=1;
     } else {
@@ -512,7 +490,9 @@ void outputChain() {
 #endif //USE_P_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
-    Serial.print(Rotations);
+    Serial.print(WindSpeed);
+    Serial.print(",");
+    Serial.print(MaxWindSpeed);
     Serial.print(",");
     Serial.print(windy);
     Serial.print(",");
@@ -549,12 +529,15 @@ void loop() {
     runMeteoStation();
     outputChain();
     tempo = millis();
+    Rotations = 0; // Set Rotations count to 0 after calculations
+    MiniTime = 1000; // Set MiniTime value to 1000ms after calculations
   }
+  #ifdef USE_RAIN_SENSOR
   if (rainy == 1) {
      Consigne = HOT_TEMPERATURE_TARGET;
   } else {
      Consigne = COLD_TEMPERATURE_TARGET;
   }
   regulHeat();
-
+  #endif //USE_DHT_RAIN_SENSOR*/
 }
