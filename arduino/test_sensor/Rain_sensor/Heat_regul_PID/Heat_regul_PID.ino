@@ -21,7 +21,7 @@ int samples[NUMSAMPLES];
 
 // Variables pour PID
 // La température souhaitée :
-double Consigne = 55;
+double Consigne = 35;
 // La température mesurée :
 double Temp;
 // La valeur PWM 0-255 :
@@ -43,6 +43,15 @@ PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 //PID myPID(&Temp, &Mosfet, &Consigne, 6, 3, 1, DIRECT);
 // Moins agressif
 // PID myPID(&Temp, &Mosfet, &Consigne, 1, 0.05, 0.25, DIRECT);
+
+void SerialSend()
+{
+  Serial.print("setpoint: "); Serial.print(Consigne); Serial.print(" ");
+  Serial.print("input: "); Serial.print(Temp); Serial.print(" ");
+  Serial.print("output: ");Serial.print(Mosfet/2); Serial.println(" ");
+  //delay(100);
+
+}
 
 float getTemperature() {
   uint8_t i;
@@ -112,15 +121,6 @@ void loop(void) {
 
   SerialSend();
   // envoi des informations temp:PWM à Processing
-}
-
-void SerialSend()
-{
-  Serial.print("setpoint: "); Serial.print(Consigne); Serial.print(" ");
-  Serial.print("input: "); Serial.print(Temp); Serial.print(" ");
-  Serial.print("output: ");Serial.print(Mosfet/2); Serial.println(" ");
-  //delay(100);
-
 }
 
 

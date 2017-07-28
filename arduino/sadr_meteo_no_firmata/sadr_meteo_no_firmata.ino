@@ -7,6 +7,8 @@ NACHO MAS 2013. http://indiduino.wordpress.com
 
 IMPORTANT: Customize following values to match your setup
 */
+// Delay between 2 serial printing
+#define SERIAL_DELAY 5000
 
 //Comment out if you setup don't include some sensor.
 #define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
@@ -15,7 +17,7 @@ IMPORTANT: Customize following values to match your setup
 #define USE_P_SENSOR   //USE BME280 PRESSURE SENSOR. Comment if not.
 #define USE_WIND_SENSOR   //USE ANEMOMETER type SWITCH. Comment if not.
 #define USE_LIGHT_SENSOR   //USE SOLAR PANEL AS LIGHT SENSOR. Comment if not.
-#define USE_DHT_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
+#define USE_RAIN_SENSOR   //USE TELECONTROLLI CAPACITIVE RAIN SENSOR. Comment if not.
 
 //All sensors (T22int=DHT22 INT,T22ext=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
@@ -58,7 +60,25 @@ IMPORTANT: Customize following values to match your setup
 #define IN_STRAY_CAP_TO_GND 31
 #define IN_CAP_TO_GND  31
 #define MAX_ADC_VALUE 1023
-#define RAIN_FLAG_TRIGGER 120 //if above this capacity then rainy
+#define RAIN_FLAG_TRIGGER 90 //if above this capacity then rainy
+// which analog pin to connect
+#define THERMISTORPIN A3       
+// resistance at 25 degrees C
+#define THERMISTORNOMINAL 100000     
+// temp. for nominal resistance (almost always 25 C)
+#define TEMPERATURENOMINAL 25
+// how many samples to take and average, more takes longer
+// but is more 'smooth'
+#define NUMSAMPLES 100
+// The beta coefficient of the thermistor (usually 3000-4000)
+#define BCOEFFICIENT 4120
+// the value of the 'other' resistor
+#define SERIESRESISTOR 92900
+// On contrôle avec la broche 11
+#define OUTP 11
+// Target temperature
+#define COLD_TEMPERATURE_TARGET 15
+#define HOT_TEMPERATURE_TARGET 50
 
 /*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
 
@@ -100,19 +120,38 @@ IMPORTANT: Customize following values to match your setup
 #endif //USE_IR_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
-   #include <math.h>
-   #define  ANEMOMETER_PIN 3    // the pin that the pushbutton is attached to
+  #include <math.h>
+  #define  ANEMOMETER_PIN 3    // the pin that the pushbutton is attached to
 #endif //USE_WIND_SENSOR*/
 
 #ifdef USE_RAIN_SENSOR
-    #define RAIN_OUT_PIN = A2;
-    #define RAIN_IN_PIN = A1;
+  #include <PID_v1.h>
+  #define RAIN_OUT_PIN A2
+  #define RAIN_IN_PIN A1
+  double Consigne = COLD_TEMPERATURE_TARGET;
+  //Variable pour echantillonnage de la sonde de température du capteur de pluie
+  int samples[NUMSAMPLES];
+  // Variables pour PID
+  // Measured temperature
+  double Temp;
+  // PWM value 0-255 :
+  double Mosfet;
+
+  // Déclaration de l'objet PID
+  // Les argument sont les variables de gestion
+  // puis les gains pour P, I et D
+  // et enfin,le mode.
+  //Define the aggressive and conservative Tuning Parameters
+  double aggKp = 6, aggKi = 3, aggKd = 1;
+  double consKp = 1, consKi = 0.05, consKd = 0.25;
+  PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
 float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,Capacity;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long Rotations; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
+unsigned long tempo;
 
 #if defined(USE_DHT_SENSOR_INTERNAL) || defined(USE_DHT_SENSOR_EXTERNAL)
 // dewPoint function NOAA
@@ -170,7 +209,6 @@ double cloudIndex() {
 #ifdef USE_WIND_SENSOR
 // This is the function that the interrupt calls to increment the rotation count
 void isr_rotation () {
-
   if ((millis() - ContactBounceTime) > 15 ) { // debounce the switch contact.
     Rotations++;
     ContactBounceTime = millis();
@@ -202,6 +240,57 @@ float rain(int integration) {
     }
     moyenne = moyenne / integration;
     return moyenne;
+}
+
+float getTemperature() {
+  uint8_t i;
+  float average;
+
+  // take N samples in a row, with a slight delay
+  for (i = 0; i < NUMSAMPLES; i++) {
+    samples[i] = analogRead(THERMISTORPIN);
+  }
+
+  // average all the samples out
+  average = 0;
+  for (i = 0; i < NUMSAMPLES; i++) {
+    average += samples[i];
+  }
+  average /= NUMSAMPLES;
+
+  // convert the value to resistance
+  average = 1023 / average - 1;
+  average = SERIESRESISTOR / average;
+
+  float steinhart;
+  steinhart = average / THERMISTORNOMINAL;     // (R/Ro)
+  steinhart = log(steinhart);                  // ln(R/Ro)
+  steinhart /= BCOEFFICIENT;                   // 1/B * ln(R/Ro)
+  steinhart += 1.0 / (TEMPERATURENOMINAL + 273.15); // + (1/To)
+  steinhart = 1.0 / steinhart;                 // Invert
+  steinhart -= 273.15;                         // convert to C
+
+  return steinhart;
+}
+void regulHeat() {
+  //Asking for temperature of the rain sensor
+  Temp = getTemperature();
+
+  double gap = abs(Consigne - Temp); //distance away from setpoint
+
+  if (gap < 2)
+  { //we're close to setpoint, use conservative tuning parameters
+    myPID.SetTunings(consKp, consKi, consKd);
+  } else {
+    //we're far from setpoint, use aggressive tuning parameters
+    myPID.SetTunings(aggKp, aggKi, aggKd);
+  }
+
+  // calcul PID, la variable Mosfet contient
+  // ensuite la valeur calculée
+  myPID.Compute();
+  // écriture PWM
+  analogWrite(OUTP, Mosfet);
 }
 #endif //USE_RAIN_SENSOR
 
@@ -237,8 +326,13 @@ void setupMeteoStation(){
 #ifdef USE_RAIN_SENSOR
   pinMode(RAIN_OUT_PIN, OUTPUT);
   pinMode(RAIN_IN_PIN, OUTPUT);
+    // broche 11 en sortie
+  pinMode(OUTP, OUTPUT);
+  // contrôle entre 0-255
+  myPID.SetOutputLimits(0, 255);
+  // on active la régulation PID
+  myPID.SetMode(AUTOMATIC);
 #endif //USE_RAIN_SENSOR*/
-
 }
 
 /*==============================================================================
@@ -258,17 +352,11 @@ void runMeteoStation() {
     } else {
       cloudy=0;
     }
-#else
-    //set IR sensor fail flag
-    digitalWrite(PIN_TO_DIGITAL(13), HIGH);
 #endif //USE_IR_SENSOR  
 
 #ifdef USE_P_SENSOR
     Tp=bme.readTemperature();
-    P=bme.readPressure()/ 100; // in hPa
-#else
-    //set P sensor fail flag
-    digitalWrite(PIN_TO_DIGITAL(13), HIGH);     
+    P=bme.readPressure()/ 100; // in hPa     
 #endif //USE_P_SENSOR  */
 
 #ifdef USE_DHT_SENSOR_INTERNAL
@@ -283,12 +371,12 @@ void runMeteoStation() {
       digitalWrite(PIN_TO_DIGITAL(13), LOW); 
     }*/
 
-    DewInt=dewPoint(T22int,Hr22int);
+    /*DewInt=dewPoint(T22int,Hr22int);
     if (T22int<=DewInt+2) { 
        dewing=1;
     } else {
        dewing=0;
-    }
+    }*/
 #endif //USE_DHT_SENSOR_INTERNAL
 
 #ifdef USE_DHT_SENSOR_EXTERNAL
@@ -306,7 +394,7 @@ void runMeteoStation() {
 #endif //USE_DHT_SENSOR_EXTERNAL    
 
 #ifdef USE_LIGHT_SENSOR
-    Light=analogRead(0);
+    Light=analogRead(0)*4.88;
     if (Light > DAYLIGHT_FLAG_TRIGGER) {
         daylight=1;
     } else {
@@ -349,15 +437,16 @@ if (T <=2) {
 #endif //USE_RAIN_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
-  Rotations = 0; // Set Rotations count to 0 ready for calculations
+  //Rotations = 0; // Set Rotations count to 0 ready for calculations
   
-  sei(); // Enables interrupts
-  delay (WIND_MEAN_TIME); // Wait x seconds to average
-  cli(); // Disable interrupts
+  //sei(); // Enables interrupts
+  //delay (WIND_MEAN_TIME); // Wait x seconds to average
+  //cli(); // Disable interrupts
   
   // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
   // V = R / 3 * 2.4 = R * 0.8
   
+  //Rotations = isr_rotation();
   WindSpeed = Rotations * 0.75;
   
   if (WindSpeed > WIND_FLAG_TRIGGER) {
@@ -369,10 +458,80 @@ if (T <=2) {
 }
 
 /*==============================================================================
- * METEOSTATION FUNCTIONS
+ * OUPUT SERIAL
  *============================================================================*/
-String outputChain() {
-  return "toto";
+void outputChain() {
+       // send sensor values:
+    Serial.print("START,");
+//Generic value
+    Serial.print(T);
+    Serial.print(",");
+    Serial.print(frezzing);
+    Serial.print(",");
+#ifdef USE_LIGHT_SENSOR
+    Serial.print(Light);
+    Serial.print(",");
+    Serial.print(daylight);
+    Serial.print(",");
+#endif //USE_LIGHT_SENSOR*/
+
+#ifdef  USE_DHT_SENSOR_INTERNAL
+    Serial.print(T22int);
+    Serial.print(",");
+    Serial.print(Hr22int);
+    Serial.print(",");
+#endif //USE_DHT_SENSOR_INTERNAL*/
+
+#ifdef USE_DHT_SENSOR_EXTERNAL
+    Serial.print(T22ext);
+    Serial.print(",");
+    Serial.print(Hr22ext);
+    Serial.print(",");
+    Serial.print(DewExt);
+    Serial.print(",");
+    Serial.print(dewing);
+    Serial.print(",");
+#endif //USE_DHT_SENSOR_EXTERNAL*/
+
+#ifdef USE_IR_SENSOR
+    Serial.print(Tir);
+    Serial.print(",");
+    Serial.print(IR);
+    Serial.print(",");
+    Serial.print(skyT);
+    Serial.print(",");
+    Serial.print(Clouds);
+    Serial.print(",");
+    Serial.print(cloudy);
+    Serial.print(",");
+#endif //USE_IR_SENSOR*/
+
+#ifdef USE_P_SENSOR
+    Serial.print(P);
+    Serial.print(",");
+#endif //USE_P_SENSOR*/
+
+#ifdef USE_WIND_SENSOR
+    Serial.print(Rotations);
+    Serial.print(",");
+    Serial.print(windy);
+    Serial.print(",");
+#endif //USE_WIND_SENSOR*/
+
+#ifdef USE_RAIN_SENSOR
+    Serial.print(Capacity);
+    Serial.print(",");
+    Serial.print(rainy);
+    Serial.print(",");
+    Serial.print(Consigne);
+    Serial.print(",");
+    Serial.print(Temp);
+    Serial.print(",");
+    Serial.print(Mosfet);
+    Serial.print(",");
+#endif //USE_DHT_RAIN_SENSOR*/
+    Serial.println("END");
+
 }
 
 /*==============================================================================
@@ -386,7 +545,16 @@ void setup() {
  * LOOP()
  *============================================================================*/
 void loop() {
-  runMeteoStation();
-  Serial.print(outputChain());
+  if ((millis() - tempo) > SERIAL_DELAY ) { // debounce the switch contact.
+    runMeteoStation();
+    outputChain();
+    tempo = millis();
+  }
+  if (rainy == 1) {
+     Consigne = HOT_TEMPERATURE_TARGET;
+  } else {
+     Consigne = COLD_TEMPERATURE_TARGET;
+  }
+  regulHeat();
 
 }

@@ -9,6 +9,15 @@ volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in in
 
 float WindSpeed; // speed miles per hour
 
+// This is the function that the interrupt calls to increment the rotation count
+void isr_rotation () {
+
+  if ((millis() - ContactBounceTime) > 15 ) { // debounce the switch contact.
+    Rotations++;
+    ContactBounceTime = millis();
+  }
+}
+
 void setup() {
 
   // initialize the anemometer as a input:
@@ -38,15 +47,5 @@ void loop() {
   
   Serial.print(Rotations); Serial.print("\t\t");
   Serial.println(WindSpeed);
-
-}
-
-// This is the function that the interrupt calls to increment the rotation count
-void isr_rotation () {
-
-  if ((millis() - ContactBounceTime) > 15 ) { // debounce the switch contact.
-    Rotations++;
-    ContactBounceTime = millis();
-  }
 
 } 
