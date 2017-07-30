@@ -1,0 +1,49 @@
+2017-04-05T05:14:20: Driver indi_qhy_ccd: read message QHY CCD QHY5LII-C-6127d   'Exposure done, downloading image...'
+2017-04-05T05:14:20: Client 0: queuing <message device='QHY CCD QHY5LII-C-6127d' name=''>
+2017-04-05T05:14:20: Driver indi_qhy_ccd: read setNumberVector QHY CCD QHY5LII-C-6127d CCD_EXPOSURE Busy
+ CCD_EXPOSURE_VALUE='0'
+2017-04-05T05:14:20: Client 0: queuing <setNumberVector device='QHY CCD QHY5LII-C-6127d' name='CCD_EXPOSURE'>
+2017-04-05T05:14:20: Driver indi_qhy_ccd: read message QHY CCD QHY5LII-C-6127d   'Blocking read call.'
+2017-04-05T05:14:20: Client 0: queuing <message device='QHY CCD QHY5LII-C-6127d' name=''>
+2017-04-05T05:14:20: Client 0: sending msg copy 1 nq 3:
+<message device="QHY CCD QHY5LII-C-6127d" timestamp="2017-04-05T05:14:20" message="Exposure done, downloading image..."/>
+
+2017-04-05T05:14:20: Client 0: sending msg copy 1 nq 2:
+<setNumberVector device="QHY CCD QHY5LII-C-6127d" name="CCD_EXPOSURE" state="Busy" timeout="60" timestamp="2017-04-05T05:14:20">
+    <oneNumber name="CCD_EXPOSURE_VALUE">
+0
+    </oneNumber>
+</setNumberVector>
+
+2017-04-05T05:14:20: Client 0: sending msg copy 1 nq 1:
+<message device="QHY CCD QHY5LII-C-6127d" timestamp="2017-04-05T05:14:20" message="Blocking read call."/>
+
+2017-04-05T05:14:47: Driver indi_qhy_ccd: read message QHY CCD QHY5LII-C-6127d   'Blocking read call finished.'
+2017-04-05T05:14:47: Client 0: queuing <message device='QHY CCD QHY5LII-C-6127d' name=''>
+2017-04-05T05:14:47: Client 0: sending msg copy 1 nq 1:
+<message device="QHY CCD QHY5LII-C-6127d" timestamp="2017-04-05T05:14:47" message="Blocking read call finished."/>
+
+2017-04-05T05:14:47: Driver indi_qhy_ccd: read message QHY CCD QHY5LII-C-6127d   'Download complete.'
+2017-04-05T05:14:47: Client 0: queuing <message device='QHY CCD QHY5LII-C-6127d' name=''>
+2017-04-05T05:14:47: Client 0: sending msg copy 1 nq 1:
+<message device="QHY CCD QHY5LII-C-6127d" timestamp="2017-04-05T05:14:47" message="Download complete."/>
+
+2017-04-05T05:14:47: Driver indi_qhy_ccd: read message QHY CCD QHY5LII-C-6127d   'Uploading file. Ext: fits, Size: 1232640, sendImage? Yes, saveImage? No'
+2017-04-05T05:14:47: Client 0: queuing <message device='QHY CCD QHY5LII-C-6127d' name=''>
+2017-04-05T05:14:47: Client 0: sending msg copy 1 nq 1:
+<message device="QHY CCD QHY5LII-C-6127d" timestamp="2017-04-05T05:14:47" message="Uploading file. Ext: fits, Size: 1232640, sendImage? Yes, saveImage? No"/>
+
+2017-04-05T05:14:47: Driver indi_qhy_ccd: read setBLOBVector QHY CCD QHY5LII-C-6127d CCD1 Ok
+2017-04-05T05:14:47: Client 0: queuing <setBLOBVector device='QHY CCD QHY5LII-C-6127d' name='CCD1'>
+2017-04-05T05:14:47: Client 0: sending msg copy 1 nq 1:
+<setBLOBVector device="QHY CCD QHY5LII-C-6127d" name="CCD1" state="Ok" timeout="60" timestamp="2017-04-05T05:14:47">
+    <oneBLOB name="CCD1" size="1232640" enclen="1643520" format=".fits">
+
+
+
+
+
+
+2017-04-05T05:17:28: Client 0: sending msg copy 1 nq 1:
+<message device="QHY CCD QHY5LII-C-6127d" timestamp="2017-04-05T05:17:28" message="Blocking read call."/>
+
