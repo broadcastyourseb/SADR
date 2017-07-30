@@ -63,7 +63,7 @@ IMPORTANT: Customize following values to match your setup
 #define IN_STRAY_CAP_TO_GND 31
 #define IN_CAP_TO_GND  31
 #define MAX_ADC_VALUE 1023
-#define RAIN_FLAG_TRIGGER 110 //if above this capacity then rainy
+#define RAIN_FLAG_TRIGGER 100 //if above this capacity then rainy
 // which analog pin to connect
 #define THERMISTORPIN A3       
 // resistance at 25 degrees C
