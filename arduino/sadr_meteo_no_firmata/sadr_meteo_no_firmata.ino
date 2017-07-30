@@ -487,6 +487,8 @@ void outputChain() {
 #ifdef USE_P_SENSOR
     Serial.print(P);
     Serial.print(",");
+    Serial.print(Tp);
+    Serial.print(",");
 #endif //USE_P_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
