@@ -5,7 +5,8 @@
 # 
 # NACHO MAS 2013
 
-source meteoconfig.py
+source meteollskyconfig.py
+
 if [ "$INDISERVER" = "localhost" ]
 then
 	killall indiserver
