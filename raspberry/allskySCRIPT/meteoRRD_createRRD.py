@@ -10,7 +10,7 @@
 
 import sys, os
 import rrdtool
-from meteoconfig import *
+from meteollskyconfig import *
 
 #10s raw values for 3hour, 1min for 24 hours, 5 min for 24*7 hours,
 # 1hour for 1 year, 1day dor 10 years!
