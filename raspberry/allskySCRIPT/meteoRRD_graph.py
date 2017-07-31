@@ -8,7 +8,7 @@
 import sys, os
 import rrdtool
 import time
-from meteoconfig import *
+from meteollskyconfig import *
 import math
 
 blue="0080F0"

@@ -15,7 +15,7 @@ import math
 import time
 import signal
 import rrdtool
-from meteoconfig import *
+from meteollskyconfig import *
 import simplejson
 import gc
 import serial
@@ -52,7 +52,7 @@ def recv_indi():
 	frezzingFlag=int(statusVector.get_element("frezzing").is_ok())
   
 	return (("HR",HR),("Thr",Thr),("IR",IR),("Tir",Tir),("P",P),("Tp",Tp),("Dew",dew),("Light",light),
-           ("T",T),("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
+           ("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
            ("frezzingFlag",frezzingFlag))
 
 def recv_serial():
@@ -60,16 +60,16 @@ def recv_serial():
     line = ser.readline()
     print line
     T=1
-	HR=2
-	Thr=3
+    HR=2
+    Thr=3
     dew=4
-	IR=5
-	Tir=6
-	clouds=7
+    IR=5
+    Tir=6
+    clouds=7
     skyT=8
-	P=9
-	Tp=10
-	Light=11
+    P=9
+    Tp=10
+    Light=11
     Wind=12
     WindMax=13
     CRain=14
@@ -77,16 +77,17 @@ def recv_serial():
     PIDRain=16
     HRint=17
     Thrint=18
-	cloudFlag=19
-	dewFlag=20
-	frezzingFlag=21
+    cloudFlag=19
+    dewFlag=20
+    frezzingFlag=21
     daylightFlag=22
     windFlag=23
     rainFlag=24
 
-	return (("HR",HR),("Thr",Thr),("IR",IR),("Tir",Tir),("P",P),("Tp",Tp),("Dew",dew),("Light",light),
-           ("T",T),("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
-           ("frezzingFlag",frezzingFlag))
+	return (("T",T),("HR",HR),("Thr",Thr),("Dew",dew),("IR",IR),("Tir",Tir),("clouds",clouds),("skyT",skyT),
+           ("P",P),("Tp",Tp),("Light",light),("Wind",Wind),("WindMax",WindMax),("CRain",CRain),("TRain",TRain),
+           ("PIDRain",PIDRain),("HRint",HRint),("Thrint",Thrint),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
+           ("frezzingFlag",frezzingFlag),("daylightFlag",daylightFlag),("windFlag",windFlag),("rainFlag",rainFlag))
 
 ############# MAIN #############
 
