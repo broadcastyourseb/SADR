@@ -8,7 +8,7 @@
 # http://induino.wordpress.com 
 # 
 
-import sys
+import sys, os
 import rrdtool
 from meteoconfig import *
 
