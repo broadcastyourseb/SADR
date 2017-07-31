@@ -22,39 +22,6 @@ import serial
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-
-def recv_indi():
-	tim=time.localtime()
-        vectorHR=indi.get_vector(INDIDEVICE,"HR")
-	HR=vectorHR.get_element("HR").get_float()
-	Thr=vectorHR.get_element("T").get_float()
-
-        vectorPresure=indi.get_vector(INDIDEVICE,"Presure")
-	P=vectorPresure.get_element("P").get_float()
-	Tp=vectorPresure.get_element("T").get_float()
-
-        vectorIR=indi.get_vector(INDIDEVICE,"IR")
-	IR=vectorIR.get_element("IR").get_float()
-	Tir=vectorIR.get_element("T").get_float()
-
-        vectorMeteo=indi.get_vector(INDIDEVICE,"Meteo")
-	dew=vectorMeteo.get_element("DEW").get_float()
-	clouds=vectorMeteo.get_element("clouds").get_float()
-	T=vectorMeteo.get_element("T").get_float()
-        skyT=vectorMeteo.get_element("SkyT").get_float()
-
-        vectorLIGHT=indi.get_vector(INDIDEVICE,"LIGHT")
-	light=vectorLIGHT.get_element("LIGHT").get_float()
-   
-        statusVector=indi.get_vector(INDIDEVICE,"STATUS")
-	cloudFlag=int(statusVector.get_element("clouds").is_ok())
-	dewFlag=int(statusVector.get_element("dew").is_ok())
-	frezzingFlag=int(statusVector.get_element("frezzing").is_ok())
-  
-	return (("HR",HR),("Thr",Thr),("IR",IR),("Tir",Tir),("P",P),("Tp",Tp),("Dew",dew),("Light",light),
-           ("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
-           ("frezzingFlag",frezzingFlag))
-
 def recv_serial():
     ser = serial.Serial('/dev/ttyACM0')
     line = ser.readline()
@@ -103,31 +70,27 @@ fi.close()
 while (True):
   try:
 	
-	now=time.localtime()
-	json_dict={"TIME":time.strftime("%c",now)}
+    now=time.localtime()
+    json_dict={"TIME":time.strftime("%c",now)}
     data=recv_serial()
-	updateString="N"
-	for d in data:
-		print d[0],d[1]
-		updateString=updateString+":"+str(d[1])
-		json_dict[d[0]]=int(d[1]*100)/100.
+    updateString="N"
+    for d in data:
+        print d[0],d[1]
+        updateString=updateString+":"+str(d[1])
+        json_dict[d[0]]=int(d[1]*100)/100.
         print updateString
- 	ret = rrdtool.update(CHARTPATH+'meteo.rrd',updateString);
- 	if ret:
- 		print rrdtool.error() 
+    ret = rrdtool.update(CHARTPATH+'meteo.rrd',updateString);
+    if ret:
+        print rrdtool.error() 
         x = simplejson.dumps(json_dict)
     fi=open(CHARTPATH+"RTdata.json","w")
-	fi.write(x)
-	fi.close()
-	indi.quit()
+    fi.write(x)
+    fi.close()
     del data
-	del json_dict 
-	collected = gc.collect()
+    del json_dict 
+    collected = gc.collect()
 
-	time.sleep(10)
+    time.sleep(10)
   except:
-	print "UPDATER FAIL"
-	time.sleep(10)
-
-
-
+    print "UPDATER FAIL"
+    time.sleep(10)
