@@ -84,7 +84,7 @@ def recv_serial():
     windFlag=23
     rainFlag=24
 
-	return (("T",T),("HR",HR),("Thr",Thr),("Dew",dew),("IR",IR),("Tir",Tir),("clouds",clouds),("skyT",skyT),
+    return (("T",T),("HR",HR),("Thr",Thr),("Dew",dew),("IR",IR),("Tir",Tir),("clouds",clouds),("skyT",skyT),
            ("P",P),("Tp",Tp),("Light",light),("Wind",Wind),("WindMax",WindMax),("CRain",CRain),("TRain",TRain),
            ("PIDRain",PIDRain),("HRint",HRint),("Thrint",Thrint),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
            ("frezzingFlag",frezzingFlag),("daylightFlag",daylightFlag),("windFlag",windFlag),("rainFlag",rainFlag))
