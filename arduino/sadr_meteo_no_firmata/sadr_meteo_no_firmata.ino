@@ -439,80 +439,78 @@ if (T <=2) {
  * OUPUT SERIAL
  *============================================================================*/
 void outputChain() {
-       // send sensor values:
-    Serial.print("START,");
+    // send sensor values:
+    Serial.print("N:");
 //Generic value
     Serial.print(T);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(frezzing);
-    Serial.print(",");
+    Serial.print(":");
 #ifdef USE_LIGHT_SENSOR
     Serial.print(Light);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(daylight);
-    Serial.print(",");
+    Serial.print(":");
 #endif //USE_LIGHT_SENSOR*/
 
 #ifdef  USE_DHT_SENSOR_INTERNAL
     Serial.print(T22int);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(Hr22int);
-    Serial.print(",");
+    Serial.print(":");
 #endif //USE_DHT_SENSOR_INTERNAL*/
 
 #ifdef USE_DHT_SENSOR_EXTERNAL
     Serial.print(T22ext);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(Hr22ext);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(DewExt);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(dewing);
-    Serial.print(",");
+    Serial.print(":");
 #endif //USE_DHT_SENSOR_EXTERNAL*/
 
 #ifdef USE_IR_SENSOR
     Serial.print(Tir);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(IR);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(skyT);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(Clouds);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(cloudy);
-    Serial.print(",");
+    Serial.print(":");
 #endif //USE_IR_SENSOR*/
 
 #ifdef USE_P_SENSOR
     Serial.print(P);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(Tp);
-    Serial.print(",");
+    Serial.print(":");
 #endif //USE_P_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
     Serial.print(WindSpeed);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(MaxWindSpeed);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(windy);
-    Serial.print(",");
+    Serial.print(":");
 #endif //USE_WIND_SENSOR*/
 
 #ifdef USE_RAIN_SENSOR
     Serial.print(Capacity);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(rainy);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(Consigne);
-    Serial.print(",");
+    Serial.print(":");
     Serial.print(Temp);
-    Serial.print(",");
-    Serial.print(Mosfet);
-    Serial.print(",");
+    Serial.print(":");
+    Serial.println(Mosfet);
 #endif //USE_DHT_RAIN_SENSOR*/
-    Serial.println("END");
 
 }
 

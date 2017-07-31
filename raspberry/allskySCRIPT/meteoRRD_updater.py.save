@@ -8,6 +8,8 @@
 # http://induino.wordpress.com 
 # 
 
+
+
 import sys, os
 import math
 import time
@@ -21,12 +23,21 @@ import serial
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 def recv_serial():
-    # Port série DEVICEPORT
-    # Vitesse de baud : 9600
-    ser = serial.Serial(DEVICEPORT,9600)
-    serial_line = ser.readline()
-    print(serial_line)
-    ser.close()
+
+    # Port série ttyACM0
+# Vitesse de baud : 9600
+# Timeout en lecture : 1 sec
+# Timeout en écriture : 1 secwith Serial(port="/dev/ttyACM0", baudrate=9600, timeout=1, writeTimeout=1) as port_serie:
+    if port_serie.isOpen():
+        while True:
+            ligne = port_serie.read_line()
+            print ligne
+
+
+
+    ser = serial.Serial(INDIDEVICEPORT)
+    line = ser.readline()
+    print line
     T=1
     HR=2
     Thr=3
@@ -79,11 +90,11 @@ while (True):
         #print d[0],d[1]
         updateString=updateString+":"+str(d[1])
         #json_dict[d[0]]=int(d[1]*100)/100.
-        print updateString
+        #print updateString
     #ret = rrdtool.update(CHARTPATH+'meteo.rrd',updateString);
     #if ret:
-    #    print rrdtool.error() 
-    #    x = simplejson.dumps(json_dict)
+        #print rrdtool.error() 
+        #x = simplejson.dumps(json_dict)
     #fi=open(CHARTPATH+"RTdata.json","w")
     #fi.write(x)
     #fi.close()
