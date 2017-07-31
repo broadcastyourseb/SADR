@@ -13,12 +13,12 @@ source meteollskyconfig.py
 ./stopMETEOLLSKY.sh
 if [ "$INDISERVER" = "localhost" ]
 then
-	killall indiserver
-	mkfifo  /tmp/INDIFIFO
-	indiserver -f /tmp/INDIFIFO &
+	#killall indiserver
+	#mkfifo  /tmp/INDIFIFO
+	#indiserver -f /tmp/INDIFIFO &
 	#echo start indi_duino -n \"MeteoStation\" -s \"/usr/local/share/indi/meteostation_sk.xml\" >/tmp/INDIFIFO
 fi
-if [ -f "meteo.rrd" ];
+if [ -f "$CHARTPATH"/"meteo.rrd" ];
 then
    echo "RRD file exists."
 else
