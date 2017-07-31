@@ -30,7 +30,7 @@ SOUNDINGSTATION="07510"
 
 ##### RRD RELATED #####
 #PATH TO GRAPHs
-CHARTPATH="./html/CHART/"
+CHARTPATH="/var/www/html/CHART/"
 #EUMETSAT lastimagen. Choose one from:
 #http://oiswww.eumetsat.org/IPPS/html/latestImages.html
 #This is nice but only work at daylight time:
