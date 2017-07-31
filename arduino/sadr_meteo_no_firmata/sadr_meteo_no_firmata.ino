@@ -438,14 +438,20 @@ if (T <=2) {
 /*==============================================================================
  * OUPUT SERIAL
  *============================================================================*/
+String serialString() {
+    String output="N:25.05:0:0.00:0:26.80:63.60:23.60:71.80:19.62:0:25.05:21.39:12.63:100.00:1:1015.57:25.49:0.00:0.00:0:66.79:0:25.00:26.13:0.00";
+    return output;
+}
+
 void outputChain() {
     // send sensor values:
     Serial.print("N:");
-//Generic value
+    //Generic value
     Serial.print(T);
     Serial.print(":");
     Serial.print(frezzing);
     Serial.print(":");
+    
 #ifdef USE_LIGHT_SENSOR
     Serial.print(Light);
     Serial.print(":");
@@ -527,7 +533,8 @@ void setup() {
 void loop() {
   if ((millis() - tempo) > SERIAL_DELAY ) { // debounce the switch contact.
     runMeteoStation();
-    outputChain();
+    //outputChain();
+    Serial.println(serialString());
     tempo = millis();
     Rotations = 0; // Set Rotations count to 0 after calculations
     MiniTime = 1000; // Set MiniTime value to 1000ms after calculations
