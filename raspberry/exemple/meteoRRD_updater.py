@@ -16,7 +16,6 @@ from meteoconfig import *
 import simplejson
 import gc
 import serial
-#from guppy import hpy
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
