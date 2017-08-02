@@ -8,7 +8,7 @@ NACHO MAS 2013. http://indiduino.wordpress.com
 IMPORTANT: Customize following values to match your setup
 */
 // Delay between 2 serial printing
-#define SERIAL_DELAY 5000
+#define SERIAL_DELAY 10000
 
 //Comment out if you setup don't include some sensor.
 #define USE_DHT_SENSOR_INTERNAL   //USE INTERNAL DHT HUMITITY SENSOR. Comment if not.
@@ -512,7 +512,6 @@ void outputChain() {
     Serial.print(":");
     Serial.println(Mosfet);
 #endif //USE_DHT_RAIN_SENSOR*/
-
 }
 
 /*==============================================================================

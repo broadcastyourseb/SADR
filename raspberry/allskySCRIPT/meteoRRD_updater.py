@@ -21,31 +21,29 @@ import serial
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 def recv_serial():
-    #ser = serial.Serial(port=DEVICEPORT,baudrate=9600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS,timeout=0)
-    ser = serial.Serial(DEVICEPORT, 9600, timeout=0)
+    ser = serial.Serial(DEVICEPORT, 9600, timeout=1)
     print("connected to: " + ser.portstr)
 
     #this will store the line
     line = []
-
-    while True:
+    arduino = ""
+    test = False
+    while test == False:
         for c in ser.read():
             line.append(c)
-            if c == '\n':
-		toto = ''.join(line)
-                print(toto)
-                line = []
-                break
+            if c == '\r'or c=='\n':
+                del line[len(line)-1]
+                arduino = ''.join(line)
                 # check integrity of the serial line
-                #arg = line.split(':')
-                #if len(arg) == 25 and arg[0]=='N':
-                #    print "Valid serial line received"
-                #print len(arg) 
-                #line = []
-                break
+                arg = arduino.split(':')
+                if len(arg) == 26 and arg[0]=='N':
+                    print("Valid serial line received: " + str(len(arg)) + " parts")
+                    test = True
+                else:
+                    line = []
+                    arduino=""
     ser.close()
-    print line   
-    return line
+    return arduino
 
 ############# MAIN #############
 
@@ -59,24 +57,16 @@ fi.close()
 
 #connect an retrive info
 while (True):
-  #try:
-	
+  try:
     now=time.localtime()
-    #json_dict={"TIME":time.strftime("%c",now)}
     data=recv_serial()
-    #json_dict[d[0]]=int(d[1]*100)/100.
-    print data
-    #ret = rrdtool.update(CHARTPATH+'meteo.rrd',data);
-    #if ret:
-    #    print rrdtool.error() 
-    #    x = simplejson.dumps(json_dict)
-    #fi=open(CHARTPATH+"RTdata.json","w")
-    #fi.write(x)
-    #fi.close()
+    print(data)
+    ret = rrdtool.update(CHARTPATH+'meteo.rrd',data);
+    if ret:
+        print rrdtool.error() 
     del data
-    #del json_dict 
     collected = gc.collect()
     time.sleep(10)
-  #except:
-    #print "UPDATER FAIL"
-    #time.sleep(10)
+  except:
+    print "UPDATER FAIL"
+    time.sleep(10)
