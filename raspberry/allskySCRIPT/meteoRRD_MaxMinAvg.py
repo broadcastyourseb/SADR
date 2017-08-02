@@ -1,15 +1,19 @@
 #!/usr/bin/python
 #-*- coding: iso-8859-15 -*-
-# INDUINO METEOSTATION
+# # SADR METEOLLSKY
+# http://www.sadr.fr
+# SEBASTIEN LECLERC 2017
+# Inspired by :
+# NACHO MAS 2013
 # http://induino.wordpress.com 
 # 
-# NACHO MAS 2013
+
 
 import sys, os
 import math
 import time
 import rrdtool
-from meteoconfig import *
+from meteollskyconfig import *
 import simplejson
 
 def writeJson(consolidation,resolution):
@@ -21,7 +25,7 @@ def writeJson(consolidation,resolution):
    #print now,start,end
    filename=CHARTPATH+consolidation+"values.json"
    try:
-	ret = rrdtool.fetch('meteo.rrd',consolidation,"--start",str(start),"--end",str(end),"--resolution",str(res));
+	ret = rrdtool.fetch(CHARTPATH+'meteo.rrd',consolidation,"--start",str(start),"--end",str(end),"--resolution",str(res));
 	if ret:
 	 	print rrdtool.error() 
 	#print ret

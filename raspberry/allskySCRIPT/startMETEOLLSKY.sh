@@ -28,6 +28,6 @@ fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
 #./sounding.py &
-#./meteoRRD_MaxMinAvg.py &
+./meteoRRD_MaxMinAvg.py &
 #./allsky_frame.py&
 
