@@ -8,16 +8,14 @@
 # Config file
 
 
-
-
 ##### INDI RELATED #####
 #To start indiserver use 'localhost'
 #otherwise not start and connect remote
 #indiserver
 INDISERVER="localhost"
-#INDISERVER="raspberryPI"
+#INDISERVER="allsky.sadr"
 INDIPORT="7624"
-#INDIDEVICE="METEOSTATION"
+INDIDEVICE="QHY CCD QHY5LII-C-6127d"
 
 ##### ARDUINO RELATED ####
 DEVICEPORT="/dev/ttyACM0"

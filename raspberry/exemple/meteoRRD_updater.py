@@ -8,16 +8,38 @@
 
 import sys, os
 import math
-#from indiclient import *
+from indiclient import *
 import time
 import signal
 import rrdtool
 from meteoconfig import *
 import simplejson
 import gc
-import serial
+#from guppy import hpy
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+
+def recv_indi_old():
+	tim=time.localtime()
+        HR=indi.get_float(INDIDEVICE,"HR","HR")
+        Thr=indi.get_float(INDIDEVICE,"HR","T")
+        P=indi.get_float(INDIDEVICE,"Presure","P")
+        Tp=indi.get_float(INDIDEVICE,"Presure","T")
+        IR=indi.get_float(INDIDEVICE,"IR","IR")
+        Tir=indi.get_float(INDIDEVICE,"IR","T")
+        dew=indi.get_float(INDIDEVICE,"Meteo","DEW")
+        light=indi.get_float(INDIDEVICE,"LIGHT","LIGHT")
+        T=indi.get_float(INDIDEVICE,"Meteo","T")
+        clouds=indi.get_float(INDIDEVICE,"Meteo","clouds") 
+        skyT=indi.get_float(INDIDEVICE,"Meteo","SkyT") 
+        statusVector=indi.get_vector(INDIDEVICE,"STATUS")
+	cloudFlag=int(statusVector.get_element("clouds").is_ok())
+	dewFlag=int(statusVector.get_element("dew").is_ok())
+	frezzingFlag=int(statusVector.get_element("frezzing").is_ok())
+	return (("HR",HR),("Thr",Thr),("IR",IR),("Tir",Tir),("P",P),("Tp",Tp),("Dew",dew),("Light",light),
+           ("T",T),("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
+           ("frezzingFlag",frezzingFlag))
 
 def recv_indi():
 	tim=time.localtime()
@@ -51,13 +73,7 @@ def recv_indi():
            ("T",T),("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
            ("frezzingFlag",frezzingFlag))
 
-def recv_arduino():
-    ser = serial.Serial('/dev/ttyACM0')
-    line = ser.readline()
 
-	return (("HR",HR),("Thr",Thr),("IR",IR),("Tir",Tir),("P",P),("Tp",Tp),("Dew",dew),("Light",light),
-       ("T",T),("clouds",clouds),("skyT",skyT),("cloudFlag",cloudFlag),("dewFlag",dewFlag),
-       ("frezzingFlag",frezzingFlag))
 
 ############# MAIN #############
 
@@ -91,18 +107,18 @@ while (True):
   try:
 	
 	#print "Garbage collector: collected %d objects." % (collected)
-	#indi=indiclient(INDISERVER,INDIPORT)
+	indi=indiclient(INDISERVER,INDIPORT)
 	#indi.tell()
-	#indi.process_events()
+	indi.process_events()
 	now=time.localtime()
 	json_dict={"TIME":time.strftime("%c",now)}
-    data=recv_arduino()	
+    	data=recv_indi()	
 	updateString="N"
 	for d in data:
 		#print d[0],d[1]
 		updateString=updateString+":"+str(d[1])
 		json_dict[d[0]]=int(d[1]*100)/100.
-        print updateString
+        #print updateString
  	ret = rrdtool.update('meteo.rrd',updateString);
  	if ret:
  		print rrdtool.error() 
@@ -112,10 +128,12 @@ while (True):
 	fi.write(x)
 	fi.close()
 	indi.quit()
-	#del indi
-    del data
+	del indi
+        del data
 	del json_dict 
 	collected = gc.collect()
+	#h = hpy()
+	#print h.heap()
 
 	time.sleep(10)
   except:
