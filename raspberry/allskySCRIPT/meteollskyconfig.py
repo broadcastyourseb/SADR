@@ -39,3 +39,7 @@ CHARTPATH="/var/www/html/CHART/"
 #EUMETSAT_LAST="http://oiswww.eumetsat.org/IPPS/html/latestImages/EUMETSAT_MSG_MPE-westernEurope.jpg"
 #and this cloud cover at IR 39. Work at night
 EUMETSAT_LAST="http://oiswww.eumetsat.org/IPPS/html/latestImages/EUMETSAT_MSG_IR039E-westernEurope.jpg"
+
+##### ALLSKY PICTURE RELATED #####
+#SADR WATERMARK FILE
+WATERMARK="logoSadrBlack.png"

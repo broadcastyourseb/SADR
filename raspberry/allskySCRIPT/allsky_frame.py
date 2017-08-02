@@ -3,8 +3,8 @@
 # http://www.sadr.fr
 # SEBASTIEN LECLERC 2017
 # Inspired by :
-# NACHO MAS 2013
-# http://induino.wordpress.com
+# fehlfarbe
+# http://indilib.org/forum/general/606-take-image-with-python-script.html
 # allsky picture script
 
 import sys, time, logging
@@ -69,45 +69,41 @@ class IndiClient(PyIndi.BaseClient):
             scidata = scidata[self.roi[1]:self.roi[1]+self.roi[3], self.roi[0]:self.roi[0]+self.roi[2]]
         hdulist[0].data = scidata
         #hdulist.writeto("output.fit")
-        convertedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
+        #processedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
+        processedImage = scidata
         # add some text information
-        cv2.putText(convertedImage, "%s" % datetime.now(), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255))
-        #cv2.putText(convertedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255))
+        cv2.putText(processedImage, "%s" % datetime.now(), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255))
+        cv2.putText(processedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255))
         
         # load the watermark image, making sure we retain the 4th channel
         # which contains the alpha transparency
-        #watermark = cv2.imread("telescope.png", cv2.IMREAD_UNCHANGED)
-        #(wH, wW) = watermark.shape[:2]
+        watermark = cv2.imread(WATERMARK, cv2.IMREAD_UNCHANGED)
+        (wH, wW) = watermark.shape[:2]
         
-        # split the watermark into its respective Blue, Green, Red, and
-        # Alpha channels; then take the bitwise AND between all channels
-        # and the Alpha channels to construct the actaul watermark
-        # NOTE: I'm not sure why we have to do this, but if we don't,
-        # pixels are marked as opaque when they shouldn't be
+        # split the watermark into its respective Blue, Green, Red, and Alpha channels; then take the bitwise AND between all channels
+        # and the Alpha channels to construct the actual watermark
+        # NOTE: I'm not sure why we have to do this, but if we don't, pixels are marked as opaque when they shouldn't be
         #(B, G, R, A) = cv2.split(watermark)
         #B = cv2.bitwise_and(B, B, mask=A)
         #G = cv2.bitwise_and(G, G, mask=A)
         #R = cv2.bitwise_and(R, R, mask=A)
         #watermark = cv2.merge([B, G, R, A])
         
-        # load the input image, then add an extra dimension to the
-	    # image (i.e., the alpha transparency)
-        #image = convertedImage.copy()
-        #(h, w) = image.shape[:2]
-        #image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
+        # load the input image, then add an extra dimension to the image (i.e., the alpha transparency)
+        image = processedImage.copy()
+        (h, w) = image.shape[:2]
+        image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
         
-        # construct an overlay that is the same size as the input
-	    # image, (using an extra dimension for the alpha transparency),
-	    # then add the watermark to the overlay in the bottom-right
-	    # corner
-        #overlay = np.zeros((h, w, 4), dtype="uint8")
-        #overlay[h - wH - 10:h - 10, w - wW - 10:w - 10] = watermark
-        
-        #print "Fin des traitements"
+        # construct an overlay that is the same size as the input image, (using an extra dimension for the alpha transparency),
+	    # then add the watermark to the overlay in the bottom-right corner
+        overlay = np.zeros((h, w, 4), dtype="uint8")
+        overlay[h - wH - 10:h - 10, w - wW - 10:w - 10] = watermark
         
         # blend the two images together using transparent overlays
-        #output = image.copy()
-        #cv2.addWeighted(overlay, 0.9, output, 1.0, 0, output)
+        output = image.copy()
+        cv2.addWeighted(overlay, 0.9, output, 1.0, 0, output)
+
+        #print "Fin des traitements"
         
         # write the output image to disk
         output = convertedImage.copy()
@@ -145,24 +141,23 @@ class IndiClient(PyIndi.BaseClient):
         
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
+############# MAIN #############
+
 if __name__ == '__main__':
     # instantiate the client
     indiclient=IndiClient()
-    indiclient.roi = (206, 30, 890, 820) # region of interest for my allsky cam
+    # region of interest for my allsky cam
+    indiclient.roi = (206, 30, 890, 820) 
     # set indi server localhost and port 7624
+    INDIPORT=int(INDIPORT)
     indiclient.setServer(INDISERVER, INDIPORT)
     # connect to indi server
     print("Connecting and waiting 2secs")
     if (not(indiclient.connectServer())):
          print("No indiserver running on "+indiclient.getHost()+":"+str(indiclient.getPort())+" - Try to run")
-         print("  indiserver indi_simulator_telescope indi_simulator_ccd")
          sys.exit(1)
     time.sleep(1)
-    #indiclient.setBLOBMode(1, INDIDEVICE, None)
-    #time.sleep(10)
-    #sys.exit(1)
      
     # start endless loop, client works asynchron in background, loop stops after disconnect
-    while indiclient.connected:
-    # while True:
-        time.sleep(1)
+    while True:
+	    time.sleep(30)
