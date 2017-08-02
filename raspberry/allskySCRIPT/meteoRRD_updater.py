@@ -66,7 +66,7 @@ while (True):
         print rrdtool.error() 
     del data
     collected = gc.collect()
-    time.sleep(10)
+    time.sleep(30)
   except:
     print "UPDATER FAIL"
     time.sleep(10)
