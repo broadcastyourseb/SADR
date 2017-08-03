@@ -69,49 +69,23 @@ class IndiClient(PyIndi.BaseClient):
         if self.roi is not None:
             scidata = scidata[self.roi[1]:self.roi[1]+self.roi[3], self.roi[0]:self.roi[0]+self.roi[2]]
         hdulist[0].data = scidata
-        #hdulist.writeto("output.fit")
+        # process bayer pattern and grey image
         processedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
         processedImage = cv2.cvtColor(processedImage, cv2.COLOR_BGR2GRAY)
         # add some text information
-        cv2.putText(processedImage, "%s" % datetime.now(), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255))
-        cv2.putText(processedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255))
+        cv2.putText(processedImage, "%s" % datetime.now(), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255), 1)
+        cv2.putText(processedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255), 1)
         
-        # load the watermark image, making sure we retain the 4th channel
-        # which contains the alpha transparency
+        # load the watermark image grey mode with transparency
         watermark = cv2.imread(WATERMARK, cv2.IMREAD_UNCHANGED)
-        #watermark = cv2.cvtColor(watermark, cv2.COLOR_BGR2GRAY)
-        #(wH, wW) = watermark.shape[:2]
         
-        # split the watermark into its respective Blue, Green, Red, and Alpha channels; then take the bitwise AND between all channels
-        # and the Alpha channels to construct the actual watermark
-        # NOTE: I'm not sure why we have to do this, but if we don't, pixels are marked as opaque when they shouldn't be
-        #(B, G, R, A) = cv2.split(watermark)
-        #B = cv2.bitwise_and(B, B, mask=A)
-        #G = cv2.bitwise_and(G, G, mask=A)
-        #R = cv2.bitwise_and(R, R, mask=A)
-        #watermark = cv2.merge([B, G, R, A])
-        
-        # load the input image, then add an extra dimension to the image (i.e., the alpha transparency)
-        #image = processedImage.copy()
-        #(h, w) = image.shape[:2]
-        #image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
-        
-        # construct an overlay that is the same size as the input image, (using an extra dimension for the alpha transparency),
-	    # then add the watermark to the overlay in the bottom-right corner
-        #overlay = np.zeros((h, w), dtype="uint8")
-        #overlay[h - wH - 10:h - 10, w - wW - 10:w - 10] = watermark
-        
-        # blend the two images together using transparent overlays
-        output = processedImage.copy()
-        cv2.addWeighted(watermark, 0.9, output, 1.0, 0, output)
-
-        #print "Fin des traitements"
+        # blend the two images together
+        cv2.addWeighted(processedImage, 1.0, watermark, 1.0, 1, processedImage)
         
         # write the output image to disk
-        #output = processedImage.copy()
-        cv2.imwrite(CHARTPATH+"output.png" , output)
-        cv2.imwrite(CHARTPATH+"output.jpg" , output)
-        #sys.exit(1)
+        cv2.imwrite(CHARTPATH+"allsky.png" , processedImage)
+        cv2.imwrite(CHARTPATH+"allsky.jpg" , processedImage)
+        
         # start new exposure for timelapse images!
 	time.sleep(10)
         self.takeExposure()

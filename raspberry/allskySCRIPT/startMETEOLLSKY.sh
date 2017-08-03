@@ -25,8 +25,8 @@ else
    echo "RRD file exists does not exist. Creating"
    ./meteoRRD_createRRD.py
 fi
-./meteoRRD_updater.py &
-./meteoRRD_graph.py &
+#./meteoRRD_updater.py &
+#./meteoRRD_graph.py &
 #./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 1 100&
+./allsky_frame.py 0.001 1&
 #./sounding.py &

@@ -42,4 +42,4 @@ EUMETSAT_LAST="http://oiswww.eumetsat.org/IPPS/html/latestImages/EUMETSAT_MSG_IR
 
 ##### ALLSKY PICTURE RELATED #####
 #SADR WATERMARK FILE
-WATERMARK="logoSadrBlack.png"
+WATERMARK="watermark3.png"
