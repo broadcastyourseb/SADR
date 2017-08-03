@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #-*- coding: iso-8859-15 -*-
 # SADR METEOLLSKY
 # http://www.sadr.fr
@@ -69,16 +70,17 @@ class IndiClient(PyIndi.BaseClient):
             scidata = scidata[self.roi[1]:self.roi[1]+self.roi[3], self.roi[0]:self.roi[0]+self.roi[2]]
         hdulist[0].data = scidata
         #hdulist.writeto("output.fit")
-        #processedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
-        processedImage = scidata
+        processedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
+        processedImage = cv2.cvtColor(processedImage, cv2.COLOR_BGR2GRAY)
         # add some text information
         cv2.putText(processedImage, "%s" % datetime.now(), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255))
-        cv2.putText(processedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255))
+        cv2.putText(processedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255))
         
         # load the watermark image, making sure we retain the 4th channel
         # which contains the alpha transparency
         watermark = cv2.imread(WATERMARK, cv2.IMREAD_UNCHANGED)
-        (wH, wW) = watermark.shape[:2]
+        #watermark = cv2.cvtColor(watermark, cv2.COLOR_BGR2GRAY)
+        #(wH, wW) = watermark.shape[:2]
         
         # split the watermark into its respective Blue, Green, Red, and Alpha channels; then take the bitwise AND between all channels
         # and the Alpha channels to construct the actual watermark
@@ -90,27 +92,30 @@ class IndiClient(PyIndi.BaseClient):
         #watermark = cv2.merge([B, G, R, A])
         
         # load the input image, then add an extra dimension to the image (i.e., the alpha transparency)
-        image = processedImage.copy()
-        (h, w) = image.shape[:2]
-        image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
+        #image = processedImage.copy()
+        #(h, w) = image.shape[:2]
+        #image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
         
         # construct an overlay that is the same size as the input image, (using an extra dimension for the alpha transparency),
 	    # then add the watermark to the overlay in the bottom-right corner
-        overlay = np.zeros((h, w, 4), dtype="uint8")
-        overlay[h - wH - 10:h - 10, w - wW - 10:w - 10] = watermark
+        #overlay = np.zeros((h, w), dtype="uint8")
+        #overlay[h - wH - 10:h - 10, w - wW - 10:w - 10] = watermark
         
         # blend the two images together using transparent overlays
-        output = image.copy()
-        cv2.addWeighted(overlay, 0.9, output, 1.0, 0, output)
+        output = processedImage.copy()
+        cv2.addWeighted(watermark, 0.9, output, 1.0, 0, output)
 
         #print "Fin des traitements"
         
         # write the output image to disk
-        output = convertedImage.copy()
+        #output = processedImage.copy()
         cv2.imwrite(CHARTPATH+"output.png" , output)
         cv2.imwrite(CHARTPATH+"output.jpg" , output)
-        sys.exit(1)
-       
+        #sys.exit(1)
+        # start new exposure for timelapse images!
+	time.sleep(10)
+        self.takeExposure()
+        
     def newSwitch(self, svp):
       self.logger.info ("new Switch "+ svp.name.decode() + " for device "+ svp.device.decode())
     def newNumber(self, nvp):
@@ -156,8 +161,10 @@ if __name__ == '__main__':
     if (not(indiclient.connectServer())):
          print("No indiserver running on "+indiclient.getHost()+":"+str(indiclient.getPort())+" - Try to run")
          sys.exit(1)
-    time.sleep(1)
+    #time.sleep(30)
      
     # start endless loop, client works asynchron in background, loop stops after disconnect
+    #while indiclient.connected:
     while True:
-	    time.sleep(30)
+        #indiclient.takeExposure()
+        time.sleep(10)
