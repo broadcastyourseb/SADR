@@ -28,5 +28,5 @@ fi
 #./meteoRRD_updater.py &
 #./meteoRRD_graph.py &
 #./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 0.001 1&
+./allsky_frame.py 1 100&
 #./sounding.py &
