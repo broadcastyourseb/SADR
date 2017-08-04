@@ -21,9 +21,9 @@ IMPORTANT: Customize following values to match your setup
 
 //All sensors (T22int=DHT22 INT,T22ext=DHT22 EXT,Tir=MELEXIS and Tp=BME280) include a ambient temperature
 //Choose  that sensor, only one, is going to use for main Ambient Temperature:
-//#define T_MAIN_T22ext
+#define T_MAIN_T22ext
 //#define T_MAIN_T22int
-#define T_MAIN_Tir  
+//#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
