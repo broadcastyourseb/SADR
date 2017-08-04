@@ -89,7 +89,7 @@ class IndiClient(PyIndi.BaseClient):
         # Get an ImageDraw object so we can draw on the image
         waterdraw = ImageDraw.ImageDraw(overlay, "RGBA")
         # get a font
-        fnt = ImageFont.truetype('good times rg.ttf', 12)
+        fnt = ImageFont.truetype('font/alarm clock.ttf', 12)
         # Place the text at (10, 10) in the upper left corner. Text will be white.
         waterdraw.text((5, 15), "%s" % datetime.now(), font=fnt, fill=(255,255,255,255))
         waterdraw.text((5, 40), EXP_TIME+"s", font=fnt, fill=(255,255,255,255))

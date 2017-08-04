@@ -13,7 +13,6 @@
 #otherwise not start and connect remote
 #indiserver
 INDISERVER="localhost"
-#INDISERVER="192.168.1.10"
 #INDISERVER="allsky.sadr"
 INDIPORT="7624"
 INDIDEVICE="QHY CCD QHY5LII-C-6127d"
@@ -43,4 +42,4 @@ EUMETSAT_LAST="http://oiswww.eumetsat.org/IPPS/html/latestImages/EUMETSAT_MSG_IR
 
 ##### ALLSKY PICTURE RELATED #####
 #SADR WATERMARK FILE
-WATERMARK="watermark.png"
+WATERMARK="image/watermark.png"
