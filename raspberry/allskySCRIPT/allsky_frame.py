@@ -13,6 +13,7 @@ import PyIndi
 import pyfits
 import cv2
 import cStringIO
+from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 import numpy as np
 from meteollskyconfig import *
@@ -72,22 +73,33 @@ class IndiClient(PyIndi.BaseClient):
         # process bayer pattern and grey image
         processedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
         processedImage = cv2.cvtColor(processedImage, cv2.COLOR_BGR2GRAY)
-        # add some text information
-        cv2.putText(processedImage, "%s" % datetime.now(), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255), 1)
-        cv2.putText(processedImage, EXP_TIME+"s", (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,255,255), 1)
-        
-        # load the watermark image grey mode with transparency
-        watermark = cv2.imread(WATERMARK, cv2.IMREAD_UNCHANGED)
-        
-        # blend the two images together
-        cv2.addWeighted(processedImage, 1.0, watermark, 1.0, 1, processedImage)
-        
-        # write the output image to disk
-        cv2.imwrite(CHARTPATH+"allsky.png" , processedImage)
-        cv2.imwrite(CHARTPATH+"allsky.jpg" , processedImage)
+
+        ######### WATERMARK #############
+        # Adding an alpha channel to the main image
+        processedImage = processedImage.convert("RGBA")
+
+        # Open the watermark image
+        overlay = Image.open(WATERMARK)
+        # Adding an alpha channel to the main image
+        overlay = overlay.convert("RGBA")
+
+        # Get an ImageDraw object so we can draw on the image
+        waterdraw = ImageDraw.ImageDraw(overlay, "RGBA")
+        # get a font
+        fnt = ImageFont.truetype('good times rg.ttf', 12)
+        # Place the text at (10, 10) in the upper left corner. Text will be white.
+        waterdraw.text((5, 25), "%s" % datetime.now(), font=fnt, fill=(255,255,255,255))
+        waterdraw.text((5, 50), EXP_TIME+"s", font=fnt, fill=(255,255,255,255))
+
+        # Make a final composite image
+        result = Image.alpha_composite(main, overlay)
+        ######### END OF WATERMARK #############
+
+        # Paste the watermark (with alpha layer) onto the original image and save it
+        result.save(CHARTPATH+"allsky.jpg", "JPEG")
         
         # start new exposure for timelapse images!
-	time.sleep(10)
+        time.sleep(10)
         self.takeExposure()
         
     def newSwitch(self, svp):
