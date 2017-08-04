@@ -27,6 +27,6 @@ else
 fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
-./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 1 100&
+#./meteoRRD_MaxMinAvg.py &
+./allsky_frame.py 2 100&
 #./sounding.py &
