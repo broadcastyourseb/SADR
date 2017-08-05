@@ -10,6 +10,7 @@ source meteollskyconfig.py
 if [ "$INDISERVER" = "localhost" ]
 then
 	killall indiserver
+        killall indi_qhy_ccd
 fi
 killall meteoRRD_updater.py
 killall meteoRRD_graph.py

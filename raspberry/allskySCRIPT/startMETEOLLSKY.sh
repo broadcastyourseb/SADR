@@ -14,7 +14,8 @@ source meteollskyconfig.py
 if [ "$INDISERVER" = "localhost" ]
 then
 	killall indiserver
-	mkfifo  /tmp/INDIFIFO
+	killall indi_qhy_ccd
+        mkfifo  /tmp/INDIFIFO
 	indiserver -f /tmp/INDIFIFO &
 	echo start indi_qhy_ccd >/tmp/INDIFIFO
 fi
@@ -28,5 +29,5 @@ fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
 ./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 2 100&
+./allsky_frame.py 20 30 &
 #./sounding.py &
