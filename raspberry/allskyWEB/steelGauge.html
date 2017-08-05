@@ -29,6 +29,9 @@
 <table border=0 align="center">
 <tr>
 <td style="vertical-align:middle"  >
+<b>Light</b><canvas id=daylightFlag ></canvas>
+</td>
+<td style="vertical-align:middle"  >
 <b>Clouds</b><canvas id=cloudFlag ></canvas>
 </td>
 <td style="vertical-align:middle"  >
@@ -242,10 +245,10 @@
                             width: 300,
                             height: 120,
                             minValue:0,
-                            maxValue:1024,
+                            maxValue:5000,
                             ledVisible:false,
                             titleString: 'Iradiance',
-                            unitString: '%',
+                            unitString: 'mV',
                             lcdVisible: true,
                             frameDesign:steelseries.FrameDesign.ANTHRACITE 
                             });
@@ -259,6 +262,10 @@
                             lcdColor:steelseries.LcdColor.STANDARD
                             });
                             
+       lightLed = new steelseries.Led('daylightFlag', {
+       							size:50,
+									ledColor:steelseries.LedColor.ORANGE_LED
+                            });
        cloudLed = new steelseries.Led('cloudFlag', {
        							size:50,
 									ledColor:steelseries.LedColor.ORANGE_LED
@@ -342,6 +349,7 @@
 								iradiance.setValueAnimated(data.Light);
 								<!-- Clouds.setValueAnimated(cloudIndex(data.Tir,data.IR)); -->
 								Clouds.setValueAnimated(data.clouds);
+                                lightLed.setLedOnOff(false);
 								cloudLed.setLedOnOff(false);
 								dewLed.setLedOnOff(false);
 								frezzingLed.setLedOnOff(false);
@@ -349,6 +357,10 @@
                                 rainLed.setLedOnOff(false);
 
 								var warningText='';
+                                if (data.daylightFlag==1) {
+								   warningText=warningText+"  ****** LUMINOUS ******  ";
+								   lightLed.setLedOnOff(true);
+								}
                                 if (data.cloudFlag==1) {
 								   warningText=warningText+"  ****** CLOUDY ******  ";
 								   cloudLed.setLedOnOff(true);
