@@ -16,7 +16,7 @@ then
 	killall indiserver
 	killall indi_qhy_ccd
         mkfifo  /tmp/INDIFIFO
-	indiserver -f /tmp/INDIFIFO &
+	indiserver -vvv -f /tmp/INDIFIFO &
 	echo start indi_qhy_ccd >/tmp/INDIFIFO
 fi
 if [ -f "$CHARTPATH/meteo.rrd" ];
@@ -29,5 +29,5 @@ fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
 ./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 20 30 &
+./allsky_frame.py 0.001 1 &
 #./sounding.py &
