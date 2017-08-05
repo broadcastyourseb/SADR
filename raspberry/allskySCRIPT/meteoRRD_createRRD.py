@@ -45,7 +45,7 @@ ret = rrdtool.create(CHARTPATH+"meteo.rrd", "--step", "1", "--start", '0',
 
 		 "DS:CRain:GAUGE:600:U:U",
 		 "DS:rainFlag:GAUGE:600:U:U",
-                 "DS:TargetRain:GAUGE:600:U:U",
+         "DS:TargetRain:GAUGE:600:U:U",
 		 "DS:TRain:GAUGE:600:U:U",
 		 "DS:PIDRain:GAUGE:600:U:U",
 

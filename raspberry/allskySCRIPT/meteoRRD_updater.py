@@ -62,15 +62,15 @@ while (True):
     json_dict={"TIME":time.strftime("%c",now)}
     data=recv_serial()
     splitData = data.split(':')
-    tupleData = (("T",splitData[1]), ("frezzing",splitData[2]), ("Light",splitData[3]), ("daylight",splitData[4]),
- ("T22int",splitData[5]), ("Hr22int",splitData[6]), ("T22ext",splitData[7]), ("Hr22ext",splitData[8]),
- ("DewExt",splitData[9]), ("dewing",splitData[10]), ("Tir",splitData[11]), ("IR",splitData[12]), ("skyT",splitData[13]),
- ("Clouds",splitData[14]), ("cloudy",splitData[15]), ("P",splitData[16]), ("Tp",splitData[17]), ("WindSpeed",splitData[18]),
- ("MaxWindSpeed",splitData[19]), ("windy",splitData[20]), ("Capacity",splitData[21]), ("rainy",splitData[22]),
- ("Consigne",splitData[23]), ("Temp",splitData[24]), ("Mosfet",splitData[25]))
+    tupleData = (("T",splitData[1]), ("frezzingFlag",splitData[2]), ("Light",splitData[3]), ("daylightFlag",splitData[4]),
+ ("Thrint",splitData[5]), ("HRint",splitData[6]), ("Thr",splitData[7]), ("HR",splitData[8]),
+ ("Dew",splitData[9]), ("dewFlag",splitData[10]), ("Tir",splitData[11]), ("IR",splitData[12]), ("skyT",splitData[13]),
+ ("clouds",splitData[14]), ("cloudFlag",splitData[15]), ("P",splitData[16]), ("Tp",splitData[17]), ("Wind",splitData[18]),
+ ("WindMax",splitData[19]), ("windFlag",splitData[20]), ("CRain",splitData[21]), ("rainFlag",splitData[22]),
+ ("TargetRain",splitData[23]), ("TRain",splitData[24]), ("PIDRain",splitData[25]))
     for d in tupleData:
-         #print d[0],float(d[1])*100/100.
-         json_dict[d[0]]=float(d[1])*100/100.
+         #print d[0],float(d[1])
+         json_dict[d[0]]=float(d[1])
     ret = rrdtool.update(CHARTPATH+'meteo.rrd',data);
     if ret:
         print rrdtool.error()
