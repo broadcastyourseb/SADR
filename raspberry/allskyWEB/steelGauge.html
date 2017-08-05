@@ -38,10 +38,10 @@
 <b>Frezzing</b><canvas id=frezzingFlag ></canvas>
 </td>
 <td style="vertical-align:middle" >
-<b>Windy</b><canvas id=windyFlag ></canvas>
+<b>Windy</b><canvas id=windFlag ></canvas>
 </td>
 <td style="vertical-align:middle" >
-<b>Rainy</b><canvas id=rainyFlag ></canvas>
+<b>Rainy</b><canvas id=rainFlag ></canvas>
 </td>
 <tr>
 </table>
@@ -266,12 +266,20 @@
 
        frezzingLed = new steelseries.Led('frezzingFlag', {
        							size:50,
-									ledColor:steelseries.LedColor.CYAN_LED
+									ledColor:steelseries.LedColor.ORANGE_LED
                             });
                             
        dewLed = new steelseries.Led('dewFlag', {
        							size:50,
-									ledColor:steelseries.LedColor.BLUE_LED
+									ledColor:steelseries.LedColor.ORANGE_LED
+                            });
+       rainLed = new steelseries.Led('rainFlag', {
+       							size:50,
+									ledColor:steelseries.LedColor.ORANGE_LED
+                            });
+       windLed = new steelseries.Led('windFlag', {
+       							size:50,
+									ledColor:steelseries.LedColor.ORANGE_LED
                             });
                            
                             
@@ -337,8 +345,11 @@
 								cloudLed.setLedOnOff(false);
 								dewLed.setLedOnOff(false);
 								frezzingLed.setLedOnOff(false);
+                                windLed.setLedOnOff(false);
+                                rainLed.setLedOnOff(false);
+
 								var warningText='';
-                        if (data.cloudFlag==1) {
+                                if (data.cloudFlag==1) {
 								   warningText=warningText+"  ****** CLOUDY ******  ";
 								   cloudLed.setLedOnOff(true);
 								}
@@ -349,6 +360,14 @@
 								if (data.frezzingFlag==1) {
 								   warningText=warningText+"  ****** FREZZING ******  ";
 								   frezzingLed.setLedOnOff(true);
+								}
+                                if (data.windFlag==1) {
+								   warningText=warningText+"  ****** WINDY ******  ";
+								   windLed.setLedOnOff(true);
+								}
+                                if (data.rainFlag==1) {
+								   warningText=warningText+"  ****** RAINY ******  ";
+								   rainLed.setLedOnOff(true);
 								}
 								warningText=warningText+data.TIME;
           					info.setValue(warningText);
