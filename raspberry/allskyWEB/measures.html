@@ -142,7 +142,7 @@
                         <canvas id=Thrint></canvas>
                     </td>
                     <td align="right">
-                        <b>Régul Temp°</b>
+                        <b>Target Temp°</b>
                         <canvas id=TargetRain></canvas
                     </td>
                     <td>
@@ -160,10 +160,12 @@
                         <canvas id=HRint></canvas>
                     </td>
                     <td align="right">
-                        <b>Puissance régul</b>
-                        <canvas id=PIDRain></canvas
+                        <b>Heating Power</b>
+                        <canvas id=PIDRain></canvas>
                     </td>
                     <td>
+                        <b>Max Wind BETA</b>
+                        <canvas id=WindMax></canvas>
                     </td>
                 </tr>
                 <tr>
@@ -449,6 +451,16 @@ function init() {
         lcdColor:steelseries.LcdColor.STANDARD
     });
     
+    WindMax = new steelseries.DisplaySingle('WindMax', {
+        width: 100,
+        height: 30,
+        unitStringVisible: true,
+        unitString: 'km/h',
+        valuesNumeric: true,
+        digitalFont: true,
+        lcdColor:steelseries.LcdColor.STANDARD
+    });
+    
     Tir = new steelseries.DisplaySingle('Tir', {
         width: 100,
         height: 30,
@@ -563,6 +575,7 @@ function init() {
         skyT.setValue(data.IR);
         skyTcorrected.setValue(data.skyT);
         Tp.setValue(data.Tp);
+        WindMax.setValue(data.WindMax);
         Tir.setValue(data.Tir);
         Dew.setValue(data.Dew);
         TRain.setValue(data.TRain);
@@ -595,7 +608,7 @@ function init() {
         CRain.setMaxMeasuredValue(data.CRain);
     })
 	
-    setInterval( function(){ updatedata();}, 1000);
+    setInterval( function(){ updatedata();}, 10000);
 	
     function updateTrendIndicator(){
         $.get("CHART/AVERAGEvalues.json", function(data) {
@@ -647,6 +660,7 @@ function init() {
             HRint.setValue(data.HRint);
             Thrint.setValue(data.Thrint);
             Tp.setValue(data.Tp);
+            WindMax.setValue(data.WindMax);
             Tir.setValue(data.Tir);
             TRain.setValue(data.TRain);
             TargetRain.setValue(data.TargetRain);
