@@ -49,8 +49,8 @@ print "Starting MinMax"
 while (True):
   try:
         writeJson("AVERAGE",3600)
-        writeJson("MAX",86400)
-        writeJson("MIN",86400)
+        writeJson("MAX",3600)
+        writeJson("MIN",3600)
         time.sleep(10)
   except:
         print "MinMax FAIL"
