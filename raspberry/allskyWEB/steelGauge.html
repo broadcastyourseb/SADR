@@ -128,7 +128,7 @@
             </td>
             <td align="right">
                 <b>Dew Point</b>
-                <canvas id=dew ></canvas>
+                <canvas id=Dew ></canvas>
             </td>
             <td>
             </td>
@@ -188,9 +188,9 @@ function init() {
     var P0=(1013.25/Math.exp(altitude/8000)) | 0;
     var Pdelta=25;
     // Define some sections
-    var sectionsP = Array(steelseries.Section(P0-Pdelta, P0-Pdelta/2, 'rgba(0, 0, 220, 0.3)'),
-                          steelseries.Section(P0-Pdelta/2, P0+Pdelta/2, 'rgba(0, 220, 0, 0.3)'),
-                          steelseries.Section(P0+Pdelta/2, P0+Pdelta , 'rgba(220, 0, 0, 0.3)'));
+    var sectionsP = Array(steelseries.Section(P0-Pdelta, P0-Pdelta+5, 'rgba(0, 0, 220, 0.3)'),
+                          steelseries.Section(P0-Pdelta+5, P0+Pdelta-5, 'rgba(0, 220, 0, 0.3)'),
+                          steelseries.Section(P0+Pdelta-5, P0+Pdelta , 'rgba(220, 0, 0, 0.3)'));
   	// Define one area
     var areasP = Array();
     // Initializing gauge
@@ -338,7 +338,7 @@ function init() {
         width: 100,
         height: 30,
         unitStringVisible: true,
-        unitString: 'ºC',
+        unitString: '°C',
         valuesNumeric: true,
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
@@ -348,17 +348,17 @@ function init() {
         width: 100,
         height: 30,
         unitStringVisible: true,
-        unitString: 'ºC',
+        unitString: '°C',
         valuesNumeric: true,
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
     });
 
-    dew = new steelseries.DisplaySingle('dew', {
+    Dew = new steelseries.DisplaySingle('Dew', {
         width: 100,
         height: 30,
         unitStringVisible: true,
-        unitString: 'ºC',
+        unitString: '°C',
         valuesNumeric: true,
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
@@ -368,7 +368,7 @@ function init() {
         width: 100,
         height: 30,
         unitStringVisible: true,
-        unitString: 'ºC',
+        unitString: '°C',
         valuesNumeric: true,
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
@@ -378,7 +378,7 @@ function init() {
         width: 100,
         height: 30,
         unitStringVisible: true,
-        unitString: 'ºC',
+        unitString: '°C',
         valuesNumeric: true,
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
@@ -435,6 +435,9 @@ function init() {
         Thrint.setValue(data.Thrint);
         HRint.setValue(data.HRint);
         clouds.setValue(data.clouds);
+        skyT.setValue(data.IR);
+        skyTcorrected.setValue(data.skyT);
+        Dew.setValue(data.Dew);
         T.resetMinMeasuredValue();
         P.resetMinMeasuredValue();
         HR.resetMinMeasuredValue();
@@ -479,6 +482,8 @@ function init() {
             HR.setTrend(steelseries.TrendState.STEADY);
             Light.setTrend(steelseries.TrendState.STEADY);
             Wind.setTrend(steelseries.TrendState.STEADY);
+            CRain.setTrend(steelseries.TrendState.STEADY);
+            clouds.setTrend(steelseries.TrendState.STEADY);
             if (T.getValue() > data.T+0.1) { T.setTrend(steelseries.TrendState.UP);}
             if (T.getValue() < data.T-0.1)   { T.setTrend(steelseries.TrendState.DOWN);}
             
@@ -513,12 +518,12 @@ function init() {
             Wind.setValueAnimated(data.Wind);
             CRain.setValueAnimated(data.CRain);
             clouds.setValueAnimated(data.clouds);
+            updateTrendIndicator();
             Thrint.setValueAnimated(data.Thrint);
             HRint.setValueAnimated(data.HRint);
             skyT.setValue(data.IR);
             skyTcorrected.setValue(data.skyT);
-            dew.setValue(data.Dew);
-            updateTrendIndicator()
+            Dew.setValue(data.Dew);
             lightLed.setLedOnOff(false);
             cloudLed.setLedOnOff(false);
             dewLed.setLedOnOff(false);
