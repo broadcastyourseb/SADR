@@ -26,128 +26,173 @@
         <a href="graphs.html">Graphs</a>
         <a href="external.html">Advance</a>
     </div>
-    <!-- LED PART -->
-    <table border=0 align="center">
-         <tr>
-            <td style="vertical-align:bottom" align="center" width="100px">
-                <canvas id=frezzingFlag ></canvas>
-            </td>
-            <td style="vertical-align:middle" align="center" width="100px">
-                <canvas id=daylightFlag ></canvas>
-            </td>
-            <td style="vertical-align:middle" align="center" width="100px">
-                <canvas id=cloudFlag ></canvas>
-            </td>
-            <td style="vertical-align:middle" align="center" width="100px">
-                <canvas id=dewFlag ></canvas>
-            </td>
-            <td style="vertical-align:middle" align="center" width="100px">
-                <canvas id=windFlag ></canvas>
-            </td>
-            <td style="vertical-align:middle" align="center" width="100px">
-                <canvas id=rainFlag ></canvas>
-            </td>
-        </tr>
-        <tr>
-            <td valign="top" align="center" width="100px">
-                <b>Frezzing</b>
-            </td>
-            <td align="center" width="100px">
-                <b>Luminosity</b>
-            </td>
-            <td align="center" width="100px">
-                <b>Cloudy</b>
-            </td>
-            <td align="center" width="100px">
-                <b>Dewing</b>
-            </td>
-            <td align="center" width="100px">
-                <b>Windy</b>
-            </td>
-            <td align="center" width="100px">
-                <b>Rainy</b>
-            </td>
-        </tr>
-    </table>
-    <table border=0 align="center">
-        <tr>
-            <td style="vertical-align:middle" align="center" colspan="4">
-                <canvas id=info ></canvas>
-            </td>
-        </tr>
-        <!-- T/P/HR GAUGE PART -->
-        <tr>
-            <td>
-                <canvas id=T></canvas>
-            </td>
-            <td>
-                <canvas id=P></canvas>
-            </td>
-            <td>
-                <canvas id=HR ></canvas>
-            </td>
-            <td>
-                <canvas id=Wind></canvas>
-            </td>
-        </tr>
-        <!-- WIND/RAIN/LIGHT/CLOUD GAUGE PART -->
-        <tr>
-            <td>
-                <canvas id=Light></canvas>
-            </td>
-            <td>
-                <canvas id=CRain></canvas>
-            </td>
-            <td>
-                <canvas id=clouds ></canvas>
-            </td>
-            <td>
-            </td>
-        </tr>
-        <!-- SKY TEMP DEW TEMP PART -->
-        <tr>
-            <td align="center">
-                <b>Sky Temp</b>
-            </td>
-            <td align="center">
-                <b>Allsky Box</b>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-        </tr>
-        <tr>
-            <td align="right">
-                <b>Actual</b>
-                <canvas id=skyT ></canvas>
-            </td>
-            <td align="right">
-                <b>Temp°</b>
-                <canvas id=Thrint></canvas>
-            </td>
-            <td align="right">
-                <b>Dew Point</b>
-                <canvas id=Dew ></canvas>
-            </td>
-            <td>
-            </td>
-        </tr>
-        <tr>
-            <td align="right">
-                <b>Corrected</b>
-                <canvas id=skyTcorrected></canvas>
-            </td>
-            <td align="right">
-                <b>Humidity</b>
-                <canvas id=HRint></canvas>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-        </tr>
-    </table>
+    <div>
+        <div id="left">
+        <!-- LED PART -->
+            <table>
+                <tr>
+                    <td>
+                        <canvas id=frezzingFlag ></canvas>
+                    </td>
+                    <td>
+                        <b>Frezzing</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <canvas id=daylightFlag ></canvas>
+                    </td>
+                    <td>
+                        <b>Luminosity</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <canvas id=cloudFlag ></canvas>
+                    </td>
+                    <td>
+                        <b>Cloudy</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <canvas id=dewFlag ></canvas>
+                    </td>
+                    <td>
+                        <b>Dewing</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <canvas id=windFlag ></canvas>
+                    </td>
+                    <td>
+                        <b>Windy</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <canvas id=rainFlag ></canvas>
+                    </td>
+                    <td>
+                        <b>Rainy</b>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="right">
+            <table border=0 align="center">
+                <tr>
+                    <td style="vertical-align:middle" align="center" colspan="4">
+                        <canvas id=info ></canvas>
+                    </td>
+                </tr>
+                <!-- T/P/HR GAUGE PART -->
+                <tr>
+                    <td>
+                        <canvas id=T></canvas>
+                    </td>
+                    <td>
+                        <canvas id=P></canvas>
+                    </td>
+                    <td>
+                        <canvas id=HR ></canvas>
+                    </td>
+                    <td>
+                        <canvas id=Wind></canvas>
+                    </td>
+                </tr>
+                <!-- WIND/RAIN/LIGHT/CLOUD GAUGE PART -->
+                <tr>
+                    <td>
+                        <canvas id=Light></canvas>
+                    </td>
+                    <td>
+                        <canvas id=CRain></canvas>
+                    </td>
+                    <td>
+                        <canvas id=clouds ></canvas>
+                    </td>
+                    <td>
+                        <canvas id=TRain ></canvas>
+                    </td>
+                </tr>
+                <!-- OTHER MEASURE PART -->
+                <tr>
+                    <td align="center">
+                        <b>Other Temperatures</b>
+                    </td>
+                    <td align="center">
+                        <b>Allsky Box</b>
+                    </td>
+                    <td align="center">
+                        <b>Rain sensor</b>
+                    </td>
+                    <td align="center">
+                        <b>Other</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <b>Tp (inside)</b>
+                        <canvas id=Tp></canvas>
+                    </td>
+                    <td align="right">
+                        <b>Temp°</b>
+                        <canvas id=Thrint></canvas>
+                    </td>
+                    <td align="right">
+                        <b>Régul Temp°</b>
+                        <canvas id=TargetRain></canvas
+                    </td>
+                    <td>
+                        <b>Dew Point</b>
+                        <canvas id=Dew ></canvas>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <b>Tir (outside)</b>
+                        <canvas id=Tir></canvas>
+                    </td>
+                    <td align="right">
+                        <b>Humidity</b>
+                        <canvas id=HRint></canvas>
+                    </td>
+                    <td align="right">
+                        <b>Puissance régul</b>
+                        <canvas id=PIDRain></canvas
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <b>Sky T° Actual</b>
+                        <canvas id=skyT ></canvas>
+                    </td>
+                    <td align="right">
+                    </td>
+                    <td align="right">
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <b>Sky T° Corrected</b>
+                        <canvas id=skyTcorrected></canvas>
+                    </td>
+                    <td align="right">
+                    </td>
+                    <td align="right">
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -158,19 +203,19 @@ function init() {
     
     //////////////////////////////// TEMPERATURE /////////////////////////////
 	// Define some sections
-    var sectionsT = Array(steelseries.Section(-20, 5, 'rgba(0, 0, 220, 0.3)'),
-                          steelseries.Section(5, 25, 'rgba(0, 220, 0, 0.3)'),
-                          steelseries.Section(25, 50, 'rgba(220, 0, 0, 0.3)'));
+    var sectionsT = Array();
 	// Define one area
-    var areasT = Array(steelseries.Section(-20, 0, 'rgba(0, 0, 250, 0.3)'));
+    var areasT = Array(steelseries.Section(-15, 0, 'rgba(250, 0, 0, 0.3)'),
+                       steelseries.Section(40, 55, 'rgba(250, 0, 0, 0.3)'));
 	// Initializing gauge
     T = new steelseries.Radial('T', {
         gaugeType: steelseries.GaugeType.TYPE4,
         section: sectionsT,
         area: areasT,
-        size:300,
-        minValue:-20,
-        maxValue:50,
+        size:275,
+        minValue:-15,
+        maxValue:55,
+        niceScale:false,
         trendVisible:true,
         minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
@@ -188,9 +233,7 @@ function init() {
     var P0=(1013.25/Math.exp(altitude/8000)) | 0;
     var Pdelta=25;
     // Define some sections
-    var sectionsP = Array(steelseries.Section(P0-Pdelta, P0-Pdelta+5, 'rgba(0, 0, 220, 0.3)'),
-                          steelseries.Section(P0-Pdelta+5, P0+Pdelta-5, 'rgba(0, 220, 0, 0.3)'),
-                          steelseries.Section(P0+Pdelta-5, P0+Pdelta , 'rgba(220, 0, 0, 0.3)'));
+    var sectionsP = Array();
   	// Define one area
     var areasP = Array();
     // Initializing gauge
@@ -198,7 +241,7 @@ function init() {
         gaugeType: steelseries.GaugeType.TYPE4,
         section: sectionsP,
         area: areasP,
-        size:300,
+        size:275,
         niceScale:false,
         minValue:P0-Pdelta,
         maxValue:P0+Pdelta,
@@ -216,25 +259,24 @@ function init() {
     
     //////////////////////////////// WIND /////////////////////////////////
         // Define some sections
-    var sectionsWIND = Array(steelseries.Section(0, 15, 'rgba(0, 220, 0, 0.3)'),
-                             steelseries.Section(15, 150, 'rgba(220, 0, 0, 0.3)'));
+    var sectionsWIND = Array();
   	// Define one area
-    var areasWIND = Array(steelseries.Section(15, 150, 'rgba(250, 0, 0, 0.3)'));
+    var areasWIND = Array(steelseries.Section(20, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	Wind = new steelseries.Radial('Wind', {
         gaugeType: steelseries.GaugeType.TYPE4,
         section: sectionsWIND,
         area: areasWIND,
-        size:300,
+        size:275,
         niceScale:false,
         minValue:0,
-        maxValue:150,
+        maxValue:100,
         trendVisible:true,
         minMeasuredValueVisible:false,
         maxMeasuredValueVisible:true,
         ledVisible:true,
-        thresholdVisible:true,
-        threshold: 15,
+        thresholdVisible:false,
+        threshold: 20,
         titleString: "Windspeed",
         unitString: "km/h",
         lcdVisible: true,
@@ -244,9 +286,7 @@ function init() {
 
     //////////////////////////////// HUMIDITY /////////////////////////////
     // Define some sections
-    var sectionsHR = Array(steelseries.Section(0, 20, 'rgba(0, 0, 220, 0.3)'),
-                           steelseries.Section(20, 80, 'rgba(0, 220, 0, 0.3)'),
-                           steelseries.Section(80, 100 , 'rgba(220, 0, 0, 0.3)'));
+    var sectionsHR = Array();
 	// Define one area
     var areasHR = Array(steelseries.Section(80, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge       
@@ -254,7 +294,7 @@ function init() {
         gaugeType: steelseries.GaugeType.TYPE4,
         section: sectionsHR,
         area: areasHR,
-        size:300,
+        size:275,
         niceScale:false,
         minValue:0,
         maxValue:100,
@@ -272,18 +312,24 @@ function init() {
     //*********************************************************************
     
     //////////////////////////////// LUMINOSITY ///////////////////////////
+    // Define some sections
+    var sectionsLIGHT = Array();
+	// Define one area
+    var areasLIGHT = Array(steelseries.Section(5000, 5500, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
-	Light = new steelseries.RadialBargraph('Light', {
+	Light = new steelseries.Radial('Light', {
         gaugeType: steelseries.GaugeType.TYPE4,
-        size:300,
+        section: sectionsLIGHT,
+        area: areasLIGHT,
+        size:275,
         niceScale:false,
         minValue:0,
-        maxValue:5000,
+        maxValue:5500,
         trendVisible:true,
         minMeasuredValueVisible:false,
         maxMeasuredValueVisible:true,
         ledVisible:true,
-        thresholdVisible:true,
+        thresholdVisible:false,
         threshold: 4900,
         titleString: "Luminosity",
         unitString: "mV",
@@ -293,18 +339,24 @@ function init() {
     //*********************************************************************
     
     //////////////////////////////// RAIN /////////////////////////////////
+    // Define some sections
+    var sectionsRAIN = Array();
+	// Define one area
+    var areasRAIN = Array(steelseries.Section(110, 200, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
-	CRain = new steelseries.RadialBargraph('CRain', {
+	CRain = new steelseries.Radial('CRain', {
         gaugeType: steelseries.GaugeType.TYPE4,
-        size:300,
+        section: sectionsRAIN,
+        area: areasRAIN,
+        size:275,
         niceScale:false,
-        minValue:0,
-        maxValue:400,
+        minValue:20,
+        maxValue:200,
         trendVisible:true,
-        minMeasuredValueVisible:false,
+        minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
         ledVisible:true,
-        thresholdVisible:true,
+        thresholdVisible:false,
         threshold: 110,
         titleString: "Rain",
         unitString: "Capacity",
@@ -314,10 +366,16 @@ function init() {
     //*********************************************************************
     
     //////////////////////////////// CLOUD /////////////////////////////////
-    // Initializing gauge   
-	clouds = new steelseries.RadialBargraph('clouds', {
+     // Define some sections
+    var sectionsCLOUD = Array();
+	// Define one area
+    var areasCLOUD = Array(steelseries.Section(33, 100, 'rgba(250, 0, 0, 0.3)'));
+    // Initializing gauge
+	clouds = new steelseries.Radial('clouds', {
         gaugeType: steelseries.GaugeType.TYPE4,
-        size:300,
+        section: sectionsCLOUD,
+        area: areasCLOUD,
+        size:275,
         niceScale:false,
         minValue:0,
         maxValue:100,
@@ -325,10 +383,37 @@ function init() {
         minMeasuredValueVisible:false,
         maxMeasuredValueVisible:false,
         ledVisible:true,
-        thresholdVisible:true,
-        threshold: 30,
+        thresholdVisible:false,
+        threshold: 33,
         titleString: "Clouds",
         unitString: "%",
+        lcdVisible: true,
+        frameDesign:steelseries.FrameDesign.ANTHRACITE
+    });
+    //*********************************************************************
+    
+    //////////////////////////////// TEMP RAIN SENSOR /////////////////////
+    // Define some sections
+    var sectionsTRAIN = Array(steelseries.Section(23, 27, 'rgba(0, 250, 0, 0.3)'),
+                              steelseries.Section(48, 52, 'rgba(0, 250, 0, 0.3)'));
+	// Define one area
+    var areasTRAIN = Array(steelseries.Section(55, 100, 'rgba(250, 0, 0, 0.3)'));
+    // Initializing gauge       
+	TRain = new steelseries.Radial('TRain', {
+        gaugeType: steelseries.GaugeType.TYPE4,
+        section: sectionsTRAIN,
+        area: areasTRAIN,
+        size:275,
+        niceScale:false,
+        minValue:20,
+        maxValue:60,
+        trendVisible:false,
+        minMeasuredValueVisible:true,
+        maxMeasuredValueVisible:true,
+        ledVisible:false,
+        thresholdVisible:false,
+        titleString: "T° Rain Sensor",
+        unitString: "°C",
         lcdVisible: true,
         frameDesign:steelseries.FrameDesign.ANTHRACITE
     });
@@ -345,6 +430,26 @@ function init() {
     });
 
     skyTcorrected = new steelseries.DisplaySingle('skyTcorrected', {
+        width: 100,
+        height: 30,
+        unitStringVisible: true,
+        unitString: '°C',
+        valuesNumeric: true,
+        digitalFont: true,
+        lcdColor:steelseries.LcdColor.STANDARD
+    });
+
+    Tp = new steelseries.DisplaySingle('Tp', {
+        width: 100,
+        height: 30,
+        unitStringVisible: true,
+        unitString: '°C',
+        valuesNumeric: true,
+        digitalFont: true,
+        lcdColor:steelseries.LcdColor.STANDARD
+    });
+    
+    Tir = new steelseries.DisplaySingle('Tir', {
         width: 100,
         height: 30,
         unitStringVisible: true,
@@ -383,9 +488,29 @@ function init() {
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
     });
+    
+    TargetRain = new steelseries.DisplaySingle('TargetRain', {
+        width: 100,
+        height: 30,
+        unitStringVisible: true,
+        unitString: '°C',
+        valuesNumeric: true,
+        digitalFont: true,
+        lcdColor:steelseries.LcdColor.STANDARD
+    });
+    
+    PIDRain = new steelseries.DisplaySingle('PIDRain', {
+        width: 100,
+        height: 30,
+        unitStringVisible: true,
+        unitString: '',
+        valuesNumeric: true,
+        digitalFont: true,
+        lcdColor:steelseries.LcdColor.STANDARD
+    });
 
     info = new steelseries.DisplaySingle('info', {
-        width: 1000,
+        width: 1200,
         height: 30,
         unitStringVisible: false,
         valuesNumeric: false,
@@ -432,45 +557,42 @@ function init() {
         Light.setValue(data.Light);
         Wind.setValue(data.Wind);
         CRain.setValue(data.CRain);
-        Thrint.setValue(data.Thrint);
         HRint.setValue(data.HRint);
+        Thrint.setValue(data.Thrint);
         clouds.setValue(data.clouds);
         skyT.setValue(data.IR);
         skyTcorrected.setValue(data.skyT);
+        Tp.setValue(data.Tp);
+        Tir.setValue(data.Tir);
         Dew.setValue(data.Dew);
+        TRain.setValue(data.TRain);
+        TargetRain.setValue(data.TargetRain);
+        PIDRain.setValue(data.PIDRain);
         T.resetMinMeasuredValue();
         P.resetMinMeasuredValue();
         HR.resetMinMeasuredValue();
-        Light.resetMinMeasuredValue();
         Wind.resetMinMeasuredValue();
         CRain.resetMinMeasuredValue();
-        Thrint.resetMinMeasuredValue();
-        HRint.resetMinMeasuredValue();
-        clouds.resetMinMeasuredValue();	 
     })
     
     $.get("CHART/MINvalues.json", function(data) {
         T.setMinMeasuredValue(data.T);
         P.setMinMeasuredValue(data.P);
         HR.setMinMeasuredValue(data.HR);
-        Light.setMinMeasuredValue(data.Light);
         Wind.setMinMeasuredValue(data.Wind);
+        TRain.setMinMeasuredValue(data.TRain);
+        Light.setMinMeasuredValue(data.Light);
         CRain.setMinMeasuredValue(data.CRain);
-        Thrint.setMinMeasuredValue(data.Thrint); 
-        HRint.setMinMeasuredValue(data.HRint); 
-        clouds.setMinMeasuredValue(data.clouds); 
     })
     
     $.get("CHART/MAXvalues.json", function(data) {
         T.setMaxMeasuredValue(data.T);
         P.setMaxMeasuredValue(data.P);
         HR.setMaxMeasuredValue(data.HR);
-        Light.setMaxMeasuredValue(data.Light);
         Wind.setMaxMeasuredValue(data.Wind);
+        TRain.setMaxMeasuredValue(data.TRain);
+        Light.setMaxMeasuredValue(data.Light);
         CRain.setMaxMeasuredValue(data.CRain);
-        Thrint.setMaxMeasuredValue(data.Thrint);
-        HRint.setMaxMeasuredValue(data.HRint);
-        clouds.setMaxMeasuredValue(data.clouds);
     })
 	
     setInterval( function(){ updatedata();}, 1000);
@@ -499,8 +621,8 @@ function init() {
             if (Wind.getValue() > data.Wind+0.5)  { Wind.setTrend(steelseries.TrendState.UP);}
             if (Wind.getValue()< data.Wind-0.5)   { Wind.setTrend(steelseries.TrendState.DOWN);}
             
-            if (CRain.getValue() > data.CRain+0.5)  { CRain.setTrend(steelseries.TrendState.UP);}
-            if (CRain.getValue()< data.CRain-0.5)   { CRain.setTrend(steelseries.TrendState.DOWN);}
+            if (CRain.getValue() > data.CRain+1)  { CRain.setTrend(steelseries.TrendState.UP);}
+            if (CRain.getValue()< data.CRain-1)   { CRain.setTrend(steelseries.TrendState.DOWN);}
             
             if (clouds.getValue() > data.clouds+1)  { clouds.setTrend(steelseries.TrendState.UP);}
             if (clouds.getValue()< data.clouds-1)   { clouds.setTrend(steelseries.TrendState.DOWN);}				  	 
@@ -519,11 +641,16 @@ function init() {
             CRain.setValueAnimated(data.CRain);
             clouds.setValueAnimated(data.clouds);
             updateTrendIndicator();
-            Thrint.setValueAnimated(data.Thrint);
-            HRint.setValueAnimated(data.HRint);
             skyT.setValue(data.IR);
             skyTcorrected.setValue(data.skyT);
             Dew.setValue(data.Dew);
+            HRint.setValue(data.HRint);
+            Thrint.setValue(data.Thrint);
+            Tp.setValue(data.Tp);
+            Tir.setValue(data.Tir);
+            TRain.setValue(data.TRain);
+            TargetRain.setValue(data.TargetRain);
+            PIDRain.setValue(data.PIDRain);
             lightLed.setLedOnOff(false);
             cloudLed.setLedOnOff(false);
             dewLed.setLedOnOff(false);
