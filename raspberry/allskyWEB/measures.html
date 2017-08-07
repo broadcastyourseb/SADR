@@ -664,7 +664,7 @@ function init() {
             Tir.setValue(data.Tir);
             TRain.setValue(data.TRain);
             TargetRain.setValue(data.TargetRain);
-            TRain.section=Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)'));
+            TRain.setSection(Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)')));
             PIDRain.setValue(data.PIDRain);
             lightLed.setLedOnOff(false);
             cloudLed.setLedOnOff(false);
