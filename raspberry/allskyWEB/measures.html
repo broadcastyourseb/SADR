@@ -26,7 +26,7 @@
         <a href="graphs.html">Graphs</a>
         <a href="external.html">Advance</a>
     </div>
-    <div>
+    <div id=main>
         <div id="left">
         <!-- LED PART -->
             <table>
@@ -396,7 +396,7 @@ function init() {
     
     //////////////////////////////// TEMP RAIN SENSOR /////////////////////
     // Define some sections
-    var sectionsTRAIN = Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)'));
+    var sectionsTRAIN = Array();
 	// Define one area
     var areasTRAIN = Array(steelseries.Section(55, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge       

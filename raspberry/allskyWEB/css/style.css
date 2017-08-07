@@ -17,6 +17,10 @@ table, th, td {
     border: 5px solid transparent;
 }
 
+#main {
+    width: 1450px;
+}
+
 #left {
     float: left;
     width: 15%;
