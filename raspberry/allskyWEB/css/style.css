@@ -19,12 +19,12 @@ table, th, td {
 
 #left {
     float: left;
-    width: 250px;
+    width: 15%;
     overflow: hidden;
 }
 
 #right {
     overflow: hidden;
-    width: 1300px;
+    width: 85%;
     text-align: center;
 }
