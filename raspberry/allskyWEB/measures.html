@@ -396,8 +396,7 @@ function init() {
     
     //////////////////////////////// TEMP RAIN SENSOR /////////////////////
     // Define some sections
-    var sectionsTRAIN = Array(steelseries.Section(23, 27, 'rgba(0, 250, 0, 0.3)'),
-                              steelseries.Section(48, 52, 'rgba(0, 250, 0, 0.3)'));
+    var sectionsTRAIN = Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)'));
 	// Define one area
     var areasTRAIN = Array(steelseries.Section(55, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge       
@@ -412,7 +411,8 @@ function init() {
         trendVisible:false,
         minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
-        ledVisible:false,
+        ledVisible:true,
+        threshold: 55,
         thresholdVisible:false,
         titleString: "T° Rain Sensor",
         unitString: "°C",
@@ -664,6 +664,7 @@ function init() {
             Tir.setValue(data.Tir);
             TRain.setValue(data.TRain);
             TargetRain.setValue(data.TargetRain);
+            TRain.section=Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)'));
             PIDRain.setValue(data.PIDRain);
             lightLed.setLedOnOff(false);
             cloudLed.setLedOnOff(false);
