@@ -263,7 +263,7 @@ function init() {
         // Define some sections
     var sectionsWIND = Array();
   	// Define one area
-    var areasWIND = Array(steelseries.Section(20, 100, 'rgba(250, 0, 0, 0.3)'));
+    var areasWIND = Array(steelseries.Section(10, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	Wind = new steelseries.Radial('Wind', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -278,7 +278,7 @@ function init() {
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 20,
+        threshold: 10,
         titleString: "Windspeed",
         unitString: "km/h",
         lcdVisible: true,
@@ -344,7 +344,7 @@ function init() {
     // Define some sections
     var sectionsRAIN = Array();
 	// Define one area
-    var areasRAIN = Array(steelseries.Section(110, 200, 'rgba(250, 0, 0, 0.3)'));
+    var areasRAIN = Array(steelseries.Section(100, 200, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	CRain = new steelseries.Radial('CRain', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -353,13 +353,13 @@ function init() {
         size:275,
         niceScale:false,
         minValue:20,
-        maxValue:200,
+        maxValue:300,
         trendVisible:true,
         minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 110,
+        threshold: 100,
         titleString: "Rain",
         unitString: "Capacity",
         lcdVisible: true,
@@ -386,7 +386,7 @@ function init() {
         maxMeasuredValueVisible:false,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 33,
+        threshold: 30,
         titleString: "Clouds",
         unitString: "%",
         lcdVisible: true,
