@@ -55,7 +55,8 @@ IMPORTANT: Customize following values to match your setup
 // Activation threshold for wind in km/h
 #define WIND_FLAG_TRIGGER 10
 // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
-#define ANEMOMETER_COEF 2.4  // Relation between windspeed in km/h and switch frequency
+//#define ANEMOMETER_COEF 2.4 //OLD  // Relation between windspeed in km/h and switch frequency
+#define WIND_RPM_TO_KMH 12.5 // Relation between windspeed in km/h and rotation per minute
 #define ANEMOMETER_BOUNCE_TIME 50 //Below this value, no count is adding
 
 //Rain sensor
@@ -152,7 +153,7 @@ IMPORTANT: Customize following values to match your setup
 
 float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
-volatile unsigned long Rotations; // cup rotation counter used in interrupt routine
+volatile unsigned long reedSwitchCount; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
 unsigned long tempo, TimeStamp;
 
@@ -214,18 +215,22 @@ double cloudIndex() {
 void isr_rotation () {
   TimeStamp = millis();
   if ((TimeStamp - ContactBounceTime) > ANEMOMETER_BOUNCE_TIME ) { // debounce the switch contact.
-    Rotations++;
+    reedSwitchCount++;
     if ((TimeStamp - ContactBounceTime) < MiniTime) {
         MiniTime = TimeStamp - ContactBounceTime;
     }
     ContactBounceTime = TimeStamp ;
   }
-  // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
-  // V = R / 3 * 2.4 = R * 0.8
-  MaxWindSpeed = ANEMOMETER_COEF * 1 / MiniTime;
-  MaxWindSpeed = MaxWindSpeed * 1000;
-  WindSpeed = ANEMOMETER_COEF * Rotations / SERIAL_DELAY;
-  WindSpeed = WindSpeed * 1000;
+  // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
+  WindSpeed = (reedSwitchCount / 2) / (SERIAL_DELAY * 1000 / 60);
+  if (MiniTime == 1000) {
+    MaxWindSpeed = 0 ;
+  } else {
+    MaxWindSpeed = (1 / 2) / (MiniTime *1000 / 60);
+  }
+  // Winspeed and MaxWindSpeed in Km/h
+  WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
+  MaxWindSpeed = MaxWindSpeed / WIND_RPM_TO_KMH;
 }
 #endif //USE_WIND_SENSOR
 
@@ -529,14 +534,26 @@ void loop() {
     runMeteoStation();
     outputChain();
     tempo = millis();
-    Rotations = 0; // Set Rotations count to 0 after calculations
+    reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
     MiniTime = 1000; // Set MiniTime value to 1000ms after calculations
   }
+  
   #ifdef USE_RAIN_SENSOR
   if (rainy == 1) {
      Consigne = HOT_TEMPERATURE_TARGET;
   } else {
-     Consigne = COLD_TEMPERATURE_TARGET;
+    // Min regulation as to be at least 5°C above the global temperature
+    if (COLD_TEMPERATURE_TARGET > T) {
+        Consigne = COLD_TEMPERATURE_TARGET;
+    } else {
+        int newConsigne = T / 5 + 1;
+        newConsigne = newConsigne * 5;
+        if (T + 5 < HOT_TEMPERATURE_TARGET) {
+            Consigne = newConsigne;
+        } else {
+            Consigne = HOT_TEMPERATURE_TARGET;
+        }
+    }
   }
   regulHeat();
   #endif //USE_DHT_RAIN_SENSOR*/

@@ -108,10 +108,10 @@
                         <canvas id=Light></canvas>
                     </td>
                     <td>
-                        <canvas id=CRain></canvas>
+                        <canvas id=clouds></canvas>
                     </td>
                     <td>
-                        <canvas id=clouds ></canvas>
+                        <canvas id=CRain></canvas>
                     </td>
                     <td>
                         <canvas id=TRain ></canvas>
@@ -371,7 +371,7 @@ function init() {
      // Define some sections
     var sectionsCLOUD = Array();
 	// Define one area
-    var areasCLOUD = Array(steelseries.Section(33, 100, 'rgba(250, 0, 0, 0.3)'));
+    var areasCLOUD = Array(steelseries.Section(30, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge
 	clouds = new steelseries.Radial('clouds', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -710,9 +710,10 @@ function init() {
             var now= new Date();
             now.setMinutes ( now.getMinutes() - timeOut );
             var d= new Date(data.TIME);
-            if (d<now) {
+            info.setValue(data.TIME);
+            /*if (d<now) {
                 info.setValue("WARNING. No updated since: "+data.TIME);
-            }
+            }*/
         }, "json");  			 	
     }
 }
