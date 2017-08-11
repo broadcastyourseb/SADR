@@ -47,7 +47,7 @@ def graphs(time):
 	 "DEF:Thr="+CHARTPATH+"meteo.rrd:Thr:AVERAGE",
 	 "DEF:Tp="+CHARTPATH+"meteo.rrd:Tp:AVERAGE",
 	 "DEF:Tir="+CHARTPATH+"meteo.rrd:Tir:AVERAGE",
-	 "DEF:Dew="+CHARTPATH+"meteo.rrd:Dew:AVERAGE",
+   	 "DEF:Dew="+CHARTPATH+"meteo.rrd:Dew:AVERAGE",
 	 "LINE1:IR#00F0F0:IR",
 	 "LINE1:Thr#00FF00:Thr",
 	 "LINE1:Tp#FF0000:Tp",
@@ -106,6 +106,21 @@ def graphs(time):
 	 "AREA:cloudy#FFFFFF40:CloudyFlag\\r",
 	 "AREA:30#00000a40:Clear",
 	 "AREA:40#0000AA40:Cloudy:STACK",
+	 "AREA:32#0000FF40:Overcast:STACK")
+    
+    ret = rrdtool.graph( CHARTPATH+"rain"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",preamble,
+	 "--title","Rain",
+	 "--vertical-label=%",
+	 "-u","200",
+	 "-l","0",
+	 "-r",
+	 "DEF:CRain="+CHARTPATH+"meteo.rrd:CRain:AVERAGE",
+	 "DEF:rainFlag="+CHARTPATH+"meteo.rrd:rainFlag:AVERAGE",
+	 "CDEF:rainy=CRain,rainFlag,*",
+	 "LINE1:CRain#"+orange+":CRain",
+	 "AREA:rainy#FFFFFF40:rainFlag\\r",
+	 "AREA:30#00000a40:Clear",
+	 "AREA:40#0000AA40:Rainy:STACK",
 	 "AREA:32#0000FF40:Overcast:STACK")
 
 	ret = rrdtool.graph( CHARTPATH+"skyT"+str(time)+".png","--start","-"+str(time)+"h","-E",

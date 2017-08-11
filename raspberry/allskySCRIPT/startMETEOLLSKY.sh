@@ -16,7 +16,7 @@ then
 	killall indiserver
 	killall indi_qhy_ccd
         mkfifo  /tmp/INDIFIFO
-	indiserver -vvv -f /tmp/INDIFIFO &
+	indiserver -f /tmp/INDIFIFO &
 	echo start indi_qhy_ccd >/tmp/INDIFIFO
 fi
 if [ -f "$CHARTPATH/meteo.rrd" ];

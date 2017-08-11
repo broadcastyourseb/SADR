@@ -164,7 +164,7 @@
                         <canvas id=PIDRain></canvas>
                     </td>
                     <td>
-                        <b>Max Wind BETA</b>
+                        <b>Max Wind</b>
                         <canvas id=WindMax></canvas>
                     </td>
                 </tr>
@@ -201,7 +201,7 @@
 
 function init() {	
     // General variables
-    var timeOut=1;
+    var timeOut=5;// Max timeout update in minutes before sending an alarm
     
     //////////////////////////////// TEMPERATURE /////////////////////////////
 	// Define some sections
@@ -263,7 +263,7 @@ function init() {
         // Define some sections
     var sectionsWIND = Array();
   	// Define one area
-    var areasWIND = Array(steelseries.Section(10, 100, 'rgba(250, 0, 0, 0.3)'));
+    var areasWIND = Array(steelseries.Section(20, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	Wind = new steelseries.Radial('Wind', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -278,7 +278,7 @@ function init() {
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 10,
+        threshold: 20,
         titleString: "Windspeed",
         unitString: "km/h",
         lcdVisible: true,
@@ -398,7 +398,7 @@ function init() {
     // Define some sections
     var sectionsTRAIN = Array();
 	// Define one area
-    var areasTRAIN = Array(steelseries.Section(55, 100, 'rgba(250, 0, 0, 0.3)'));
+    var areasTRAIN = Array(steelseries.Section(60, 100, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge       
 	TRain = new steelseries.Radial('TRain', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -407,12 +407,12 @@ function init() {
         size:275,
         niceScale:false,
         minValue:20,
-        maxValue:60,
+        maxValue:65,
         trendVisible:false,
         minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
         ledVisible:true,
-        threshold: 55,
+        threshold: 60,
         thresholdVisible:false,
         titleString: "T° Rain Sensor",
         unitString: "°C",
@@ -495,7 +495,7 @@ function init() {
         width: 100,
         height: 30,
         unitStringVisible: true,
-        unitString: '°C',
+        unitString: '%',
         valuesNumeric: true,
         digitalFont: true,
         lcdColor:steelseries.LcdColor.STANDARD
@@ -609,6 +609,7 @@ function init() {
     })
 	
     setInterval( function(){ updatedata();}, 10000);
+    
 	
     function updateTrendIndicator(){
         $.get("CHART/AVERAGEvalues.json", function(data) {
@@ -641,7 +642,7 @@ function init() {
             if (clouds.getValue()< data.clouds-1)   { clouds.setTrend(steelseries.TrendState.DOWN);}				  	 
         })	  
     }
-
+    
     updatedata();
 
     function updatedata(){
@@ -707,13 +708,13 @@ function init() {
             
             warningText=warningText+data.TIME;
             info.setValue(warningText);
-            var now= new Date();
-            now.setMinutes ( now.getMinutes() - timeOut );
-            var d= new Date(data.TIME);
-            info.setValue(data.TIME);
-            /*if (d<now) {
-                info.setValue("WARNING. No updated since: "+data.TIME);
-            }*/
+            var dateClient = new Date();
+            dateClient.setHours(dateClient.getHours() + dateClient.getTimezoneOffset()/60); // dateClient in UTC hours
+            var dateRRD = new Date(data.TIME);
+            dateRRD.setHours(dateRRD.getHours() - servertimezone); // dateRRD in UTC hours
+            if (dateClient-dateRRD>timeOut*60000) {
+                info.setValue("WARNING. No updated since: "+data.TIME+" in local time");
+            }
         }, "json");  			 	
     }
 }

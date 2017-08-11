@@ -17,6 +17,7 @@ from meteollskyconfig import *
 import simplejson
 import gc
 import serial
+from time import strftime
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -53,6 +54,8 @@ fi=open(CHARTPATH+"meteoconfig.js","w")
 fi.write("var altitude=%s\n" % ALTITUDE)
 fi.write("var sitename=\"%s\"\n" % SITENAME)
 fi.write("var ownername=\"%s\"\n" % OWNERNAME)
+SERVERTIMEZONE = int(strftime('%z'))/100
+fi.write("var servertimezone=%s\n" % SERVERTIMEZONE)
 fi.close()
 
 #connect an retrive info
@@ -75,7 +78,7 @@ while (True):
     if ret:
         print rrdtool.error()
     x = simplejson.dumps(json_dict)
-    print x
+    #print x
     fi=open(CHARTPATH+"RTdata.json","w")
     fi.write(x)
     fi.close()

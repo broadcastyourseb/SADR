@@ -28,15 +28,15 @@ def writeJson(consolidation,resolution):
       ret = rrdtool.fetch(CHARTPATH+'meteo.rrd',consolidation,"--start",str(start),"--end",str(end),"--resolution",str(res));
       if ret:
         print rrdtool.error() 
-      print ret
+      #print ret
       mags=ret[1]
       values=ret[2][0]
       i=0
       for mag in mags:
-         print mag,values[i]
+         #print mag,values[i]
          json_dict[mag]=values[i]
          i=i++1	
-      print consolidation,json_dict
+      #print consolidation,json_dict
       x = simplejson.dumps(json_dict)
       fi=open(filename,"w")
       fi.write(x)

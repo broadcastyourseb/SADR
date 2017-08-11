@@ -53,18 +53,17 @@ IMPORTANT: Customize following values to match your setup
 
 // Wind sensor
 // Activation threshold for wind in km/h
-#define WIND_FLAG_TRIGGER 10
+#define WIND_FLAG_TRIGGER 20
 // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
-//#define ANEMOMETER_COEF 2.4 //OLD  // Relation between windspeed in km/h and switch frequency
-#define WIND_RPM_TO_KMH 12.5 // Relation between windspeed in km/h and rotation per minute
-#define ANEMOMETER_BOUNCE_TIME 50 //Below this value, no count is adding
+#define WIND_RPM_TO_KMH 25 // Relation between windspeed in km/h and rotation per minute
+#define ANEMOMETER_BOUNCE_TIME 5 //Below this value, no count is adding
 
 //Rain sensor
 //Calibrate this value using known capacitor.
 #define IN_STRAY_CAP_TO_GND 31
 #define IN_CAP_TO_GND  31
 #define MAX_ADC_VALUE 1023
-#define RAIN_FLAG_TRIGGER 100 //if above this capacity then rainy
+#define RAIN_FLAG_TRIGGER 80 //if above this capacity then rainy is true
 // which analog pin to connect
 #define THERMISTORPIN A3       
 // resistance at 25 degrees C
@@ -81,8 +80,8 @@ IMPORTANT: Customize following values to match your setup
 // On contrôle avec la broche 11
 #define OUTP 11
 // Target temperature
-#define COLD_TEMPERATURE_TARGET 25
-#define HOT_TEMPERATURE_TARGET 50
+#define COLD_TEMPERATURE_TARGET 30
+#define HOT_TEMPERATURE_TARGET 55
 
 /*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
 
@@ -151,11 +150,11 @@ IMPORTANT: Customize following values to match your setup
   PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime;
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime,reedSwitchTime;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long reedSwitchCount; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
-unsigned long tempo, TimeStamp;
+unsigned long tempoSerial, TimeStamp;
 
 #if defined(USE_DHT_SENSOR_INTERNAL) || defined(USE_DHT_SENSOR_EXTERNAL)
 // dewPoint function NOAA
@@ -216,17 +215,22 @@ void isr_rotation () {
   TimeStamp = millis();
   if ((TimeStamp - ContactBounceTime) > ANEMOMETER_BOUNCE_TIME ) { // debounce the switch contact.
     reedSwitchCount++;
+    if (reedSwitchCount > 1) {
+        reedSwitchTime += TimeStamp - ContactBounceTime;
+    }
     if ((TimeStamp - ContactBounceTime) < MiniTime) {
         MiniTime = TimeStamp - ContactBounceTime;
     }
-    ContactBounceTime = TimeStamp ;
   }
+  ContactBounceTime = TimeStamp ;
   // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
-  WindSpeed = (reedSwitchCount / 2) / (SERIAL_DELAY * 1000 / 60);
-  if (MiniTime == 1000) {
-    MaxWindSpeed = 0 ;
+  //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
+  WindSpeed = (reedSwitchCount - 1) / reedSwitchTime * 30000;
+  if (MiniTime == SERIAL_DELAY) {
+    MaxWindSpeed = WindSpeed ;
   } else {
-    MaxWindSpeed = (1 / 2) / (MiniTime *1000 / 60);
+    //MaxWindSpeed = (1 / 2 * 60) / (MiniTime / 1000);
+    MaxWindSpeed = 30000 / MiniTime;
   }
   // Winspeed and MaxWindSpeed in Km/h
   WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
@@ -432,7 +436,7 @@ if (T <=2) {
 #endif //USE_RAIN_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
-  if (WindSpeed > WIND_FLAG_TRIGGER) {
+  if ((WindSpeed > WIND_FLAG_TRIGGER) | (MaxWindSpeed > WIND_FLAG_TRIGGER)) {
         windy=1;
     } else {
         windy=0;
@@ -530,14 +534,7 @@ void setup() {
  * LOOP()
  *============================================================================*/
 void loop() {
-  if ((millis() - tempo) > SERIAL_DELAY ) { // debounce the switch contact.
-    runMeteoStation();
-    outputChain();
-    tempo = millis();
-    reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
-    MiniTime = 1000; // Set MiniTime value to 1000ms after calculations
-  }
-  
+   
   #ifdef USE_RAIN_SENSOR
   if (rainy == 1) {
      Consigne = HOT_TEMPERATURE_TARGET;
@@ -556,5 +553,15 @@ void loop() {
     }
   }
   regulHeat();
-  #endif //USE_DHT_RAIN_SENSOR*/
+  #endif //USE_RAIN_SENSOR*/
+  
+  if ((millis() - tempoSerial) > SERIAL_DELAY ) { // time between 2 serial sending.
+    runMeteoStation();
+    outputChain();
+    tempoSerial = millis();
+    ContactBounceTime = 0; // Set ContactBounceTime count to 0 after calculations
+    reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
+    reedSwitchTime = 0; // Set reedSwitchTime to 0 afer calculations
+    MiniTime = SERIAL_DELAY; // Set MiniTime value to SERIAL_DELAY after calculations
+  }
 }
