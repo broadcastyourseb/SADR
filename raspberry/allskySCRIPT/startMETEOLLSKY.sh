@@ -31,3 +31,4 @@ fi
 ./meteoRRD_MaxMinAvg.py &
 ./allsky_frame.py 19 50 &
 #./sounding.py &
+#./pushetta.py &

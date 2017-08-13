@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <head>
-        <title>MeteoStation SADR</title>
+        <title>Allsky SADR</title>
         <meta name="author" content="Sébastien Leclerc" >
         <meta name="date" content="2017-08-11T18:06:00+0200" >
         <meta name="copyright" content="">
@@ -63,31 +63,24 @@
                 
                 info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
                 info.setScrolling(true);
-            
+                
+                lightLed.setLedOnOff(false);
+                cloudLed.setLedOnOff(false);
+                dewLed.setLedOnOff(false);
+                frezzingLed.setLedOnOff(false);
+                windLed.setLedOnOff(false);
+                rainLed.setLedOnOff(false);
+                
                 update();
-                    
+                
                 function update() {
+                    $("#allsky").attr("src", "CHART/allsky.jpg?t=" + new Date().getTime());
+                    
+                    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
+                    $("#temp").attr("src", "CHART/temp"+$("#range").val()+".png");
+                    
                     $.get("CHART/RTdata.json", function(data){
                    		$("#time").text(data.TIME);
-                   		$("#temp").attr("src", "CHART/temp"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#alltemp").attr("src", "CHART/alltemp"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#hr").attr("src", "CHART/hr"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#clouds").attr("src", "CHART/clouds"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#rain").attr("src", "CHART/rain"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#light").attr("src", "CHART/light"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#wind").attr("src", "CHART/wind"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#pressure").attr("src", "CHART/pressure"+$("#range").val()+".png?t=" + new Date().getTime());
-                   		$("#regul").attr("src", "CHART/regul"+$("#range").val()+".png?t=" + new Date().getTime());
-	                    $("#skyT").attr("src", "CHART/skyT"+$("#range").val()+".png?t=" + new Date().getTime());
-	                    
-	                    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
-	                    
-	                    lightLed.setLedOnOff(false);
-                        cloudLed.setLedOnOff(false);
-                        dewLed.setLedOnOff(false);
-                        frezzingLed.setLedOnOff(false);
-                        windLed.setLedOnOff(false);
-                        rainLed.setLedOnOff(false);
 
                         var warningText='';
                         
@@ -122,7 +115,7 @@
                         }
                         
                         warningText=warningText+data.TIME;
-	                    info.setValue(warningText);
+		                info.setValue(warningText);
                         var dateClient = new Date();
                         dateClient.setHours(dateClient.getHours() + dateClient.getTimezoneOffset()/60); // dateClient in UTC hours
                         var dateRRD = new Date(data.TIME);
@@ -131,9 +124,9 @@
                             info.setValue("WARNING. No updated since: "+data.TIME+" in local time");
                         }
                     }, "json")
-                }
-		                        		  
-                setInterval(function() {update();}, 10000);
+               }
+			                    		  
+               setInterval(function() {update();}, 10000);
             }
         </script>
     </head>
@@ -167,7 +160,7 @@
                             <input type="button" onclick="location.href='external.html';" value="Advance" id="button" />
                          </td>
                     </tr>
-                    <tr>
+                    <tr style="visibility: hidden">
                         <td>
                             <b>Range</b>
                          </td>
@@ -235,16 +228,7 @@
                     <b>SADR METEOSTATION</b>
                 </div>
                 <canvas id=info ></canvas>
-                <img class="graph" id="clouds"/>
-                <img class="graph" id="rain"/>
-                <img class="graph" id="light"/>
-                <img class="graph" id="wind"/>
-                <img class="graph" id="temp"/>
-                <img class="graph" id="pressure"/>
-                <img class="graph" id="hr"/>
-                <img class="graph" id="skyT"/>
-                <img class="graph" id="alltemp"/>
-                <img class="graph" id="regul"/>
+                <img alt="allskyframe" id="allsky" /> 
             </div>
         </div>
     </body>

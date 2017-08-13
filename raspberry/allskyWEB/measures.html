@@ -1,35 +1,68 @@
-<!doctype html>
-<head>
-    <meta name="author" content="Sébastien Leclerc" >
-    <meta name="date" content="2017-08-05T21:41:00+0200" >
-    <meta name="copyright" content="">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
-    <meta http-equiv="content-style-type" content="text/css">
-    <meta http-equiv="expires" content="1">
-    <title>MeteoStation SADR</title>
-    <link rel=stylesheet href=css/style.css type=text/css charset=utf-8>
-    <script type=text/javascript src=CHART/meteoconfig.js></script>
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+    <head>
+        <title>MeteoStation SADR</title>
+        <meta name="author" content="Sébastien Leclerc" >
+        <meta name="date" content="2017-08-11T18:06:00+0200" >
+        <meta name="copyright" content="">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
+        <meta http-equiv="content-style-type" content="text/css">
+        <meta http-equiv="expires" content="1">
+        <link rel=stylesheet href=css/style.css type=text/css charset=utf-8>
+        <script src="js/jquery.min.js"></script>
+        <script type=text/javascript src=CHART/meteoconfig.js></script>
+        <script type=text/javascript src=js/tween-min.js></script>
+        <script type=text/javascript src=js/steelseries-min.js></script>
+    </head>
 
 <script src="js/jquery.min.js"></script>
 
 <body onload=init()>
-
-    <div  id="mainlabel" style="text-align: center">
-        <b>SADR METEOSTATION</b>
-    </div>
-    <div style="text-align: center">
-        <a href="graphs.html">Graphs</a>
-        <a href="external.html">Advance</a>
-    </div>
     <div id=main>
         <div id="left">
-        <!-- LED PART -->
+            <!-- LED PART -->
             <table>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" onclick="location.href='index.html';" value="Main" id="button"/>
+                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" onclick="location.href='allsky.html';" value="Allsky" id="button" />
+                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" onclick="location.href='measures.html';" value="Measures" id="button" />
+                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" onclick="location.href='graphs.html';" value="Graphs" id="button" />
+                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="button" onclick="location.href='external.html';" value="Advance" id="button" />
+                     </td>
+                </tr>
+                <tr style="visibility: hidden">
+                    <td>
+                        <b>Range</b>
+                     </td>
+                     <td>
+                        <select id="range" onchange=update()>
+                            <option value=3>3 Hours</option>
+                            <option value=24>24 Hours</option>                    
+                            <option value=168>1 Week</option>
+                            <option value=1176>1 Month</option>
+                        </select>
+                    </td>
+                </tr>             
                 <tr>
                     <td>
                         <canvas id=frezzingFlag ></canvas>
@@ -81,12 +114,11 @@
             </table>
         </div>
         <div id="right">
+            <div id="title">
+                    <b>SADR METEOSTATION</b>
+            </div>
+            <canvas id=info ></canvas>
             <table border=0 align="center">
-                <tr>
-                    <td style="vertical-align:middle" align="center" colspan="4">
-                        <canvas id=info ></canvas>
-                    </td>
-                </tr>
                 <!-- T/P/HR GAUGE PART -->
                 <tr>
                     <td>
@@ -344,7 +376,7 @@ function init() {
     // Define some sections
     var sectionsRAIN = Array();
 	// Define one area
-    var areasRAIN = Array(steelseries.Section(100, 300, 'rgba(250, 0, 0, 0.3)'));
+    var areasRAIN = Array(steelseries.Section(80, 300, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	CRain = new steelseries.Radial('CRain', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -359,7 +391,7 @@ function init() {
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 100,
+        threshold: 80,
         titleString: "Rain",
         unitString: "Capacity",
         lcdVisible: true,

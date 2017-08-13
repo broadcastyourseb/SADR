@@ -43,3 +43,7 @@ EUMETSAT_LAST="http://oiswww.eumetsat.org/IPPS/html/latestImages/EUMETSAT_MSG_IR
 ##### ALLSKY PICTURE RELATED #####
 #SADR WATERMARK FILE
 WATERMARK="image/watermark.png"
+
+##### PUSHETTA RELATED #####
+API_KEY="57a4fc6d834526367da533545287aea54468b311"
+CHANNEL_NAME="SADR Meteollsky"

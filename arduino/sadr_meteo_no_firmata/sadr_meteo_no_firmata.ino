@@ -82,6 +82,8 @@ IMPORTANT: Customize following values to match your setup
 // Target temperature
 #define COLD_TEMPERATURE_TARGET 30
 #define HOT_TEMPERATURE_TARGET 55
+#define COLD_TEMPERATURE_SECURITY 0 // must be less than COLD_TEMPERATURE_TARGET
+#define HOT_TEMPERATURE_SECURITY 60 // must be greater than HOT_TEMPERATURE_TARGET
 
 /*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
 
@@ -295,11 +297,9 @@ float getTemperature() {
 
   return steinhart;
 }
-void regulHeat() {
-  //Asking for temperature of the rain sensor
-  Temp = getTemperature();
+void regulHeat(double Temperature) {
 
-  double gap = abs(Consigne - Temp); //distance away from setpoint
+  double gap = abs(Consigne - Temperature); //distance away from setpoint
 
   if (gap < 2)
   { //we're close to setpoint, use conservative tuning parameters
@@ -427,6 +427,8 @@ if (T <=2) {
 #endif //USE_DHT_SENSOR_EXTERNAL
 
 #ifdef USE_RAIN_SENSOR
+    //Asking for temperature of the rain sensor
+    Temp = getTemperature();
     Capacity = rain(NUMSAMPLES);
     if (Capacity > RAIN_FLAG_TRIGGER) {
       rainy=1;
@@ -552,7 +554,9 @@ void loop() {
         }
     }
   }
-  regulHeat();
+  if ((Temp < HOT_TEMPERATURE_SECURITY) | (Temp > COLD_TEMPERATURE_SECURITY)) {
+    regulHeat(Temp);
+  }
   #endif //USE_RAIN_SENSOR*/
   
   if ((millis() - tempoSerial) > SERIAL_DELAY ) { // time between 2 serial sending.

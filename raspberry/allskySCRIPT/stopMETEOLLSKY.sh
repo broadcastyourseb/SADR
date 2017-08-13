@@ -14,6 +14,7 @@ then
 fi
 killall meteoRRD_updater.py
 killall meteoRRD_graph.py
-killall sounding.py
 killall meteoRRD_MaxMinAvg.py
 killall allsky_frame.py
+killall sounding.py
+killall pushetta.py
