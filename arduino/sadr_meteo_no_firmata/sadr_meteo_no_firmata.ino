@@ -63,7 +63,7 @@ IMPORTANT: Customize following values to match your setup
 #define IN_STRAY_CAP_TO_GND 31
 #define IN_CAP_TO_GND  31
 #define MAX_ADC_VALUE 1023
-#define RAIN_FLAG_TRIGGER 80 //if above this capacity then rainy is true
+#define RAIN_FLAG_TRIGGER 90 //if above this capacity then rainy is true
 // which analog pin to connect
 #define THERMISTORPIN A3       
 // resistance at 25 degrees C
@@ -143,12 +143,11 @@ IMPORTANT: Customize following values to match your setup
   double Mosfet;
 
   // Déclaration de l'objet PID
-  // Les argument sont les variables de gestion
-  // puis les gains pour P, I et D
-  // et enfin,le mode.
-  //Define the aggressive and conservative Tuning Parameters
-  double aggKp = 6, aggKi = 3, aggKd = 1;
-  double consKp = 1, consKi = 0.05, consKd = 0.25;
+  // Les arguments sont les variables de gestion puis les gains pour P, I et D et enfin,le mode.
+  // Define the aggressive and conservative Tuning Parameters
+  //double aggKp = 43.7, aggKi = 0.323, aggKd = 7.18;
+  double aggKp = 4.47, aggKi = 0.033, aggKd = 0.734;
+  double consKp = 4.47, consKi = 0.033, consKd = 0.734;
   PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
@@ -541,13 +540,13 @@ void loop() {
   if (rainy == 1) {
      Consigne = HOT_TEMPERATURE_TARGET;
   } else {
-    // Min regulation as to be at least 5°C above the global temperature
-    if (COLD_TEMPERATURE_TARGET > T) {
+    // Min regulation as to be at least 5°C above the internal temperature
+    if (COLD_TEMPERATURE_TARGET > T22int) {
         Consigne = COLD_TEMPERATURE_TARGET;
     } else {
-        int newConsigne = T / 5 + 1;
+        int newConsigne = T22int / 5 + 1;
         newConsigne = newConsigne * 5;
-        if (T + 5 < HOT_TEMPERATURE_TARGET) {
+        if (T22int + 5 < HOT_TEMPERATURE_TARGET) {
             Consigne = newConsigne;
         } else {
             Consigne = HOT_TEMPERATURE_TARGET;

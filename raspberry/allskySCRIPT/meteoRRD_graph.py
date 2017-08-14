@@ -65,7 +65,7 @@ def graphs(time):
                         "LINE1:Tir#0000FF:Tir",
                         "LINE1:Thrint#F4A742:TBox",
                         "HRULE:0#00FFFFAA:ZERO",
-                        "AREA:Dew#00008F10:Dew\\r")
+                        "AREA:Dew#F4954250:Dew\\r")
 
     ret = rrdtool.graph(CHARTPATH+"pressure"+str(time)+".png","-A","-X 0", "--start","-"+str(time)+"h","-E",
                         preamble,
@@ -90,8 +90,15 @@ def graphs(time):
                         "DEF:T="+CHARTPATH+"meteo.rrd:TRain:AVERAGE",
                         "DEF:Target="+CHARTPATH+"meteo.rrd:TargetRain:AVERAGE",
                         "LINE1:T#"+orange+":T",
-                        "LINE1:Target#"+white+":Target\\r",
-                        "GPRINT:T:AVERAGE:Avg T\: %6.2lf %S\\r")
+                        "LINE1:Target#"+white+":Target\\r")
+                        
+    ret = rrdtool.graph(CHARTPATH+"PID"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
+                        preamble,
+                        "--title","Rain sensor power heating",
+                        "--watermark","SADR OBSERVATORY",
+                        "--vertical-label=PWM",
+                        "DEF:PIDRain="+CHARTPATH+"meteo.rrd:PIDRain:AVERAGE",
+                        "LINE1:PIDRain#"+green+":PID\\r")
 
     ret = rrdtool.graph(CHARTPATH+"hr"+str(time)+".png","--start","-"+str(time)+"h","-E",
                         preamble,
@@ -102,8 +109,6 @@ def graphs(time):
                         "--vertical-label=%",
                         "DEF:HR="+CHARTPATH+"meteo.rrd:HR:AVERAGE",
                         "DEF:HRint="+CHARTPATH+"meteo.rrd:HRint:AVERAGE",
-                        #"HRULE:100#FF00FFAA:100%",
-                        #"HRULE:0#00FFFFAA:0%",
                         "LINE1:HR#"+orange+":HR",
                         "LINE1:HRint#"+green+":HRBox\\r",
                         "COMMENT:\\n",
@@ -113,19 +118,19 @@ def graphs(time):
                         preamble,
                         "--title","Light",
                         "--watermark","SADR OBSERVATORY",
-                        "--vertical-label=%",
-                        "-u","100",
-                        "-l","-2",
+                        "--vertical-label=Volt",
+                        "-u","5",
+                        "-l","-0.1",
                         "-r",
                         "DEF:Light="+CHARTPATH+"meteo.rrd:Light:AVERAGE",
                         "DEF:daylightFlag="+CHARTPATH+"meteo.rrd:daylightFlag:AVERAGE",
-                        "CDEF:lightrel=Light,0.02,*",
-                        "CDEF:luminous=lightrel,daylightFlag,*",
-                        "LINE1:lightrel#"+orange+":Light",
+                        "CDEF:LightV=Light,0.001,*",
+                        "CDEF:luminous=Light,daylightFlag,*",
+                        "LINE1:LightV#"+orange+":Light",
                         "AREA:luminous#"+colorFill+":daylightFlag\\r",
-                        "AREA:5#"+colorClear+":Dark",
-                        "AREA:50#"+colorMedium+":Light:STACK",
-                        "AREA:100#"+colorHigh+":Very Light:STACK")
+                        "AREA:0.25#"+colorClear+":Dark",
+                        "AREA:2.5#"+colorMedium+":LightV:STACK",
+                        "AREA:5#"+colorHigh+":Very LightV:STACK")
 
     ret = rrdtool.graph(CHARTPATH+"clouds"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
                         preamble,
@@ -148,7 +153,7 @@ def graphs(time):
                         preamble,
                         "--title","Wind",
                         "--watermark","SADR OBSERVATORY",
-                        "--vertical-label=%",
+                        "--vertical-label=km/h",
                         "-u","50",
                         "-l","-2",
                         "-r",
@@ -165,21 +170,19 @@ def graphs(time):
 
     ret = rrdtool.graph(CHARTPATH+"rain"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",preamble,
                         "--title","Rain",
-                        "--vertical-label=%",
+                        "--vertical-label=Capacity",
                         "--watermark","SADR OBSERVATORY",
-                        "-u","100",
-                        "-l","-2",
+                        "-u","300",
+                        "-l","30",
                         "-r",
                         "DEF:CRain="+CHARTPATH+"meteo.rrd:CRain:AVERAGE",
                         "DEF:rainFlag="+CHARTPATH+"meteo.rrd:rainFlag:AVERAGE",
-                        "CDEF:rainoffset=CRain,40,-",
-                        "CDEF:rainrel=rainoffset,0.5,*",
-                        "CDEF:rainy=rainrel,rainFlag,*",
-                        "LINE1:rainrel#"+orange+":Rain",
+                        "CDEF:rainy=CRain,rainFlag,*",
+                        "LINE1:CRain#"+orange+":Rain",
                         "AREA:rainy#"+colorFill+":RainFlag\\r",
-                        "AREA:20#"+colorClear+":Dry",
-                        "AREA:40#"+colorMedium+":Wet:STACK",
-                        "AREA:40#"+colorHigh+":Rain:STACK")
+                        "AREA:90#"+colorClear+":Dry",
+                        "AREA:70#"+colorMedium+":Wet:STACK",
+                        "AREA:150#"+colorHigh+":Rain:STACK")
 
     ret = rrdtool.graph(CHARTPATH+"skyT"+str(time)+".png","--start","-"+str(time)+"h","-E",
                         preamble,

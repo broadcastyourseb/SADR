@@ -79,6 +79,7 @@
                    		$("#pressure").attr("src", "CHART/pressure"+$("#range").val()+".png?t=" + new Date().getTime());
                    		$("#regul").attr("src", "CHART/regul"+$("#range").val()+".png?t=" + new Date().getTime());
 	                    $("#skyT").attr("src", "CHART/skyT"+$("#range").val()+".png?t=" + new Date().getTime());
+	                    $("#PID").attr("src", "CHART/PID"+$("#range").val()+".png?t=" + new Date().getTime());
 	                    
 	                    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
 	                    
@@ -245,6 +246,7 @@
                 <img class="graph" id="skyT"/>
                 <img class="graph" id="alltemp"/>
                 <img class="graph" id="regul"/>
+                <img class="graph" id="PID"/>
             </div>
         </div>
     </body>

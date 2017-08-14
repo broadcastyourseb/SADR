@@ -57,3 +57,11 @@ table, th, td {
     width: 604px;
     height: 335px;
 }
+
+td.display {
+    text-align: right;
+}
+
+td.displaytitle {
+    text-align: center;
+}

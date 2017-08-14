@@ -151,75 +151,75 @@
                 </tr>
                 <!-- OTHER MEASURE PART -->
                 <tr>
-                    <td align="center">
+                    <td class="displaytitle">
                         <b>Other Temperatures</b>
                     </td>
-                    <td align="center">
+                    <td class="displaytitle">
                         <b>Allsky Box</b>
                     </td>
-                    <td align="center">
+                    <td class="displaytitle">
                         <b>Rain sensor</b>
                     </td>
-                    <td align="center">
+                    <td class="displaytitle">
                         <b>Other</b>
                     </td>
                 </tr>
                 <tr>
-                    <td align="right">
+                    <td class="display">
                         <b>Tp (inside)</b>
                         <canvas id=Tp></canvas>
                     </td>
-                    <td align="right">
+                    <td class="display">
                         <b>Temp°</b>
                         <canvas id=Thrint></canvas>
                     </td>
-                    <td align="right">
+                    <td class="display">
                         <b>Target Temp°</b>
-                        <canvas id=TargetRain></canvas
+                        <canvas id=TargetRain></canvas>
                     </td>
-                    <td>
+                    <td class="display">
                         <b>Dew Point</b>
                         <canvas id=Dew ></canvas>
                     </td>
                 </tr>
                 <tr>
-                    <td align="right">
+                    <td class="display">
                         <b>Tir (outside)</b>
                         <canvas id=Tir></canvas>
                     </td>
-                    <td align="right">
+                    <td class="display">
                         <b>Humidity</b>
                         <canvas id=HRint></canvas>
                     </td>
-                    <td align="right">
+                    <td class="display">
                         <b>Heating Power</b>
                         <canvas id=PIDRain></canvas>
                     </td>
-                    <td>
+                    <td class="display">
                         <b>Max Wind</b>
                         <canvas id=WindMax></canvas>
                     </td>
                 </tr>
                 <tr>
-                    <td align="right">
+                    <td class="display">
                         <b>Sky T° Actual</b>
                         <canvas id=skyT ></canvas>
                     </td>
-                    <td align="right">
+                    <td class="display">
                     </td>
-                    <td align="right">
+                    <td class="display">
                     </td>
-                    <td>
+                    <td class="display">
                     </td>
                 </tr>
                 <tr>
-                    <td align="right">
+                    <td class="display">
                         <b>Sky T° Corrected</b>
                         <canvas id=skyTcorrected></canvas>
                     </td>
-                    <td align="right">
+                    <td class="display">
                     </td>
-                    <td align="right">
+                    <td class="display">
                     </td>
                     <td>
                     </td>
@@ -376,7 +376,7 @@ function init() {
     // Define some sections
     var sectionsRAIN = Array();
 	// Define one area
-    var areasRAIN = Array(steelseries.Section(80, 300, 'rgba(250, 0, 0, 0.3)'));
+    var areasRAIN = Array(steelseries.Section(90, 300, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	CRain = new steelseries.Radial('CRain', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -391,7 +391,7 @@ function init() {
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 80,
+        threshold: 90,
         titleString: "Rain",
         unitString: "Capacity",
         lcdVisible: true,
