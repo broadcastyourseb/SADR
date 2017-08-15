@@ -58,10 +58,21 @@ table, th, td {
     height: 335px;
 }
 
+.minigraph {
+    width: 604px;
+    height: 335px;
+    text-align: center;
+}
+
 td.display {
     text-align: right;
 }
 
 td.displaytitle {
     text-align: center;
+}
+
+#banner {
+    background-color: #78b5ff;
+    width:1200px;
 }

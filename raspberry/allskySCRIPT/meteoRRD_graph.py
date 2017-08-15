@@ -94,6 +94,9 @@ def graphs(time):
                         
     ret = rrdtool.graph(CHARTPATH+"PID"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
                         preamble,
+                        "-u","260",
+                        "-l","-5",
+                        "-r",
                         "--title","Rain sensor power heating",
                         "--watermark","SADR OBSERVATORY",
                         "--vertical-label=PWM",
@@ -125,7 +128,7 @@ def graphs(time):
                         "DEF:Light="+CHARTPATH+"meteo.rrd:Light:AVERAGE",
                         "DEF:daylightFlag="+CHARTPATH+"meteo.rrd:daylightFlag:AVERAGE",
                         "CDEF:LightV=Light,0.001,*",
-                        "CDEF:luminous=Light,daylightFlag,*",
+                        "CDEF:luminous=LightV,daylightFlag,*",
                         "LINE1:LightV#"+orange+":Light",
                         "AREA:luminous#"+colorFill+":daylightFlag\\r",
                         "AREA:0.25#"+colorClear+":Dark",
@@ -180,8 +183,8 @@ def graphs(time):
                         "CDEF:rainy=CRain,rainFlag,*",
                         "LINE1:CRain#"+orange+":Rain",
                         "AREA:rainy#"+colorFill+":RainFlag\\r",
-                        "AREA:90#"+colorClear+":Dry",
-                        "AREA:70#"+colorMedium+":Wet:STACK",
+                        "AREA:80#"+colorClear+":Dry",
+                        "AREA:80#"+colorMedium+":Wet:STACK",
                         "AREA:150#"+colorHigh+":Rain:STACK")
 
     ret = rrdtool.graph(CHARTPATH+"skyT"+str(time)+".png","--start","-"+str(time)+"h","-E",

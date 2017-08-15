@@ -306,7 +306,7 @@ function init() {
         minValue:0,
         maxValue:100,
         trendVisible:true,
-        minMeasuredValueVisible:false,
+        minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
@@ -360,7 +360,7 @@ function init() {
         minValue:0,
         maxValue:5500,
         trendVisible:true,
-        minMeasuredValueVisible:false,
+        minMeasuredValueVisible:true,
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
@@ -376,7 +376,7 @@ function init() {
     // Define some sections
     var sectionsRAIN = Array();
 	// Define one area
-    var areasRAIN = Array(steelseries.Section(90, 300, 'rgba(250, 0, 0, 0.3)'));
+    var areasRAIN = Array(steelseries.Section(80, 300, 'rgba(250, 0, 0, 0.3)'));
     // Initializing gauge   
 	CRain = new steelseries.Radial('CRain', {
         gaugeType: steelseries.GaugeType.TYPE4,
@@ -391,7 +391,7 @@ function init() {
         maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
-        threshold: 90,
+        threshold: 80,
         titleString: "Rain",
         unitString: "Capacity",
         lcdVisible: true,
@@ -414,8 +414,8 @@ function init() {
         minValue:0,
         maxValue:100,
         trendVisible:true,
-        minMeasuredValueVisible:false,
-        maxMeasuredValueVisible:false,
+        minMeasuredValueVisible:true,
+        maxMeasuredValueVisible:true,
         ledVisible:true,
         thresholdVisible:false,
         threshold: 30,
@@ -617,28 +617,34 @@ function init() {
         P.resetMinMeasuredValue();
         HR.resetMinMeasuredValue();
         Wind.resetMinMeasuredValue();
+        Light.resetMinMeasuredValue();
         CRain.resetMinMeasuredValue();
+        TRain.resetMinMeasuredValue();
     })
     
-    $.get("CHART/MINvalues.json", function(data) {
-        T.setMinMeasuredValue(data.T);
-        P.setMinMeasuredValue(data.P);
-        HR.setMinMeasuredValue(data.HR);
-        Wind.setMinMeasuredValue(data.Wind);
-        TRain.setMinMeasuredValue(data.TRain);
-        Light.setMinMeasuredValue(data.Light);
-        CRain.setMinMeasuredValue(data.CRain);
-    })
-    
-    $.get("CHART/MAXvalues.json", function(data) {
-        T.setMaxMeasuredValue(data.T);
-        P.setMaxMeasuredValue(data.P);
-        HR.setMaxMeasuredValue(data.HR);
-        Wind.setMaxMeasuredValue(data.Wind);
-        TRain.setMaxMeasuredValue(data.TRain);
-        Light.setMaxMeasuredValue(data.Light);
-        CRain.setMaxMeasuredValue(data.CRain);
-    })
+    function updateMinMaxIndicator(){
+        $.get("CHART/MINvalues.json", function(data) {
+            T.setMinMeasuredValue(data.T);
+            P.setMinMeasuredValue(data.P);
+            HR.setMinMeasuredValue(data.HR);
+            Wind.setMinMeasuredValue(data.Wind);
+            Light.setMinMeasuredValue(data.Light);
+            clouds.setMinMeasuredValue(data.clouds);
+            CRain.setMinMeasuredValue(data.CRain);
+            TRain.setMinMeasuredValue(data.TRain);
+        })
+        
+        $.get("CHART/MAXvalues.json", function(data) {
+            T.setMaxMeasuredValue(data.T);
+            P.setMaxMeasuredValue(data.P);
+            HR.setMaxMeasuredValue(data.HR);
+            Wind.setMaxMeasuredValue(data.Wind);
+            Light.setMaxMeasuredValue(data.Light);
+            clouds.setMaxMeasuredValue(data.clouds);
+            CRain.setMaxMeasuredValue(data.CRain);
+            TRain.setMaxMeasuredValue(data.TRain);
+        })
+	}
 	
     setInterval( function(){ updatedata();}, 10000);
     
@@ -648,10 +654,11 @@ function init() {
             T.setTrend(steelseries.TrendState.STEADY);
             P.setTrend(steelseries.TrendState.STEADY);
             HR.setTrend(steelseries.TrendState.STEADY);
-            Light.setTrend(steelseries.TrendState.STEADY);
             Wind.setTrend(steelseries.TrendState.STEADY);
-            CRain.setTrend(steelseries.TrendState.STEADY);
+            Light.setTrend(steelseries.TrendState.STEADY);
             clouds.setTrend(steelseries.TrendState.STEADY);
+            CRain.setTrend(steelseries.TrendState.STEADY);
+
             if (T.getValue() > data.T+0.1) { T.setTrend(steelseries.TrendState.UP);}
             if (T.getValue() < data.T-0.1)   { T.setTrend(steelseries.TrendState.DOWN);}
             
@@ -682,23 +689,28 @@ function init() {
             T.setValueAnimated(data.T);
             P.setValueAnimated(data.P);
             HR.setValueAnimated(data.HR);
-            Light.setValueAnimated(data.Light);
             Wind.setValueAnimated(data.Wind);
-            CRain.setValueAnimated(data.CRain);
+            Light.setValueAnimated(data.Light);
             clouds.setValueAnimated(data.clouds);
-            updateTrendIndicator();
+            CRain.setValueAnimated(data.CRain);
+            TRain.setValueAnimated(data.TRain);
+
+            Tp.setValue(data.Tp);
+            Tir.setValue(data.Tir);
             skyT.setValue(data.IR);
             skyTcorrected.setValue(data.skyT);
-            Dew.setValue(data.Dew);
-            HRint.setValue(data.HRint);
             Thrint.setValue(data.Thrint);
-            Tp.setValue(data.Tp);
-            WindMax.setValue(data.WindMax);
-            Tir.setValue(data.Tir);
-            TRain.setValue(data.TRain);
+            HRint.setValue(data.HRint);
             TargetRain.setValue(data.TargetRain);
-            TRain.setSection(Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)')));
             PIDRain.setValue(data.PIDRain);
+            Dew.setValue(data.Dew);
+            WindMax.setValue(data.WindMax);
+            
+            updateTrendIndicator();
+            updateMinMaxIndicator();
+
+            TRain.setSection(Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)')));
+            
             lightLed.setLedOnOff(false);
             cloudLed.setLedOnOff(false);
             dewLed.setLedOnOff(false);

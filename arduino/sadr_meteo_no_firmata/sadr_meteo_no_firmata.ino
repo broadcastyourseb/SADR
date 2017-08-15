@@ -63,7 +63,7 @@ IMPORTANT: Customize following values to match your setup
 #define IN_STRAY_CAP_TO_GND 31
 #define IN_CAP_TO_GND  31
 #define MAX_ADC_VALUE 1023
-#define RAIN_FLAG_TRIGGER 90 //if above this capacity then rainy is true
+#define RAIN_FLAG_TRIGGER 80 //if above this capacity then rainy is true
 // which analog pin to connect
 #define THERMISTORPIN A3       
 // resistance at 25 degrees C
@@ -80,9 +80,9 @@ IMPORTANT: Customize following values to match your setup
 // On contrôle avec la broche 11
 #define OUTP 11
 // Target temperature
-#define COLD_TEMPERATURE_TARGET 30
+#define COLD_TEMPERATURE_TARGET 25
 #define HOT_TEMPERATURE_TARGET 55
-#define COLD_TEMPERATURE_SECURITY 0 // must be less than COLD_TEMPERATURE_TARGET
+#define COLD_TEMPERATURE_SECURITY -20 // must be less than COLD_TEMPERATURE_TARGET
 #define HOT_TEMPERATURE_SECURITY 60 // must be greater than HOT_TEMPERATURE_TARGET
 
 /*END OFF CUSTOMIZATION. YOU SHOULD NOT NEED TO CHANGE ANYTHING BELOW */
@@ -145,13 +145,12 @@ IMPORTANT: Customize following values to match your setup
   // Déclaration de l'objet PID
   // Les arguments sont les variables de gestion puis les gains pour P, I et D et enfin,le mode.
   // Define the aggressive and conservative Tuning Parameters
-  //double aggKp = 43.7, aggKi = 0.323, aggKd = 7.18;
-  double aggKp = 4.47, aggKi = 0.033, aggKd = 0.734;
+  double aggKp = 43.7, aggKi = 0.323, aggKd = 7.18;
   double consKp = 4.47, consKi = 0.033, consKd = 0.734;
   PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime,reedSwitchTime;
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime,reedSwitchTime, stringCheck;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long reedSwitchCount; // cup rotation counter used in interrupt routine
 volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
@@ -227,7 +226,7 @@ void isr_rotation () {
   // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
   //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
   WindSpeed = (reedSwitchCount - 1) / reedSwitchTime * 30000;
-  if (MiniTime == SERIAL_DELAY) {
+  if (MiniTime == SERIAL_DELAY || MiniTime == 0) {
     MaxWindSpeed = WindSpeed ;
   } else {
     //MaxWindSpeed = (1 / 2 * 60) / (MiniTime / 1000);
@@ -256,7 +255,6 @@ float rain(int integration) {
       //Low value capacitor
       //Clear everything for next measurement
       pinMode(RAIN_IN_PIN, OUTPUT);
-      //delay(10);
   
       //Calculate and print result
       capacitance = (float)val * IN_CAP_TO_GND / (float)(MAX_ADC_VALUE - val);
@@ -446,6 +444,25 @@ if (T <=2) {
 }
 
 /*==============================================================================
+ * CHECK OUPUT SERIAL
+ *============================================================================*/
+bool outputCheck() {
+
+    // Initialize the check variable to zero
+    stringCheck = true;
+    // Sum output variable
+    float checksum = stringCheck = T + frezzing + Light + daylight + T22int + Hr22int + T22ext + Hr22ext + DewExt +
+    dewing + Tir + IR + skyT + Clouds + cloudy + P + Tp + WindSpeed + MaxWindSpeed + windy + Capacity +
+    rainy + Consigne + Temp + Mosfet ;
+
+    // If everything is ok, function return TRUE
+    if (isnan(checksum) || isinf(checksum)) {
+        stringCheck = false ;
+    }
+    return stringCheck;   
+}
+
+/*==============================================================================
  * OUPUT SERIAL
  *============================================================================*/
 void outputChain() {
@@ -529,6 +546,7 @@ void outputChain() {
  *============================================================================*/
 void setup() {
   setupMeteoStation();
+  delay(5000);
 }
 
 /*==============================================================================
@@ -540,19 +558,15 @@ void loop() {
   if (rainy == 1) {
      Consigne = HOT_TEMPERATURE_TARGET;
   } else {
-    // Min regulation as to be at least 5°C above the internal temperature
-    if (COLD_TEMPERATURE_TARGET > T22int) {
-        Consigne = COLD_TEMPERATURE_TARGET;
-    } else {
-        int newConsigne = T22int / 5 + 1;
-        newConsigne = newConsigne * 5;
-        if (T22int + 5 < HOT_TEMPERATURE_TARGET) {
-            Consigne = newConsigne;
-        } else {
-            Consigne = HOT_TEMPERATURE_TARGET;
+     if (!isnan(T22int)) {
+        int newConsigne = ((T22int / 5) + 2 );
+        newConsigne *= 5;
+        if (newConsigne > COLD_TEMPERATURE_TARGET && newConsigne < HOT_TEMPERATURE_TARGET) {
+            Consigne = max(COLD_TEMPERATURE_TARGET , newConsigne);
         }
-    }
+     }
   }
+
   if ((Temp < HOT_TEMPERATURE_SECURITY) | (Temp > COLD_TEMPERATURE_SECURITY)) {
     regulHeat(Temp);
   }
@@ -560,7 +574,9 @@ void loop() {
   
   if ((millis() - tempoSerial) > SERIAL_DELAY ) { // time between 2 serial sending.
     runMeteoStation();
-    outputChain();
+    if (outputCheck()) {
+        outputChain();
+    }
     tempoSerial = millis();
     ContactBounceTime = 0; // Set ContactBounceTime count to 0 after calculations
     reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
