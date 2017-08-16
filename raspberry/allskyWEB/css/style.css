@@ -63,6 +63,7 @@ table, th, td {
     width: 604px;
     height: 335px;
     text-align: center;
+    vertical-align:top;
 }
 
 .extImage {
