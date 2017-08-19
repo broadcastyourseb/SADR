@@ -88,7 +88,11 @@ while (True):
         fi=open(CHARTPATH+"RTdata.json","w")
         fi.write(x)
         fi.close()
+        fi=open(CHARTPATH+"luminosity.js","w")
+        fi.write("var luminosity=%s\n" % splitData[3])
+        fi.close()
         del data
+        del splitData
         del json_dict
         collected = gc.collect()
     time.sleep(30)

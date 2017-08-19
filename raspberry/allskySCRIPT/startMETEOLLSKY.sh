@@ -23,12 +23,12 @@ if [ -f "$CHARTPATH/meteo.rrd" ];
 then
    echo "RRD file exists."
 else
-   echo "RRD file exists does not exist. Creating"
+   echo "RRD does not exist. Creating"
    ./meteoRRD_createRRD.py
 fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
 ./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 19 50 &
+./allsky_frame.py 19 100 &
 #./sounding.py &
 #./pushetta.py &

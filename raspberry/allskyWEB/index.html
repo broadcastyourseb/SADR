@@ -74,10 +74,7 @@
                 
                 update();
                 
-                function update() {
-                    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
-                    $("#temp").attr("src", "CHART/temp"+$("#range").val()+".png");
-                    
+                function update() {                    
                     $.get("CHART/RTdata.json", function(data){
                    		$("#time").text(data.TIME);
 
