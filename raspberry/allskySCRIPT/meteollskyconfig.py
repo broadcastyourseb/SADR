@@ -23,7 +23,7 @@ DEVICEPORT="/dev/ttyACM0"
 ##### SITE RELATED ####
 OWNERNAME="SADR"
 SITENAME="HACIENDA DES ETOILES"
-ALTITUDE=0 #1540
+ALTITUDE=1540
 #Visit http://weather.uwyo.edu/upperair/sounding.html
 #See the sounding location close your site
 SOUNDINGSTATION="07510"
