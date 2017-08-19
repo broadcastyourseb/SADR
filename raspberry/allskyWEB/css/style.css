@@ -54,6 +54,10 @@ table, th, td {
     margin-bottom:10px;
 }
 
+#infopanel {
+    text-align: center;
+}
+
 .graph {
     width: 604px;
     height: 335px;
@@ -82,4 +86,15 @@ td.displaytitle {
 #banner {
     background-color: #78b5ff;
     width:1200px;
+}
+
+#content {
+    /*width:1200px;
+    height:100%;*/
+    text-align:center;
+}
+
+#allsky {
+    width:890px;
+    height:820px;
 }

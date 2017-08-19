@@ -1,1 +1,234 @@
-allinone.html
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title>Allsky SADR</title>
+        <link rel="icon" type="image/png" href="images/favicon.png" />
+        <meta name="author" content="Sébastien Leclerc" >
+        <meta name="date" content="2017-08-18T23:41:00+0200" >
+        <meta name="copyright" content="">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
+        <meta http-equiv="content-style-type" content="text/css">
+        <meta http-equiv="expires" content="1">
+        <link rel=stylesheet href=css/style.css type=text/css charset=utf-8>
+        <script src="js/jquery.min.js"></script>
+        <script type=text/javascript src=CHART/meteoconfig.js></script>
+        <script type=text/javascript src=js/tween-min.js></script>
+        <script type=text/javascript src=js/steelseries-min.js></script>
+        <script>
+            function init() {
+                
+                // General variables
+                var timeOut=5;// Max timeout update in minutes before sending an alarm
+                
+                info = new steelseries.DisplaySingle('info', {
+                    width: 1200,
+                    height: 30,
+                    unitStringVisible: false,
+                    valuesNumeric: false,
+                    autoScroll:true,
+                    lcdColor:steelseries.LcdColor.STANDARD
+                });
+                
+                lightLed = new steelseries.Led('daylightFlag', {
+                    size:50,
+                    ledColor:steelseries.LedColor.RED_LED
+                });
+
+                cloudLed = new steelseries.Led('cloudFlag', {
+                    size:50,
+                    ledColor:steelseries.LedColor.RED_LED
+                });
+
+                frezzingLed = new steelseries.Led('frezzingFlag', {
+                    size:50,
+                    ledColor:steelseries.LedColor.RED_LED
+                });
+
+                dewLed = new steelseries.Led('dewFlag', {
+                    size:50,
+                    ledColor:steelseries.LedColor.RED_LED
+                });
+
+                rainLed = new steelseries.Led('rainFlag', {
+                    size:50,
+                    ledColor:steelseries.LedColor.RED_LED
+                });
+                windLed = new steelseries.Led('windFlag', {
+                    size:50,
+                    ledColor:steelseries.LedColor.RED_LED
+                });
+                
+                info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
+                info.setScrolling(true);
+                
+                lightLed.setLedOnOff(false);
+                cloudLed.setLedOnOff(false);
+                dewLed.setLedOnOff(false);
+                frezzingLed.setLedOnOff(false);
+                windLed.setLedOnOff(false);
+                rainLed.setLedOnOff(false);
+                
+                update();
+                
+                function update() {
+                    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
+                    $("#temp").attr("src", "CHART/temp"+$("#range").val()+".png");
+                    
+                    $.get("CHART/RTdata.json", function(data){
+                   		$("#time").text(data.TIME);
+
+                        var warningText='';
+                        
+                        if (data.daylightFlag==1) {
+                        warningText=warningText+"  ****** LUMINOUS ******  ";
+                        lightLed.setLedOnOff(true);
+                        } else {
+                            lightLed.setLedOnOff(false);
+                        }
+                        
+                        if (data.cloudFlag==1) {
+                            warningText=warningText+"  ****** CLOUDY ******  ";
+                            cloudLed.setLedOnOff(true);
+                        } else {
+                            cloudLed.setLedOnOff(false);
+                        }
+                        
+                        if (data.dewFlag==1) {
+                            warningText=warningText+"  ******  DEWING  ******  ";
+                            dewLed.setLedOnOff(true);
+                        } else {
+                            dewLed.setLedOnOff(false);
+                        }
+                        
+                        if (data.frezzingFlag==1) {
+                            warningText=warningText+"  ****** FREZZING ******  ";
+                            frezzingLed.setLedOnOff(true);
+                        } else {
+                            frezzingLed.setLedOnOff(false);
+                        }
+                        
+                        if (data.windFlag==1) {
+                            warningText=warningText+"  ****** WINDY ******  ";
+                            windLed.setLedOnOff(true);
+                        } else {
+                            windLed.setLedOnOff(false);
+                        }
+                        
+                        if (data.rainFlag==1) {
+                            warningText=warningText+"  ****** RAINY ******  ";
+                            rainLed.setLedOnOff(true);
+                         } else {
+                            rainLed.setLedOnOff(false);
+                        }
+                        
+                        warningText=warningText+data.TIME;
+		                info.setValue(warningText);
+                        var dateClient = new Date();
+                        dateClient.setHours(dateClient.getHours() + dateClient.getTimezoneOffset()/60); // dateClient in UTC hours
+                        var dateRRD = new Date(data.TIME);
+                        dateRRD.setHours(dateRRD.getHours() - servertimezone); // dateRRD in UTC hours
+                        if (dateClient-dateRRD>timeOut*60000) {
+                            info.setValue("WARNING. No updated since: "+data.TIME+" in local time");
+                        }
+                    }, "json")
+               }
+			                    		  
+               setInterval(function() {update();}, 10000);
+            }
+        </script>
+    </head>
+    <body onload=init()>
+        <div id=main>
+            <div id="left">
+            <!-- LED PART -->
+                <table>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" onClick='document.getElementById("contentframe").src="allinone.html";' value="Main" id="button"/>
+                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" onClick='document.getElementById("contentframe").src="allsky.html";' value="Allsky" id="button"/>
+                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" onClick='document.getElementById("contentframe").src="measures.html";' value="Measures" id="button"/>
+                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" onClick='document.getElementById("contentframe").src="graphs.html";' value="Graphs" id="button"/>
+                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" onClick='document.getElementById("contentframe").src="external.html";' value="Ext. Datas" id="button"/>
+                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id=frezzingFlag ></canvas>
+                        </td>
+                        <td>
+                            <b>Frezzing</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id=daylightFlag ></canvas>
+                        </td>
+                        <td>
+                            <b>Luminosity</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id=cloudFlag ></canvas>
+                        </td>
+                        <td>
+                            <b>Cloudy</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id=dewFlag ></canvas>
+                        </td>
+                        <td>
+                            <b>Dewing</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id=windFlag ></canvas>
+                        </td>
+                        <td>
+                            <b>Windy</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id=rainFlag ></canvas>
+                        </td>
+                        <td>
+                            <b>Rainy</b>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="right">
+                <div id="title">
+                    <img src=images/header.png id="banner">
+                </div>
+                <canvas id=info ></canvas>
+                <iframe id="contentframe" src="allinone.html" frameborder="0" scrolling="NO" allowtransparency="true" style="width: 100%; height: 4000px;">
+                </iframe>
+            </div>
+        </div>
+    </body>
+</html>

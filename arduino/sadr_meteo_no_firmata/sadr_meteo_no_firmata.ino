@@ -67,7 +67,7 @@ IMPORTANT: Customize following values to match your setup
 // which analog pin to connect
 #define THERMISTORPIN A3       
 // resistance at 25 degrees C
-#define THERMISTORNOMINAL 100000     
+#define THERMISTORNOMINAL 100000
 // temp. for nominal resistance (almost always 25 C)
 #define TEMPERATURENOMINAL 25
 // how many samples to take and average, more takes longer
@@ -252,12 +252,20 @@ float rain(int integration) {
       int val = analogRead(RAIN_IN_PIN);
       digitalWrite(RAIN_OUT_PIN, LOW);
   
-      //Low value capacitor
       //Clear everything for next measurement
       pinMode(RAIN_IN_PIN, OUTPUT);
+      delay(5);
   
       //Calculate and print result
-      capacitance = (float)val * IN_CAP_TO_GND / (float)(MAX_ADC_VALUE - val);
+      if (val == MAX_ADC_VALUE) { // Avoid a division by 0
+        capacitance = 300;
+      } else {
+        capacitance = (float)val * IN_CAP_TO_GND / (float)(MAX_ADC_VALUE - val);
+      }
+      // Max capacitance is 300. It's more handy.
+      if (capacitance > 300) {
+        capacitance = 300; 
+      }
       moyenne += capacitance;
     }
     moyenne = moyenne / integration;
@@ -459,7 +467,8 @@ bool outputCheck() {
     if (isnan(checksum) || isinf(checksum)) {
         stringCheck = false ;
     }
-    return stringCheck;   
+    //Serial.println(checksum);
+    return stringCheck;
 }
 
 /*==============================================================================
@@ -576,8 +585,13 @@ void loop() {
     runMeteoStation();
     if (outputCheck()) {
         outputChain();
+    } else {
+        Serial.print("error:");
+        outputChain();
     }
     tempoSerial = millis();
+    WindSpeed = 0; // Set WindSpeed count to 0 after calculations
+    MaxWindSpeed = 0; // Set MaxWindSpeed count to 0 after calculations
     ContactBounceTime = 0; // Set ContactBounceTime count to 0 after calculations
     reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
     reedSwitchTime = 0; // Set reedSwitchTime to 0 afer calculations

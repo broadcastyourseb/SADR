@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
+    <head>
         <title>MeteoStation SADR</title>
         <link rel="icon" type="image/png" href="images/favicon.png" />
         <meta name="author" content="Sébastien Leclerc" >
@@ -20,51 +20,7 @@
         <script type=text/javascript src=js/steelseries-min.js></script>
         <script>
             function init() {
-                
-                // General variables
-                var timeOut=5;// Max timeout update in minutes before sending an alarm
-                
-                info = new steelseries.DisplaySingle('info', {
-                    width: 1200,
-                    height: 30,
-                    unitStringVisible: false,
-                    valuesNumeric: false,
-                    autoScroll:true,
-                    lcdColor:steelseries.LcdColor.STANDARD
-                });
-                
-                lightLed = new steelseries.Led('daylightFlag', {
-                    size:50,
-                    ledColor:steelseries.LedColor.RED_LED
-                });
 
-                cloudLed = new steelseries.Led('cloudFlag', {
-                    size:50,
-                    ledColor:steelseries.LedColor.RED_LED
-                });
-
-                frezzingLed = new steelseries.Led('frezzingFlag', {
-                    size:50,
-                    ledColor:steelseries.LedColor.RED_LED
-                });
-
-                dewLed = new steelseries.Led('dewFlag', {
-                    size:50,
-                    ledColor:steelseries.LedColor.RED_LED
-                });
-
-                rainLed = new steelseries.Led('rainFlag', {
-                    size:50,
-                    ledColor:steelseries.LedColor.RED_LED
-                });
-                windLed = new steelseries.Led('windFlag', {
-                    size:50,
-                    ledColor:steelseries.LedColor.RED_LED
-                });
-                
-                info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
-                info.setScrolling(true);
-            
                 update();
                     
                 function update() {
@@ -81,174 +37,34 @@
                    		$("#regul").attr("src", "CHART/regul"+$("#range").val()+".png?t=" + new Date().getTime());
 	                    $("#skyT").attr("src", "CHART/skyT"+$("#range").val()+".png?t=" + new Date().getTime());
 	                    $("#PID").attr("src", "CHART/PID"+$("#range").val()+".png?t=" + new Date().getTime());
-	                    
-	                    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
-	                    
-	                    lightLed.setLedOnOff(false);
-                        cloudLed.setLedOnOff(false);
-                        dewLed.setLedOnOff(false);
-                        frezzingLed.setLedOnOff(false);
-                        windLed.setLedOnOff(false);
-                        rainLed.setLedOnOff(false);
-
-                        var warningText='';
-                        
-                        if (data.daylightFlag==1) {
-                        warningText=warningText+"  ****** LUMINOUS ******  ";
-                        lightLed.setLedOnOff(true);
-                        }
-                        
-                        if (data.cloudFlag==1) {
-                            warningText=warningText+"  ****** CLOUDY ******  ";
-                            cloudLed.setLedOnOff(true);
-                        }
-                        
-                        if (data.dewFlag==1) {
-                            warningText=warningText+"  ******  DEWING  ******  ";
-                            dewLed.setLedOnOff(true);
-                        }
-                        
-                        if (data.frezzingFlag==1) {
-                            warningText=warningText+"  ****** FREZZING ******  ";
-                            frezzingLed.setLedOnOff(true);
-                        }
-                        
-                        if (data.windFlag==1) {
-                            warningText=warningText+"  ****** WINDY ******  ";
-                            windLed.setLedOnOff(true);
-                        }
-                        
-                        if (data.rainFlag==1) {
-                            warningText=warningText+"  ****** RAINY ******  ";
-                            rainLed.setLedOnOff(true);
-                        }
-                        
-                        warningText=warningText+data.TIME;
-	                    info.setValue(warningText);
-                        var dateClient = new Date();
-                        dateClient.setHours(dateClient.getHours() + dateClient.getTimezoneOffset()/60); // dateClient in UTC hours
-                        var dateRRD = new Date(data.TIME);
-                        dateRRD.setHours(dateRRD.getHours() - servertimezone); // dateRRD in UTC hours
-                        if (dateClient-dateRRD>timeOut*60000) {
-                            info.setValue("WARNING. No updated since: "+data.TIME+" in local time");
-                        }
                     }, "json")
-                }
-		                        		  
+                }         		  
                 setInterval(function() {update();}, 10000);
             }
         </script>
     </head>
     <body onload=init()>
-        <div id=main>
-            <div id="left">
-            <!-- LED PART -->
-                <table>
-                    <tr>
-                        <td colspan="2">
-                            <input type="button" onclick="location.href='index.html';" value="Main" id="button"/>
-                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="button" onclick="location.href='allsky.html';" value="Allsky" id="button" />
-                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="button" onclick="location.href='measures.html';" value="Measures" id="button" />
-                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="button" onclick="location.href='graphs.html';" value="Graphs" id="button" />
-                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="button" onclick="location.href='external.html';" value="Ext. Datas" id="button" />
-                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>Range</b>
-                         </td>
-                         <td>
-                            <select id="range" onchange=update()>
-                                <option value=3>3 Hours</option>
-                                <option value=24>24 Hours</option>                    
-                                <option value=168>1 Week</option>
-                                <option value=1176>1 Month</option>
-                            </select>
-                        </td>
-                    </tr>             
-                    <tr>
-                        <td>
-                            <canvas id=frezzingFlag ></canvas>
-                        </td>
-                        <td>
-                            <b>Frezzing</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <canvas id=daylightFlag ></canvas>
-                        </td>
-                        <td>
-                            <b>Luminosity</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <canvas id=cloudFlag ></canvas>
-                        </td>
-                        <td>
-                            <b>Cloudy</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <canvas id=dewFlag ></canvas>
-                        </td>
-                        <td>
-                            <b>Dewing</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <canvas id=windFlag ></canvas>
-                        </td>
-                        <td>
-                            <b>Windy</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <canvas id=rainFlag ></canvas>
-                        </td>
-                        <td>
-                            <b>Rainy</b>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div id="right">
-                <div id="title">
-                    <img src=images/header.png id="banner">
-                </div>
-                <canvas id=info ></canvas>
-                <img class="graph" id="clouds"/>
-                <img class="graph" id="rain"/>
-                <img class="graph" id="light"/>
-                <img class="graph" id="wind"/>
-                <img class="graph" id="temp"/>
-                <img class="graph" id="pressure"/>
-                <img class="graph" id="hr"/>
-                <img class="graph" id="skyT"/>
-                <img class="graph" id="alltemp"/>
-                <img class="graph" id="regul"/>
-                <img class="graph" id="PID"/>
-            </div>
+        <div id="choice">
+            <b>Range</b>
+            <select id="range" onchange=update()>
+                <option value=3>3 Hours</option>
+                <option value=24>24 Hours</option>                    
+                <option value=168>1 Week</option>
+                <option value=1176>1 Month</option>
+            </select>
+        </div>            
+        <div id="content">
+            <img class="graph" id="clouds"/>
+            <img class="graph" id="rain"/>
+            <img class="graph" id="light"/>
+            <img class="graph" id="wind"/>
+            <img class="graph" id="temp"/>
+            <img class="graph" id="pressure"/>
+            <img class="graph" id="hr"/>
+            <img class="graph" id="skyT"/>
+            <img class="graph" id="alltemp"/>
+            <img class="graph" id="regul"/>
+            <img class="graph" id="PID"/>
         </div>
     </body>
 </html>

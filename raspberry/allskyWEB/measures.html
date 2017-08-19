@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html> 
     <head>
         <title>MeteoStation SADR</title>
         <link rel="icon" type="image/png" href="images/favicon.png" />
@@ -17,108 +17,453 @@
         <script type=text/javascript src=CHART/meteoconfig.js></script>
         <script type=text/javascript src=js/tween-min.js></script>
         <script type=text/javascript src=js/steelseries-min.js></script>
+        <script>
+        function init() {	
+            // General variables
+            var timeOut=5;// Max timeout update in minutes before sending an alarm
+            
+            //////////////////////////////// TEMPERATURE /////////////////////////////
+	        // Define some sections
+            var sectionsT = Array();
+	        // Define one area
+            var areasT = Array(steelseries.Section(-15, 0, 'rgba(250, 0, 0, 0.3)'),
+                               steelseries.Section(40, 55, 'rgba(250, 0, 0, 0.3)'));
+	        // Initializing gauge
+            T = new steelseries.Radial('T', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsT,
+                area: areasT,
+                size:275,
+                minValue:-15,
+                maxValue:55,
+                niceScale:false,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                thresholdVisible:false,
+                threshold:40,
+                ledVisible:true,
+                titleString: "Temperature",
+                unitString: "°C",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //************************************************************************
+            
+            //////////////////////////////// PRESSURE /////////////////////////////
+	        // Define some variables
+            var P0=(1013.25/Math.exp(altitude/8000)) | 0;
+            var Pdelta=25;
+            // Define some sections
+            var sectionsP = Array();
+          	// Define one area
+            var areasP = Array();
+            // Initializing gauge
+             P= new steelseries.Radial('P', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsP,
+                area: areasP,
+                size:275,
+                niceScale:false,
+                minValue:P0-Pdelta,
+                maxValue:P0+Pdelta,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:false,
+                thresholdVisible:false,
+                titleString: "Pressure",
+                unitString: "hPa",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+            
+            //////////////////////////////// WIND /////////////////////////////////
+                // Define some sections
+            var sectionsWIND = Array();
+          	// Define one area
+            var areasWIND = Array(steelseries.Section(20, 100, 'rgba(250, 0, 0, 0.3)'));
+            // Initializing gauge   
+	        Wind = new steelseries.Radial('Wind', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsWIND,
+                area: areasWIND,
+                size:275,
+                niceScale:false,
+                minValue:0,
+                maxValue:100,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:true,
+                thresholdVisible:false,
+                threshold: 20,
+                titleString: "Windspeed",
+                unitString: "km/h",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+
+            //////////////////////////////// HUMIDITY /////////////////////////////
+            // Define some sections
+            var sectionsHR = Array();
+	        // Define one area
+            var areasHR = Array(steelseries.Section(80, 100, 'rgba(250, 0, 0, 0.3)'));
+            // Initializing gauge       
+	        HR = new steelseries.Radial('HR', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsHR,
+                area: areasHR,
+                size:275,
+                niceScale:false,
+                minValue:0,
+                maxValue:100,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:true,
+                threshold: 85,
+                thresholdVisible:false,
+                titleString: "Humidity",
+                unitString: "%",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+            
+            //////////////////////////////// LUMINOSITY ///////////////////////////
+            // Define some sections
+            var sectionsLIGHT = Array();
+	        // Define one area
+            var areasLIGHT = Array(steelseries.Section(5000, 5500, 'rgba(250, 0, 0, 0.3)'));
+            // Initializing gauge   
+	        Light = new steelseries.Radial('Light', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsLIGHT,
+                area: areasLIGHT,
+                size:275,
+                niceScale:false,
+                minValue:0,
+                maxValue:5500,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:true,
+                thresholdVisible:false,
+                threshold: 4900,
+                titleString: "Luminosity",
+                unitString: "mV",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+            
+            //////////////////////////////// RAIN /////////////////////////////////
+            // Define some sections
+            var sectionsRAIN = Array();
+	        // Define one area
+            var areasRAIN = Array(steelseries.Section(80, 300, 'rgba(250, 0, 0, 0.3)'));
+            // Initializing gauge   
+	        CRain = new steelseries.Radial('CRain', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsRAIN,
+                area: areasRAIN,
+                size:275,
+                niceScale:false,
+                minValue:20,
+                maxValue:300,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:true,
+                thresholdVisible:false,
+                threshold: 80,
+                titleString: "Rain",
+                unitString: "Capacity",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+            
+            //////////////////////////////// CLOUD /////////////////////////////////
+             // Define some sections
+            var sectionsCLOUD = Array();
+	        // Define one area
+            var areasCLOUD = Array(steelseries.Section(30, 100, 'rgba(250, 0, 0, 0.3)'));
+            // Initializing gauge
+	        clouds = new steelseries.Radial('clouds', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsCLOUD,
+                area: areasCLOUD,
+                size:275,
+                niceScale:false,
+                minValue:0,
+                maxValue:100,
+                trendVisible:true,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:true,
+                thresholdVisible:false,
+                threshold: 30,
+                titleString: "Clouds",
+                unitString: "%",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+            
+            //////////////////////////////// TEMP RAIN SENSOR /////////////////////
+            // Define some sections
+            var sectionsTRAIN = Array();
+	        // Define one area
+            var areasTRAIN = Array(steelseries.Section(60, 100, 'rgba(250, 0, 0, 0.3)'));
+            // Initializing gauge       
+	        TRain = new steelseries.Radial('TRain', {
+                gaugeType: steelseries.GaugeType.TYPE4,
+                section: sectionsTRAIN,
+                area: areasTRAIN,
+                size:275,
+                niceScale:false,
+                minValue:20,
+                maxValue:65,
+                trendVisible:false,
+                minMeasuredValueVisible:true,
+                maxMeasuredValueVisible:true,
+                ledVisible:true,
+                threshold: 60,
+                thresholdVisible:false,
+                titleString: "T° Rain Sensor",
+                unitString: "°C",
+                lcdVisible: true,
+                frameDesign:steelseries.FrameDesign.ANTHRACITE
+            });
+            //*********************************************************************
+            
+            skyT = new steelseries.DisplaySingle('skyT', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+
+            skyTcorrected = new steelseries.DisplaySingle('skyTcorrected', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+
+            Tp = new steelseries.DisplaySingle('Tp', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+            
+            WindMax = new steelseries.DisplaySingle('WindMax', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: 'km/h',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+            
+            Tir = new steelseries.DisplaySingle('Tir', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+
+            Dew = new steelseries.DisplaySingle('Dew', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+            
+            Thrint = new steelseries.DisplaySingle('Thrint', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+            
+            HRint = new steelseries.DisplaySingle('HRint', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '%',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+            
+            TargetRain = new steelseries.DisplaySingle('TargetRain', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '°C',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+            
+            PIDRain = new steelseries.DisplaySingle('PIDRain', {
+                width: 100,
+                height: 30,
+                unitStringVisible: true,
+                unitString: '',
+                valuesNumeric: true,
+                digitalFont: true,
+                lcdColor:steelseries.LcdColor.STANDARD
+            });
+   
+            $.get("CHART/RTdata.json", function(data) {
+                T.setValue(data.T);
+                P.setValue(data.P);
+                HR.setValue(data.HR);
+                Light.setValue(data.Light);
+                Wind.setValue(data.Wind);
+                CRain.setValue(data.CRain);
+                HRint.setValue(data.HRint);
+                Thrint.setValue(data.Thrint);
+                clouds.setValue(data.clouds);
+                skyT.setValue(data.IR);
+                skyTcorrected.setValue(data.skyT);
+                Tp.setValue(data.Tp);
+                WindMax.setValue(data.WindMax);
+                Tir.setValue(data.Tir);
+                Dew.setValue(data.Dew);
+                TRain.setValue(data.TRain);
+                TargetRain.setValue(data.TargetRain);
+                PIDRain.setValue(data.PIDRain);
+                T.resetMinMeasuredValue();
+                P.resetMinMeasuredValue();
+                HR.resetMinMeasuredValue();
+                Wind.resetMinMeasuredValue();
+                Light.resetMinMeasuredValue();
+                CRain.resetMinMeasuredValue();
+                TRain.resetMinMeasuredValue();
+            })
+            
+            function updateMinMaxIndicator(){
+                $.get("CHART/MINvalues.json", function(data) {
+                    T.setMinMeasuredValue(data.T);
+                    P.setMinMeasuredValue(data.P);
+                    HR.setMinMeasuredValue(data.HR);
+                    Wind.setMinMeasuredValue(data.Wind);
+                    Light.setMinMeasuredValue(data.Light);
+                    clouds.setMinMeasuredValue(data.clouds);
+                    CRain.setMinMeasuredValue(data.CRain);
+                    TRain.setMinMeasuredValue(data.TRain);
+                })
+                
+                $.get("CHART/MAXvalues.json", function(data) {
+                    T.setMaxMeasuredValue(data.T);
+                    P.setMaxMeasuredValue(data.P);
+                    HR.setMaxMeasuredValue(data.HR);
+                    Wind.setMaxMeasuredValue(data.Wind);
+                    Light.setMaxMeasuredValue(data.Light);
+                    clouds.setMaxMeasuredValue(data.clouds);
+                    CRain.setMaxMeasuredValue(data.CRain);
+                    TRain.setMaxMeasuredValue(data.TRain);
+                })
+	        }
+	
+            setInterval( function(){ updatedata();}, 10000);
+            
+	
+            function updateTrendIndicator(){
+                $.get("CHART/AVERAGEvalues.json", function(data) {
+                    T.setTrend(steelseries.TrendState.STEADY);
+                    P.setTrend(steelseries.TrendState.STEADY);
+                    HR.setTrend(steelseries.TrendState.STEADY);
+                    Wind.setTrend(steelseries.TrendState.STEADY);
+                    Light.setTrend(steelseries.TrendState.STEADY);
+                    clouds.setTrend(steelseries.TrendState.STEADY);
+                    CRain.setTrend(steelseries.TrendState.STEADY);
+
+                    if (T.getValue() > data.T+0.1) { T.setTrend(steelseries.TrendState.UP);}
+                    if (T.getValue() < data.T-0.1)   { T.setTrend(steelseries.TrendState.DOWN);}
+                    
+                    if (P.getValue() > data.P+0.1)  { P.setTrend(steelseries.TrendState.UP);}
+                    if (P.getValue()< data.P-0.1)   { P.setTrend(steelseries.TrendState.DOWN);}
+	                
+                    if (HR.getValue() > data.HR+0.5)  { HR.setTrend(steelseries.TrendState.UP);}
+                    if (HR.getValue()< data.HR-0.5)   { HR.setTrend(steelseries.TrendState.DOWN);}
+                    
+                    if (Light.getValue() > data.Light+0.5)  { Light.setTrend(steelseries.TrendState.UP);}
+                    if (Light.getValue()< data.Light-0.5)   { Light.setTrend(steelseries.TrendState.DOWN);}
+                    
+                    if (Wind.getValue() > data.Wind+0.5)  { Wind.setTrend(steelseries.TrendState.UP);}
+                    if (Wind.getValue()< data.Wind-0.5)   { Wind.setTrend(steelseries.TrendState.DOWN);}
+                    
+                    if (CRain.getValue() > data.CRain+1)  { CRain.setTrend(steelseries.TrendState.UP);}
+                    if (CRain.getValue()< data.CRain-1)   { CRain.setTrend(steelseries.TrendState.DOWN);}
+                    
+                    if (clouds.getValue() > data.clouds+1)  { clouds.setTrend(steelseries.TrendState.UP);}
+                    if (clouds.getValue()< data.clouds-1)   { clouds.setTrend(steelseries.TrendState.DOWN);}				  	 
+                })	  
+            }
+            
+            updatedata();
+
+            function updatedata(){
+                $.get("CHART/RTdata.json", function(data) {
+                    T.setValueAnimated(data.T);
+                    P.setValueAnimated(data.P);
+                    HR.setValueAnimated(data.HR);
+                    Wind.setValueAnimated(data.Wind);
+                    Light.setValueAnimated(data.Light);
+                    clouds.setValueAnimated(data.clouds);
+                    CRain.setValueAnimated(data.CRain);
+                    TRain.setValueAnimated(data.TRain);
+
+                    Tp.setValue(data.Tp);
+                    Tir.setValue(data.Tir);
+                    skyT.setValue(data.IR);
+                    skyTcorrected.setValue(data.skyT);
+                    Thrint.setValue(data.Thrint);
+                    HRint.setValue(data.HRint);
+                    TargetRain.setValue(data.TargetRain);
+                    PIDRain.setValue(data.PIDRain);
+                    Dew.setValue(data.Dew);
+                    WindMax.setValue(data.WindMax);
+                    
+                    updateTrendIndicator();
+                    updateMinMaxIndicator();
+
+                    TRain.setSection(Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)')));
+                }, "json");  			 	
+            }
+        }
+        </script>
     </head>
-
-<script src="js/jquery.min.js"></script>
-
-<body onload=init()>
-    <div id=main>
-        <div id="left">
-            <!-- LED PART -->
-            <table>
-                <tr>
-                    <td colspan="2">
-                        <input type="button" onclick="location.href='index.html';" value="Main" id="button"/>
-                     </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="button" onclick="location.href='allsky.html';" value="Allsky" id="button" />
-                     </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="button" onclick="location.href='measures.html';" value="Measures" id="button" />
-                     </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="button" onclick="location.href='graphs.html';" value="Graphs" id="button" />
-                     </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="button" onclick="location.href='external.html';" value="Ext. Datas" id="button" />
-                     </td>
-                </tr>
-                <tr style="visibility: hidden">
-                    <td>
-                        <b>Range</b>
-                     </td>
-                     <td>
-                        <select id="range" onchange=update()>
-                            <option value=3>3 Hours</option>
-                            <option value=24>24 Hours</option>                    
-                            <option value=168>1 Week</option>
-                            <option value=1176>1 Month</option>
-                        </select>
-                    </td>
-                </tr>             
-                <tr>
-                    <td>
-                        <canvas id=frezzingFlag ></canvas>
-                    </td>
-                    <td>
-                        <b>Frezzing</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <canvas id=daylightFlag ></canvas>
-                    </td>
-                    <td>
-                        <b>Luminosity</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <canvas id=cloudFlag ></canvas>
-                    </td>
-                    <td>
-                        <b>Cloudy</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <canvas id=dewFlag ></canvas>
-                    </td>
-                    <td>
-                        <b>Dewing</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <canvas id=windFlag ></canvas>
-                    </td>
-                    <td>
-                        <b>Windy</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <canvas id=rainFlag ></canvas>
-                    </td>
-                    <td>
-                        <b>Rainy</b>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="right">
-            <div id="title">
-                <img src=images/header.png id="banner">
-            </div>
-            <canvas id=info ></canvas>
+    <body onload=init()>
+        <div id="content">
             <table border=0 align="center">
                 <!-- T/P/HR GAUGE PART -->
                 <tr>
@@ -227,542 +572,5 @@
                 </tr>
             </table>
         </div>
-    </div>
-</body>
-
-<script>
-
-function init() {	
-    // General variables
-    var timeOut=5;// Max timeout update in minutes before sending an alarm
-    
-    //////////////////////////////// TEMPERATURE /////////////////////////////
-	// Define some sections
-    var sectionsT = Array();
-	// Define one area
-    var areasT = Array(steelseries.Section(-15, 0, 'rgba(250, 0, 0, 0.3)'),
-                       steelseries.Section(40, 55, 'rgba(250, 0, 0, 0.3)'));
-	// Initializing gauge
-    T = new steelseries.Radial('T', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsT,
-        area: areasT,
-        size:275,
-        minValue:-15,
-        maxValue:55,
-        niceScale:false,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        thresholdVisible:false,
-        ledBlinking:true,
-        titleString: "Temperature",
-        unitString: "°C",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //************************************************************************
-    
-    //////////////////////////////// PRESSURE /////////////////////////////
-	// Define some variables
-    var P0=(1013.25/Math.exp(altitude/8000)) | 0;
-    var Pdelta=25;
-    // Define some sections
-    var sectionsP = Array();
-  	// Define one area
-    var areasP = Array();
-    // Initializing gauge
-     P= new steelseries.Radial('P', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsP,
-        area: areasP,
-        size:275,
-        niceScale:false,
-        minValue:P0-Pdelta,
-        maxValue:P0+Pdelta,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:false,
-        thresholdVisible:false,
-        titleString: "Pressure",
-        unitString: "hPa",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-    
-    //////////////////////////////// WIND /////////////////////////////////
-        // Define some sections
-    var sectionsWIND = Array();
-  	// Define one area
-    var areasWIND = Array(steelseries.Section(20, 100, 'rgba(250, 0, 0, 0.3)'));
-    // Initializing gauge   
-	Wind = new steelseries.Radial('Wind', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsWIND,
-        area: areasWIND,
-        size:275,
-        niceScale:false,
-        minValue:0,
-        maxValue:100,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:true,
-        thresholdVisible:false,
-        threshold: 20,
-        titleString: "Windspeed",
-        unitString: "km/h",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-
-    //////////////////////////////// HUMIDITY /////////////////////////////
-    // Define some sections
-    var sectionsHR = Array();
-	// Define one area
-    var areasHR = Array(steelseries.Section(80, 100, 'rgba(250, 0, 0, 0.3)'));
-    // Initializing gauge       
-	HR = new steelseries.Radial('HR', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsHR,
-        area: areasHR,
-        size:275,
-        niceScale:false,
-        minValue:0,
-        maxValue:100,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:true,
-        threshold: 85,
-        thresholdVisible:false,
-        titleString: "Humidity",
-        unitString: "%",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-    
-    //////////////////////////////// LUMINOSITY ///////////////////////////
-    // Define some sections
-    var sectionsLIGHT = Array();
-	// Define one area
-    var areasLIGHT = Array(steelseries.Section(5000, 5500, 'rgba(250, 0, 0, 0.3)'));
-    // Initializing gauge   
-	Light = new steelseries.Radial('Light', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsLIGHT,
-        area: areasLIGHT,
-        size:275,
-        niceScale:false,
-        minValue:0,
-        maxValue:5500,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:true,
-        thresholdVisible:false,
-        threshold: 4900,
-        titleString: "Luminosity",
-        unitString: "mV",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-    
-    //////////////////////////////// RAIN /////////////////////////////////
-    // Define some sections
-    var sectionsRAIN = Array();
-	// Define one area
-    var areasRAIN = Array(steelseries.Section(80, 300, 'rgba(250, 0, 0, 0.3)'));
-    // Initializing gauge   
-	CRain = new steelseries.Radial('CRain', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsRAIN,
-        area: areasRAIN,
-        size:275,
-        niceScale:false,
-        minValue:20,
-        maxValue:300,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:true,
-        thresholdVisible:false,
-        threshold: 80,
-        titleString: "Rain",
-        unitString: "Capacity",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-    
-    //////////////////////////////// CLOUD /////////////////////////////////
-     // Define some sections
-    var sectionsCLOUD = Array();
-	// Define one area
-    var areasCLOUD = Array(steelseries.Section(30, 100, 'rgba(250, 0, 0, 0.3)'));
-    // Initializing gauge
-	clouds = new steelseries.Radial('clouds', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsCLOUD,
-        area: areasCLOUD,
-        size:275,
-        niceScale:false,
-        minValue:0,
-        maxValue:100,
-        trendVisible:true,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:true,
-        thresholdVisible:false,
-        threshold: 30,
-        titleString: "Clouds",
-        unitString: "%",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-    
-    //////////////////////////////// TEMP RAIN SENSOR /////////////////////
-    // Define some sections
-    var sectionsTRAIN = Array();
-	// Define one area
-    var areasTRAIN = Array(steelseries.Section(60, 100, 'rgba(250, 0, 0, 0.3)'));
-    // Initializing gauge       
-	TRain = new steelseries.Radial('TRain', {
-        gaugeType: steelseries.GaugeType.TYPE4,
-        section: sectionsTRAIN,
-        area: areasTRAIN,
-        size:275,
-        niceScale:false,
-        minValue:20,
-        maxValue:65,
-        trendVisible:false,
-        minMeasuredValueVisible:true,
-        maxMeasuredValueVisible:true,
-        ledVisible:true,
-        threshold: 60,
-        thresholdVisible:false,
-        titleString: "T° Rain Sensor",
-        unitString: "°C",
-        lcdVisible: true,
-        frameDesign:steelseries.FrameDesign.ANTHRACITE
-    });
-    //*********************************************************************
-    
-    skyT = new steelseries.DisplaySingle('skyT', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-
-    skyTcorrected = new steelseries.DisplaySingle('skyTcorrected', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-
-    Tp = new steelseries.DisplaySingle('Tp', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-    
-    WindMax = new steelseries.DisplaySingle('WindMax', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: 'km/h',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-    
-    Tir = new steelseries.DisplaySingle('Tir', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-
-    Dew = new steelseries.DisplaySingle('Dew', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-    
-    Thrint = new steelseries.DisplaySingle('Thrint', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-    
-    HRint = new steelseries.DisplaySingle('HRint', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '%',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-    
-    TargetRain = new steelseries.DisplaySingle('TargetRain', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '°C',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-    
-    PIDRain = new steelseries.DisplaySingle('PIDRain', {
-        width: 100,
-        height: 30,
-        unitStringVisible: true,
-        unitString: '',
-        valuesNumeric: true,
-        digitalFont: true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-
-    info = new steelseries.DisplaySingle('info', {
-        width: 1200,
-        height: 30,
-        unitStringVisible: false,
-        valuesNumeric: false,
-        autoScroll:true,
-        lcdColor:steelseries.LcdColor.STANDARD
-    });
-                    
-    lightLed = new steelseries.Led('daylightFlag', {
-        size:50,
-        ledColor:steelseries.LedColor.RED_LED
-    });
-
-    cloudLed = new steelseries.Led('cloudFlag', {
-        size:50,
-        ledColor:steelseries.LedColor.RED_LED
-    });
-
-    frezzingLed = new steelseries.Led('frezzingFlag', {
-        size:50,
-        ledColor:steelseries.LedColor.RED_LED
-    });
-
-    dewLed = new steelseries.Led('dewFlag', {
-        size:50,
-        ledColor:steelseries.LedColor.RED_LED
-    });
-
-    rainLed = new steelseries.Led('rainFlag', {
-        size:50,
-        ledColor:steelseries.LedColor.RED_LED
-    });
-    windLed = new steelseries.Led('windFlag', {
-        size:50,
-        ledColor:steelseries.LedColor.RED_LED
-    });
-
-    info.setValue('              WELCOME TO SADR METEOSTATION. LOADING DATA ....');
-    info.setScrolling(true);
- 		   
-    $.get("CHART/RTdata.json", function(data) {
-        T.setValue(data.T);
-        P.setValue(data.P);
-        HR.setValue(data.HR);
-        Light.setValue(data.Light);
-        Wind.setValue(data.Wind);
-        CRain.setValue(data.CRain);
-        HRint.setValue(data.HRint);
-        Thrint.setValue(data.Thrint);
-        clouds.setValue(data.clouds);
-        skyT.setValue(data.IR);
-        skyTcorrected.setValue(data.skyT);
-        Tp.setValue(data.Tp);
-        WindMax.setValue(data.WindMax);
-        Tir.setValue(data.Tir);
-        Dew.setValue(data.Dew);
-        TRain.setValue(data.TRain);
-        TargetRain.setValue(data.TargetRain);
-        PIDRain.setValue(data.PIDRain);
-        T.resetMinMeasuredValue();
-        P.resetMinMeasuredValue();
-        HR.resetMinMeasuredValue();
-        Wind.resetMinMeasuredValue();
-        Light.resetMinMeasuredValue();
-        CRain.resetMinMeasuredValue();
-        TRain.resetMinMeasuredValue();
-    })
-    
-    function updateMinMaxIndicator(){
-        $.get("CHART/MINvalues.json", function(data) {
-            T.setMinMeasuredValue(data.T);
-            P.setMinMeasuredValue(data.P);
-            HR.setMinMeasuredValue(data.HR);
-            Wind.setMinMeasuredValue(data.Wind);
-            Light.setMinMeasuredValue(data.Light);
-            clouds.setMinMeasuredValue(data.clouds);
-            CRain.setMinMeasuredValue(data.CRain);
-            TRain.setMinMeasuredValue(data.TRain);
-        })
-        
-        $.get("CHART/MAXvalues.json", function(data) {
-            T.setMaxMeasuredValue(data.T);
-            P.setMaxMeasuredValue(data.P);
-            HR.setMaxMeasuredValue(data.HR);
-            Wind.setMaxMeasuredValue(data.Wind);
-            Light.setMaxMeasuredValue(data.Light);
-            clouds.setMaxMeasuredValue(data.clouds);
-            CRain.setMaxMeasuredValue(data.CRain);
-            TRain.setMaxMeasuredValue(data.TRain);
-        })
-	}
-	
-    setInterval( function(){ updatedata();}, 10000);
-    
-	
-    function updateTrendIndicator(){
-        $.get("CHART/AVERAGEvalues.json", function(data) {
-            T.setTrend(steelseries.TrendState.STEADY);
-            P.setTrend(steelseries.TrendState.STEADY);
-            HR.setTrend(steelseries.TrendState.STEADY);
-            Wind.setTrend(steelseries.TrendState.STEADY);
-            Light.setTrend(steelseries.TrendState.STEADY);
-            clouds.setTrend(steelseries.TrendState.STEADY);
-            CRain.setTrend(steelseries.TrendState.STEADY);
-
-            if (T.getValue() > data.T+0.1) { T.setTrend(steelseries.TrendState.UP);}
-            if (T.getValue() < data.T-0.1)   { T.setTrend(steelseries.TrendState.DOWN);}
-            
-            if (P.getValue() > data.P+0.1)  { P.setTrend(steelseries.TrendState.UP);}
-            if (P.getValue()< data.P-0.1)   { P.setTrend(steelseries.TrendState.DOWN);}
-	        
-            if (HR.getValue() > data.HR+0.5)  { HR.setTrend(steelseries.TrendState.UP);}
-            if (HR.getValue()< data.HR-0.5)   { HR.setTrend(steelseries.TrendState.DOWN);}
-            
-            if (Light.getValue() > data.Light+0.5)  { Light.setTrend(steelseries.TrendState.UP);}
-            if (Light.getValue()< data.Light-0.5)   { Light.setTrend(steelseries.TrendState.DOWN);}
-            
-            if (Wind.getValue() > data.Wind+0.5)  { Wind.setTrend(steelseries.TrendState.UP);}
-            if (Wind.getValue()< data.Wind-0.5)   { Wind.setTrend(steelseries.TrendState.DOWN);}
-            
-            if (CRain.getValue() > data.CRain+1)  { CRain.setTrend(steelseries.TrendState.UP);}
-            if (CRain.getValue()< data.CRain-1)   { CRain.setTrend(steelseries.TrendState.DOWN);}
-            
-            if (clouds.getValue() > data.clouds+1)  { clouds.setTrend(steelseries.TrendState.UP);}
-            if (clouds.getValue()< data.clouds-1)   { clouds.setTrend(steelseries.TrendState.DOWN);}				  	 
-        })	  
-    }
-    
-    updatedata();
-
-    function updatedata(){
-        $.get("CHART/RTdata.json", function(data) {
-            T.setValueAnimated(data.T);
-            P.setValueAnimated(data.P);
-            HR.setValueAnimated(data.HR);
-            Wind.setValueAnimated(data.Wind);
-            Light.setValueAnimated(data.Light);
-            clouds.setValueAnimated(data.clouds);
-            CRain.setValueAnimated(data.CRain);
-            TRain.setValueAnimated(data.TRain);
-
-            Tp.setValue(data.Tp);
-            Tir.setValue(data.Tir);
-            skyT.setValue(data.IR);
-            skyTcorrected.setValue(data.skyT);
-            Thrint.setValue(data.Thrint);
-            HRint.setValue(data.HRint);
-            TargetRain.setValue(data.TargetRain);
-            PIDRain.setValue(data.PIDRain);
-            Dew.setValue(data.Dew);
-            WindMax.setValue(data.WindMax);
-            
-            updateTrendIndicator();
-            updateMinMaxIndicator();
-
-            TRain.setSection(Array(steelseries.Section(data.TargetRain-2, data.TargetRain+2, 'rgba(0, 250, 0, 0.3)')));
-            
-            lightLed.setLedOnOff(false);
-            cloudLed.setLedOnOff(false);
-            dewLed.setLedOnOff(false);
-            frezzingLed.setLedOnOff(false);
-            windLed.setLedOnOff(false);
-            rainLed.setLedOnOff(false);
-
-            var warningText='';
-            
-            if (data.daylightFlag==1) {
-            warningText=warningText+"  ****** LUMINOUS ******  ";
-            lightLed.setLedOnOff(true);
-            }
-            
-            if (data.cloudFlag==1) {
-                warningText=warningText+"  ****** CLOUDY ******  ";
-                cloudLed.setLedOnOff(true);
-            }
-            
-            if (data.dewFlag==1) {
-                warningText=warningText+"  ******  DEWING  ******  ";
-                dewLed.setLedOnOff(true);
-            }
-            
-            if (data.frezzingFlag==1) {
-                warningText=warningText+"  ****** FREZZING ******  ";
-                frezzingLed.setLedOnOff(true);
-            }
-            
-            if (data.windFlag==1) {
-                warningText=warningText+"  ****** WINDY ******  ";
-                windLed.setLedOnOff(true);
-            }
-            
-            if (data.rainFlag==1) {
-                warningText=warningText+"  ****** RAINY ******  ";
-                rainLed.setLedOnOff(true);
-            }
-            
-            warningText=warningText+data.TIME;
-            info.setValue(warningText);
-            var dateClient = new Date();
-            dateClient.setHours(dateClient.getHours() + dateClient.getTimezoneOffset()/60); // dateClient in UTC hours
-            var dateRRD = new Date(data.TIME);
-            dateRRD.setHours(dateRRD.getHours() - servertimezone); // dateRRD in UTC hours
-            if (dateClient-dateRRD>timeOut*60000) {
-                info.setValue("WARNING. No updated since: "+data.TIME+" in local time");
-            }
-        }, "json");  			 	
-    }
-}
-</script>
-<script type=text/javascript src=js/tween-min.js></script>
-<script type=text/javascript src=js/steelseries-min.js></script>
+    </body>
+</html>
