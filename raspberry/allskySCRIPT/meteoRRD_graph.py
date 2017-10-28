@@ -73,8 +73,8 @@ def graphs(time):
                         "--watermark","SADR OBSERVATORY",
                         "--vertical-label=hPa",
                         "-y","10:1",
-                        "-u",str(Pmax)*2,
-                        "-l",str(Pmin)*2,
+                        "-u",str(Pmax),
+                        "-l",str(Pmin),
                         "-r",
                         "DEF:P="+CHARTPATH+"meteo.rrd:P:AVERAGE",
                         "HRULE:"+str(P0)+"#"+white+"AA:standard",
@@ -202,9 +202,13 @@ def graphs(time):
                         "HRULE:0#00FFFFAA:ZERO",
                         "COMMENT:\\n",
                         "GPRINT:skyT:AVERAGE:Avg Sky Temp\: %6.2lf %S\\r")
-
-P0=math.floor(1013.25/math.exp(-ALTITUDE/8431.))
-Pdelta=25
+#methode 1
+#P0=840
+#methode 2
+P0=math.floor(1013-0.11201*ALTITUDE)
+#methode 3
+#P0=math.floor(1013/math.exp(-ALTITUDE/8431))
+Pdelta=50
 Pmin=P0-Pdelta
 Pmax=P0+Pdelta
 i=0
