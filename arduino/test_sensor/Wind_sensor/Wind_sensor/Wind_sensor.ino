@@ -4,10 +4,10 @@
 const int  WindSensorPin = 3;    // the pin that the pushbutton is attached to
 const int ledPin = 13;       // the pin that the LED is attached to
 
-volatile unsigned long Rotations; // cup rotation counter used in interrupt routine
-volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
+int Rotations; // cup rotation counter used in interrupt routine
+unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
 
-float WindSpeed; // speed miles per hour
+double WindSpeed; // speed miles per hour
 
 // This is the function that the interrupt calls to increment the rotation count
 void isr_rotation () {
@@ -37,15 +37,14 @@ void loop() {
   Rotations = 0; // Set Rotations count to 0 ready for calculations
   
   sei(); // Enables interrupts
-  delay (3000); // Wait 3 seconds to average
+  delay (1000); // Wait 1 seconds to average
   cli(); // Disable interrupts
   
   // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
   // V = R / 30 * 2.4 = R * 0.8
   
-  WindSpeed = Rotations * 0.75;
+  WindSpeed = Rotations * 0.8;
   
   Serial.print(Rotations); Serial.print("\t\t");
   Serial.println(WindSpeed);
-
-} 
+}

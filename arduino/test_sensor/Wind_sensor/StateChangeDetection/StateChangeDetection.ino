@@ -33,6 +33,8 @@ const int ledPin = 13;       // the pin that the LED is attached to
 int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 0;         // current state of the button
 int lastButtonState = 0;     // previous state of the button
+unsigned long ContactTime, Interval = 0;
+//int Interval = 0;
 
 void setup() {
   // initialize the button pin as a input:
@@ -55,8 +57,12 @@ void loop() {
       // if the current state is HIGH then the button
       // wend from off to on:
       buttonPushCounter++;
+      Interval = millis() - ContactTime;
+      ContactTime = millis();
       Serial.println("on");
-      Serial.print("number of button pushes:  ");
+      Serial.print("vitesse:      ");
+      Serial.print(2400/Interval);
+      Serial.print("       number of button pushes:  ");
       Serial.println(buttonPushCounter);
     } else {
       // if the current state is LOW then the button
@@ -64,7 +70,7 @@ void loop() {
       Serial.println("off");
     }
     // Delay a little bit to avoid bouncing
-    delay(50);
+    delay(15);
   }
   // save the current state as the last state,
   //for next time through the loop
@@ -80,14 +86,4 @@ void loop() {
   } else {
     digitalWrite(ledPin, LOW);
   }
-
 }
-
-
-
-
-
-
-
-
-

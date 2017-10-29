@@ -26,6 +26,10 @@ IMPORTANT: Customize following values to match your setup
 //#define T_MAIN_Tir  
 //#define T_MAIN_Tp
 
+//DHT Sensor
+#define DHT_HUMIDITY_CORRECTION -15
+
+//IR Sensor
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
 //is a good indicator to estimate cloud cover. However IR really meassure the
 //temperatura of all the air column above increassing with ambient temperature.
@@ -388,12 +392,14 @@ void runMeteoStation() {
 #endif //USE_P_SENSOR  */
 
 #ifdef USE_DHT_SENSOR_INTERNAL
-    Hr22int=dhtInt.readHumidity();  
+    Hr22int=dhtInt.readHumidity();
+    Hr22int+=DHT_HUMIDITY_CORRECTION;  
     T22int=dhtInt.readTemperature();
 #endif //USE_DHT_SENSOR_INTERNAL
 
 #ifdef USE_DHT_SENSOR_EXTERNAL
-    Hr22ext=dhtExt.readHumidity();  
+    Hr22ext=dhtExt.readHumidity();
+    Hr22ext+=DHT_HUMIDITY_CORRECTION;
     T22ext=dhtExt.readTemperature();
 #endif //USE_DHT_SENSOR_EXTERNAL    
 
