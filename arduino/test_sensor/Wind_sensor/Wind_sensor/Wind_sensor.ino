@@ -14,7 +14,7 @@ unsigned long tempoSerial, TimeStamp;
 #define WIND_FLAG_TRIGGER 20
 // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
 #define WIND_RPM_TO_KMH 25 // Relation between windspeed in km/h and rotation per minute
-#define ANEMOMETER_BOUNCE_TIME 5 //Below this value, no count is adding
+#define ANEMOMETER_BOUNCE_TIME 15 //Below this value, no count is adding
 
 #ifdef USE_WIND_SENSOR
   #include <math.h>
@@ -74,8 +74,7 @@ void loop() {
 
     Serial.print(WindSpeed);
     Serial.print(":");
-    Serial.print(MaxWindSpeed);
-    Serial.print(":");
+    Serial.println(MaxWindSpeed);
     
     tempoSerial = millis();
     WindSpeed = 0; // Set WindSpeed count to 0 after calculations
