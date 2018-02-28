@@ -60,7 +60,7 @@ IMPORTANT: Customize following values to match your setup
 #define WIND_FLAG_TRIGGER 20
 // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
 #define WIND_RPM_TO_KMH 25 // Relation between windspeed in km/h and rotation per minute
-#define ANEMOMETER_BOUNCE_TIME 5 //Below this value, no count is adding
+#define ANEMOMETER_BOUNCE_TIME 10 //Below this value, no count is adding
 
 //Rain sensor
 //Calibrate this value using known capacitor.
@@ -154,10 +154,9 @@ IMPORTANT: Customize following values to match your setup
   PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,MiniTime,reedSwitchTime, stringCheck;
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,reedSwitchDeltaTime,reedSwitchTime, stringCheck;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long reedSwitchCount; // cup rotation counter used in interrupt routine
-volatile unsigned long ContactBounceTime; // Timer to avoid contact bounce in interrupt routine
 unsigned long tempoSerial, TimeStamp;
 
 #if defined(USE_DHT_SENSOR_INTERNAL) || defined(USE_DHT_SENSOR_EXTERNAL)
@@ -216,29 +215,30 @@ double cloudIndex() {
 #ifdef USE_WIND_SENSOR
 // This is the function that the interrupt calls to increment the rotation count
 void isr_rotation () {
-  TimeStamp = millis();
-  if ((TimeStamp - ContactBounceTime) > ANEMOMETER_BOUNCE_TIME ) { // debounce the switch contact.
-    reedSwitchCount++;
-    if (reedSwitchCount > 1) {
-        reedSwitchTime += TimeStamp - ContactBounceTime;
+    // debounce the switch contact.
+    if ((millis() - TimeStamp) > ANEMOMETER_BOUNCE_TIME ) {
+        reedSwitchCount++;
+        reedSwitchDeltaTime = millis() - TimeStamp;
+        if (reedSwitchCount > 1) {
+            reedSwitchTime += reedSwitchDeltaTime;
+        }
+
+        // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
+        //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
+        WindSpeed = (reedSwitchCount - 1) / reedSwitchTime * 30000;
+
+    
+        if (MaxWindSpeed < millis() - TimeStamp) {
+           //MaxWindSpeed = (1 / 2 * 60) / (reedSwitchDeltaTime / 1000);
+            MaxWindSpeed = 30000 / reedSwitchDeltaTime;
+        }
+
+        // Winspeed and MaxWindSpeed in Km/h
+        WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
+        MaxWindSpeed = MaxWindSpeed / WIND_RPM_TO_KMH;
+
+        TimeStamp = millis();
     }
-    if ((TimeStamp - ContactBounceTime) < MiniTime) {
-        MiniTime = TimeStamp - ContactBounceTime;
-    }
-  }
-  ContactBounceTime = TimeStamp ;
-  // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
-  //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
-  WindSpeed = (reedSwitchCount - 1) / reedSwitchTime * 30000;
-  if (MiniTime == SERIAL_DELAY || MiniTime == 0) {
-    MaxWindSpeed = WindSpeed ;
-  } else {
-    //MaxWindSpeed = (1 / 2 * 60) / (MiniTime / 1000);
-    MaxWindSpeed = 30000 / MiniTime;
-  }
-  // Winspeed and MaxWindSpeed in Km/h
-  WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
-  MaxWindSpeed = MaxWindSpeed / WIND_RPM_TO_KMH;
 }
 #endif //USE_WIND_SENSOR
 
@@ -562,6 +562,8 @@ void outputChain() {
 void setup() {
   setupMeteoStation();
   delay(5000);
+
+  TimeStamp = millis();
 }
 
 /*==============================================================================
@@ -598,9 +600,8 @@ void loop() {
     tempoSerial = millis();
     WindSpeed = 0; // Set WindSpeed count to 0 after calculations
     MaxWindSpeed = 0; // Set MaxWindSpeed count to 0 after calculations
-    ContactBounceTime = 0; // Set ContactBounceTime count to 0 after calculations
     reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
     reedSwitchTime = 0; // Set reedSwitchTime to 0 afer calculations
-    MiniTime = SERIAL_DELAY; // Set MiniTime value to SERIAL_DELAY after calculations
+    reedSwitchDeltaTime = 0; // Set reedSwitchDeltaTime value to 0 after calculations
   }
 }
