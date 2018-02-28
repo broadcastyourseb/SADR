@@ -216,16 +216,18 @@ double cloudIndex() {
 // This is the function that the interrupt calls to increment the rotation count
 void isr_rotation () {
     // debounce the switch contact.
-    if ((millis() - TimeStamp) > ANEMOMETER_BOUNCE_TIME ) {
+    reedSwitchDeltaTime = millis() - TimeStamp;
+    if (reedSwitchDeltaTime > ANEMOMETER_BOUNCE_TIME ) {
         reedSwitchCount++;
-        reedSwitchDeltaTime = millis() - TimeStamp;
+        TimeStamp = millis();
+
         if (reedSwitchCount > 1) {
             reedSwitchTime += reedSwitchDeltaTime;
         }
 
         // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
         //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
-        WindSpeed = (reedSwitchCount - 1) / reedSwitchTime * 30000;
+        WindSpeed = reedSwitchCount / reedSwitchTime * 30000;
 
     
         if (MaxWindSpeed < 30000 / reedSwitchDeltaTime) {
@@ -236,8 +238,6 @@ void isr_rotation () {
         // Winspeed and MaxWindSpeed in Km/h
         WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
         MaxWindSpeed = MaxWindSpeed / WIND_RPM_TO_KMH;
-
-        TimeStamp = millis();
     }
 }
 #endif //USE_WIND_SENSOR
