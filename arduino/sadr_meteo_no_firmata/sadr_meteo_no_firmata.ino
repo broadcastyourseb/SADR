@@ -228,7 +228,7 @@ void isr_rotation () {
         WindSpeed = (reedSwitchCount - 1) / reedSwitchTime * 30000;
 
     
-        if (MaxWindSpeed < millis() - TimeStamp) {
+        if (MaxWindSpeed < 30000 / reedSwitchDeltaTime) {
            //MaxWindSpeed = (1 / 2 * 60) / (reedSwitchDeltaTime / 1000);
             MaxWindSpeed = 30000 / reedSwitchDeltaTime;
         }
