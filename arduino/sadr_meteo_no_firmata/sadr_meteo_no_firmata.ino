@@ -300,9 +300,9 @@ float getTemperature() {
 
   return steinhart;
 }
-void regulHeat(double Temperature) {
+void regulHeat(double Temperature, double Target) {
 
-  double gap = abs(Consigne - Temperature); //distance away from setpoint
+  double gap = abs(Target - Temperature); //distance away from setpoint
 
   if (gap < 2)
   { //we're close to setpoint, use conservative tuning parameters
@@ -578,8 +578,11 @@ void loop() {
      }
   }
 
-  if ((Temp < HOT_TEMPERATURE_SECURITY) | (Temp > COLD_TEMPERATURE_SECURITY)) {
-    regulHeat(Temp);
+  //if ((Temp < HOT_TEMPERATURE_SECURITY) | (Temp > COLD_TEMPERATURE_SECURITY)) {
+  if (Temp < HOT_TEMPERATURE_SECURITY) {
+    regulHeat(Temp, Consigne);
+  } else {
+    regulHeat(Temp, -50);
   }
   #endif //USE_RAIN_SENSOR*/
   
