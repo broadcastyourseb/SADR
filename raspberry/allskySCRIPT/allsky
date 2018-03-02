@@ -1,0 +1,21 @@
+ #! /bin/sh
+# /etc/init.d/allsky
+ 
+case "$1" in
+  start)
+    echo "Starting allsky"
+    # run application you want to start
+    ./home/pi/SADR/raspberry/allskySCRIPT/startMETEOLLSKY.sh &
+    ;;
+  stop)
+    echo "Stopping example"
+    # kill application you want to stop
+    killall python
+    ;;
+  *)
+    echo "Usage: /etc/init.d/example{start|stop}"
+    exit 1
+    ;;
+esac
+ 
+exit 0
