@@ -58,6 +58,7 @@ IMPORTANT: Customize following values to match your setup
 // Wind sensor
 // Activation threshold for wind in km/h
 #define WIND_FLAG_TRIGGER 20
+#define MAX_WIND_FLAG_TRIGGER 50
 // A wind speed of 1.492 MPH (2.4 km/h) causes the switch to close once per second. 
 #define WIND_RPM_TO_KMH 25 // Relation between windspeed in km/h and rotation per minute
 #define ANEMOMETER_BOUNCE_TIME 10 //Below this value, no count is adding
@@ -227,17 +228,15 @@ void isr_rotation () {
 
         // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
         //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
-        WindSpeed = reedSwitchCount / reedSwitchTime * 30000;
-
-    
-        if (MaxWindSpeed < 30000 / reedSwitchDeltaTime) {
-           //MaxWindSpeed = (1 / 2 * 60) / (reedSwitchDeltaTime / 1000);
-            MaxWindSpeed = 30000 / reedSwitchDeltaTime;
-        }
+        WindSpeed = (reedSwitchCount-1) * 30000 / reedSwitchTime;
 
         // Winspeed and MaxWindSpeed in Km/h
         WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
-        MaxWindSpeed = MaxWindSpeed / WIND_RPM_TO_KMH;
+        if (MaxWindSpeed < 30000 / reedSwitchDeltaTime / WIND_RPM_TO_KMH) {
+           //MaxWindSpeed = (1 / 2 * 60) / (reedSwitchDeltaTime / 1000);
+            MaxWindSpeed = 30000 / reedSwitchDeltaTime/ WIND_RPM_TO_KMH;
+        }
+
     }
 }
 #endif //USE_WIND_SENSOR
@@ -449,7 +448,7 @@ if (T <=2) {
 #endif //USE_RAIN_SENSOR*/
 
 #ifdef USE_WIND_SENSOR
-  if ((WindSpeed > WIND_FLAG_TRIGGER) | (MaxWindSpeed > WIND_FLAG_TRIGGER)) {
+  if ((WindSpeed > WIND_FLAG_TRIGGER) | (MaxWindSpeed > MAX_WIND_FLAG_TRIGGER)) {
         windy=1;
     } else {
         windy=0;
