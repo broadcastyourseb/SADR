@@ -155,7 +155,7 @@ IMPORTANT: Customize following values to match your setup
   PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
-float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,reedSwitchDeltaTime,reedSwitchTime, stringCheck;
+float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,reedSwitchDeltaTime, stringCheck;
 int cloudy,dewing,frezzing,windy,rainy,daylight;
 volatile unsigned long reedSwitchCount; // cup rotation counter used in interrupt routine
 unsigned long tempoSerial, TimeStamp;
@@ -222,21 +222,16 @@ void isr_rotation () {
         reedSwitchCount++;
         TimeStamp = millis();
 
-        if (reedSwitchCount > 1) {
-            reedSwitchTime += reedSwitchDeltaTime;
-        }
-
-        // Winspeed and MaxWindSpeed in RPM - switch closed 2 times per revolution - SERIAL_DELAY in ms
-        //WindSpeed = (reedSwitchCount / 2 * 60) / (reedSwitchTime / 1000);
-        WindSpeed = (reedSwitchCount-1) * 30000 / reedSwitchTime;
+        //switch closed 2 times per revolution - SERIAL_DELAY in ms
+        // Winspeed and MaxWindSpeed in RPM
+        WindSpeed = (reedSwitchCount-1) * 30000 / SERIAL_DELAY;
 
         // Winspeed and MaxWindSpeed in Km/h
         WindSpeed = WindSpeed / WIND_RPM_TO_KMH;
-        if (MaxWindSpeed < 30000 / reedSwitchDeltaTime / WIND_RPM_TO_KMH) {
+        if (MaxWindSpeed < (30000 / reedSwitchDeltaTime) / WIND_RPM_TO_KMH) {
            //MaxWindSpeed = (1 / 2 * 60) / (reedSwitchDeltaTime / 1000);
-            MaxWindSpeed = 30000 / reedSwitchDeltaTime/ WIND_RPM_TO_KMH;
+            MaxWindSpeed = (30000 / reedSwitchDeltaTime)/ WIND_RPM_TO_KMH;
         }
-
     }
 }
 #endif //USE_WIND_SENSOR
@@ -600,7 +595,6 @@ void loop() {
     WindSpeed = 0; // Set WindSpeed count to 0 after calculations
     MaxWindSpeed = 0; // Set MaxWindSpeed count to 0 after calculations
     reedSwitchCount = 0; // Set reedSwitchCount count to 0 after calculations
-    reedSwitchTime = 0; // Set reedSwitchTime to 0 afer calculations
     reedSwitchDeltaTime = 0; // Set reedSwitchDeltaTime value to 0 after calculations
   }
 }
