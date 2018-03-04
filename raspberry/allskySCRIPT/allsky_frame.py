@@ -32,11 +32,15 @@ if lumValue == 0:
     #EXP_TIME = 19. - (19. / 100 * float(lumValue))
     EXT_TIME = 60
     EXP_GAIN = 30
+    COLOR = 0
 if lumValue > 0:
     EXP_TIME = 0.000001
     EXP_GAIN = 1
+    COLOR = 1
 EXP_TIME = str(EXP_TIME)
+EXP_GAIN = str(EXP_GAIN)
 print("EXP_TIME: " + str(EXP_TIME))
+print("EXP_GAIN: " + str(EXP_GAIN))
 #EXP_TIME = sys.argv[1]
 #EXP_GAIN = str(50)
 #EXP_GAIN = sys.argv[2]
@@ -88,7 +92,8 @@ class IndiClient(PyIndi.BaseClient):
         hdulist[0].data = scidata
         # process bayer pattern and grey image
         processedImage = cv2.cvtColor(scidata, cv2.COLOR_BAYER_GR2RGB)
-        processedImage = cv2.cvtColor(processedImage, cv2.COLOR_BGR2GRAY)
+        if COLOR == 0:
+            processedImage = cv2.cvtColor(processedImage, cv2.COLOR_BGR2GRAY)
         cv2.imwrite(CHARTPATH+"allsky.jpg" , processedImage)
         
         ######### WATERMARK #############
