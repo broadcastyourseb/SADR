@@ -28,7 +28,7 @@ arg = luminosity.split('=')
 lumValue = arg[1]
 print("Luminosity: " + lumValue)
 fi.close()
-if lumValue = 0:
+if lumValue == 0:
     #EXP_TIME = 19. - (19. / 100 * float(lumValue))
     EXT_TIME = 60
 if lumValue > 0:
