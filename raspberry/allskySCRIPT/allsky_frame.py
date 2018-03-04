@@ -115,9 +115,9 @@ class IndiClient(PyIndi.BaseClient):
         waterdraw.text((5, 5), "%s" % datetime.now(), font=fnt, fill=(255,255,255,255))
         waterdraw.text((5, 25), "GAIN "+EXP_GAIN+" / EXP "+EXP_TIME+"s", font=fnt, fill=(255,255,255,255))
         if COLOR == 0:
-            waterdraw.text((5, 45), "NO COLOR / LUM "+lumValue, font=fnt, fill=(255,255,255,255))
+            waterdraw.text((5, 45), "NO COLOR / LUM "+str(lumValue), font=fnt, fill=(255,255,255,255))
         else:
-            waterdraw.text((5, 45), "COLOR / LUM "+lumValue, font=fnt, fill=(255,255,255,255))
+            waterdraw.text((5, 45), "COLOR / LUM "+str(lumValue), font=fnt, fill=(255,255,255,255))
         
         # Make a final composite image
         result = Image.alpha_composite(main, overlay)
