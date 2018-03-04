@@ -28,16 +28,16 @@ arg = luminosity.split('=')
 lumValue = arg[1]
 print("Luminosity: " + lumValue)
 fi.close()
-if lumValue == 0:
+if int(lumValue) == 0:
     #EXP_TIME = 19. - (19. / 100 * float(lumValue))
     EXT_TIME = 60
     EXP_GAIN = 30
     COLOR = 0
-if lumValue > 0:
+if int(lumValue) > 0:
     EXP_TIME = 0.00001
     EXP_GAIN = 1
     COLOR = 1
-if lumValue > 200:
+if int(lumValue) > 200:
     EXP_TIME = 0.000001
     EXP_GAIN = 1
     COLOR = 1
@@ -119,9 +119,9 @@ class IndiClient(PyIndi.BaseClient):
         waterdraw.text((5, 5), "%s" % datetime.now(), font=fnt, fill=(255,255,255,255))
         waterdraw.text((5, 25), "GAIN "+EXP_GAIN+" / EXP "+EXP_TIME+"s", font=fnt, fill=(255,255,255,255))
         if COLOR == 0:
-            waterdraw.text((5, 45), "NO COLOR / LUM "+lumValue+"", font=fnt, fill=(255,255,255,255))
+            waterdraw.text((5, 45), "NO COLOR / LUM "+int(lumValue), font=fnt, fill=(255,255,255,255))
         else:
-            waterdraw.text((5, 45), "COLOR / LUM "+lumValue+"", font=fnt, fill=(255,255,255,255))
+            waterdraw.text((5, 45), "COLOR / LUM "+int(lumValue), font=fnt, fill=(255,255,255,255))
         
         # Make a final composite image
         result = Image.alpha_composite(main, overlay)
