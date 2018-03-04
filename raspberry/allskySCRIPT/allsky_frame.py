@@ -22,20 +22,22 @@ if len(sys.argv) <> 3:
     print "Usage: python allsky_frame.py <<time exposure>> <<gain>>"
     sys.exit()
 
-#fi=open(CHARTPATH+"luminosity.js","r")
-#luminosity = fi.readline()
-#arg = luminosity.split('=')
-#lumValue = arg[1]
-#print("Luminosity: " + lumValue)
-#fi.close()
-#EXP_TIME = 19. - (19. / 100 * float(lumValue))
-#if EXP_TIME < 0:
-#    EXP_TIME = 0.001
-#EXP_TIME = str(EXP_TIME)
-#print("EXP_TIME: " + str(EXP_TIME))
-EXP_TIME = sys.argv[1]
+fi=open(CHARTPATH+"luminosity.js","r")
+luminosity = fi.readline()
+arg = luminosity.split('=')
+lumValue = arg[1]
+print("Luminosity: " + lumValue)
+fi.close()
+if lumValue = 0:
+    #EXP_TIME = 19. - (19. / 100 * float(lumValue))
+    EXT_TIME = 60
+if lumValue > 0:
+    EXP_TIME = 0.000001
+EXP_TIME = str(EXP_TIME)
+print("EXP_TIME: " + str(EXP_TIME))
+#EXP_TIME = sys.argv[1]
 #EXP_GAIN = str(50)
-EXP_GAIN = sys.argv[2]
+#EXP_GAIN = sys.argv[2]
  
 class IndiClient(PyIndi.BaseClient):
 

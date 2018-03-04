@@ -29,6 +29,6 @@ fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
 ./meteoRRD_MaxMinAvg.py &
-#./allsky_frame.py 29 1 &
+./allsky_frame.py 29 1 &
 #./sounding.py &
 #./pushetta.py &
