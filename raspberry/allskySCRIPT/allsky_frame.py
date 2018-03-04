@@ -31,8 +31,10 @@ fi.close()
 if lumValue == 0:
     #EXP_TIME = 19. - (19. / 100 * float(lumValue))
     EXT_TIME = 60
+    EXP_GAIN = 30
 if lumValue > 0:
     EXP_TIME = 0.000001
+    EXP_GAIN = 1
 EXP_TIME = str(EXP_TIME)
 print("EXP_TIME: " + str(EXP_TIME))
 #EXP_TIME = sys.argv[1]
