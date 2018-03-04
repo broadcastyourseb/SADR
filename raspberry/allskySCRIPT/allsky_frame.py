@@ -114,6 +114,10 @@ class IndiClient(PyIndi.BaseClient):
         # Place the text at (10, 10) in the upper left corner. Text will be white.
         waterdraw.text((5, 5), "%s" % datetime.now(), font=fnt, fill=(255,255,255,255))
         waterdraw.text((5, 25), "GAIN "+EXP_GAIN+" / EXP "+EXP_TIME+"s", font=fnt, fill=(255,255,255,255))
+        if COLOR == 0:
+            waterdraw.text((5, 45), "NO COLOR", font=fnt, fill=(255,255,255,255))
+        else:
+            waterdraw.text((5, 45), "COLOR", font=fnt, fill=(255,255,255,255))
         
         # Make a final composite image
         result = Image.alpha_composite(main, overlay)
