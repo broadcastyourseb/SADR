@@ -34,6 +34,10 @@ if lumValue == 0:
     EXP_GAIN = 30
     COLOR = 0
 if lumValue > 0:
+    EXP_TIME = 0.00001
+    EXP_GAIN = 1
+    COLOR = 1
+if lumValue > 0:
     EXP_TIME = 0.000001
     EXP_GAIN = 1
     COLOR = 1
