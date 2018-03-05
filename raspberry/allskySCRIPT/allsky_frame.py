@@ -182,4 +182,24 @@ if __name__ == '__main__':
     #while indiclient.connected:
     while True:
         #indiclient.takeExposure()
+        fi=open(CHARTPATH+"luminosity.js","r")
+        luminosity = fi.readline()
+        arg = luminosity.split('=')
+        lumValue = arg[1]
+        print("Luminosity: " + lumValue)
+        fi.close()
+        if float(lumValue) == 0:
+            #EXP_TIME = 19. - (19. / 100 * float(lumValue))
+            EXP_TIME = 45
+            EXP_GAIN = 30
+            COLOR = 0
+        else:
+            EXP_TIME = 0.000001
+            EXP_GAIN = 1
+            COLOR = 1
+
+        EXP_TIME = str(EXP_TIME)
+        EXP_GAIN = str(EXP_GAIN)
+        print("EXP_TIME: " + str(EXP_TIME))
+        print("EXP_GAIN: " + str(EXP_GAIN))
         time.sleep(10)
