@@ -40,6 +40,7 @@ else:
 
 EXP_TIME = str(EXP_TIME)
 EXP_GAIN = str(EXP_GAIN)
+USB_TRAFFIC = 0
 print("EXP_TIME: " + str(EXP_TIME))
 print("EXP_GAIN: " + str(EXP_GAIN))
 #EXP_TIME = sys.argv[1]
@@ -76,6 +77,10 @@ class IndiClient(PyIndi.BaseClient):
             gain = self.device.getNumber("CCD_GAIN")
             gain[0].value = float(EXP_GAIN)
             self.sendNewNumber(gain)
+        if p.getName() == "USB_TRAFFIC":
+            traffic = self.device.getNumber("USB_TRAFFIC")
+            traffic[0].value = float(USB_TRAFFIC)
+            self.sendNewNumber(traffic)
     def removeProperty(self, p):
         #self.logger.info("remove property "+ p.getName() + " for device "+ p.getDeviceName())
         pass
@@ -202,4 +207,4 @@ if __name__ == '__main__':
         EXP_GAIN = str(EXP_GAIN)
         print("EXP_TIME: " + str(EXP_TIME))
         print("EXP_GAIN: " + str(EXP_GAIN))
-        time.sleep(10)
+        time.sleep(15)
