@@ -30,7 +30,7 @@ print("Luminosity: " + lumValue)
 fi.close()
 if float(lumValue) == 0:
     #EXP_TIME = 19. - (19. / 100 * float(lumValue))
-    EXP_TIME = 31
+    EXP_TIME = 45
     EXP_GAIN = 30
     COLOR = 0
 if float(lumValue) > 0:
