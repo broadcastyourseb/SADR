@@ -33,14 +33,11 @@ if float(lumValue) == 0:
     EXP_TIME = 45
     EXP_GAIN = 30
     COLOR = 0
-if float(lumValue) > 0:
-    EXP_TIME = 0.00001
-    EXP_GAIN = 1
-    COLOR = 1
-if float(lumValue) > 200:
+else:
     EXP_TIME = 0.000001
     EXP_GAIN = 1
     COLOR = 1
+
 EXP_TIME = str(EXP_TIME)
 EXP_GAIN = str(EXP_GAIN)
 print("EXP_TIME: " + str(EXP_TIME))
