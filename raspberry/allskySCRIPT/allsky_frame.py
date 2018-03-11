@@ -79,7 +79,7 @@ class IndiClient(PyIndi.BaseClient):
             self.sendNewNumber(gain)
         if p.getName() == "USB_TRAFFIC":
             traffic = self.device.getNumber("USB_TRAFFIC")
-            print ("USB Traffic"+USB_TRAFFIC+".")
+            print ("USB Traffic"+str(USB_TRAFFIC)+".")
             traffic[0].value = float(USB_TRAFFIC)
             self.sendNewNumber(traffic)
     def removeProperty(self, p):
