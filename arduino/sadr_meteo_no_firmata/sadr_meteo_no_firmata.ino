@@ -275,14 +275,15 @@ float getTemperature() {
   float average;
 
   // take N samples in a row, with a slight delay
-  for (i = 0; i < NUMSAMPLES; i++) {
-    samples[i] = analogRead(THERMISTORPIN);
-  }
+  //for (i = 0; i < NUMSAMPLES; i++) {
+  //  samples[i] = analogRead(THERMISTORPIN);
+  //}
 
   // average all the samples out
   average = 0;
   for (i = 0; i < NUMSAMPLES; i++) {
-    average += samples[i];
+    //average += samples[i];
+    average += analogRead(THERMISTORPIN);   
   }
   average /= NUMSAMPLES;
 
@@ -300,6 +301,7 @@ float getTemperature() {
 
   return steinhart;
 }
+
 void regulHeat(double Temperature, double Target) {
 
   double gap = abs(Target - Temperature); //distance away from setpoint
@@ -578,11 +580,15 @@ void loop() {
      }
   }
 
-  //if ((Temp < HOT_TEMPERATURE_SECURITY) | (Temp > COLD_TEMPERATURE_SECURITY)) {
-  if (Temp < HOT_TEMPERATURE_SECURITY) {
+  if ((Temp <= HOT_TEMPERATURE_SECURITY) | (Temp >= COLD_TEMPERATURE_SECURITY)) {
     regulHeat(Temp, Consigne);
   } else {
-    regulHeat(Temp, -50);
+    if (rainy == 1) {
+        Mosfet = 100;
+    } else {
+        Mosfet = 60;
+    }
+    analogWrite(OUTP, Mosfet);
   }
   #endif //USE_RAIN_SENSOR*/
   
