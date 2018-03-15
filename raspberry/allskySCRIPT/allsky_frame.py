@@ -196,15 +196,38 @@ if __name__ == '__main__':
         lumValue = arg[1]
         print("Luminosity: " + lumValue)
         fi.close()
-        if float(lumValue) == 0:
-            #EXP_TIME = 19. - (19. / 100 * float(lumValue))
-            EXP_TIME = 45
-            EXP_GAIN = 30
-            COLOR = 0
+        if mean > 128:
+            if EXP_GAIN == 1:            
+                EXP_TIME /= 2
+                if EXP_TIME < 0.000001:
+                    EXP_TIME = 0.000001
+                    COLOR =1
+            else :
+                EXP_GAIN /= 2
+                if EXP_GAIN < 1:
+                    EXP_GAIN = 1
+                    COLOR = 1
         else:
-            EXP_TIME = 0.000001
-            EXP_GAIN = 1
-            COLOR = 1
+            if EXP_GAIN == 30:            
+                EXP_TIME *= 2
+                if EXP_TIME > 45:
+                    EXP_TIME = 45
+                    COLOR = 0
+            else :
+                EXP_GAIN *= 2
+                if EXP_GAIN > 30:
+                    EXP_GAIN = 30
+                    COLOR = 1
+
+        #if float(lumValue) == 0:
+            #EXP_TIME = 19. - (19. / 100 * float(lumValue))
+            #EXP_TIME = 45
+            #EXP_GAIN = 30
+            #COLOR = 0
+        #else:
+            #EXP_TIME = 0.000001
+            #EXP_GAIN = 1
+            #COLOR = 1
 
         EXP_TIME = str(EXP_TIME)
         EXP_GAIN = str(EXP_GAIN)
