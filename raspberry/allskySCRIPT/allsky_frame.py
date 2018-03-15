@@ -196,6 +196,7 @@ if __name__ == '__main__':
         arg = luminosity.split('=')
         lumValue = arg[1]
         print("Luminosity: " + lumValue)
+        print("Moyenne: " + moyenne)
         fi.close()
         if moyenne > 128:
             if EXP_GAIN == 1:            
