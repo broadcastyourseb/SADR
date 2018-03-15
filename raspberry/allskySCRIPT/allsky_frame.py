@@ -26,7 +26,7 @@ fi=open(CHARTPATH+"luminosity.js","r")
 luminosity = fi.readline()
 arg = luminosity.split('=')
 lumValue = arg[1]
-moyenne = 128
+moyenne = 100
 print("Luminosity: " + lumValue)
 fi.close()
 if float(lumValue) == 0:
@@ -35,12 +35,12 @@ if float(lumValue) == 0:
     EXP_GAIN = 30
     COLOR = 0
 else:
-    EXP_TIME = 0.000001
+    EXP_TIME = 0.001
     EXP_GAIN = 1
     COLOR = 1
 
-EXP_TIME = str(EXP_TIME)
-EXP_GAIN = str(EXP_GAIN)
+#EXP_TIME = str(EXP_TIME)
+#EXP_GAIN = str(EXP_GAIN)
 USB_TRAFFIC = 0
 print("EXP_TIME: " + str(EXP_TIME))
 print("EXP_GAIN: " + str(EXP_GAIN))
@@ -196,7 +196,7 @@ if __name__ == '__main__':
         arg = luminosity.split('=')
         lumValue = arg[1]
         print("Luminosity: " + lumValue)
-        print("Moyenne: " + moyenne)
+        print("Moyenne de la balle: " + str(moyenne))
         fi.close()
         if moyenne > 128:
             if EXP_GAIN == 1:            
