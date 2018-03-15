@@ -126,7 +126,7 @@ class IndiClient(PyIndi.BaseClient):
             waterdraw.text((5, 45), "NO COLOR / LUM "+lumValue, font=fnt, fill=(255,255,255,255))
         else:
             waterdraw.text((5, 45), "COLOR / LUM "+lumValue, font=fnt, fill=(255,255,255,255))
-        waterdraw.text((5, 65), "MEAN " + moyenne, font=fnt, fill=(255,255,255,255))
+        waterdraw.text((5, 65), "MEAN " + str(moyenne), font=fnt, fill=(255,255,255,255))
         
         # Make a final composite image
         result = Image.alpha_composite(main, overlay)
