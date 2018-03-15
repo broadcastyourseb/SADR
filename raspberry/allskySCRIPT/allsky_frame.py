@@ -26,27 +26,9 @@ fi=open(CHARTPATH+"luminosity.js","r")
 luminosity = fi.readline()
 arg = luminosity.split('=')
 lumValue = arg[1]
-moyenne = 100
-print("Luminosity: " + lumValue)
 fi.close()
-if float(lumValue) == 0:
-    #EXP_TIME = 19. - (19. / 100 * float(lumValue))
-    EXP_TIME = 45
-    EXP_GAIN = 30
-    COLOR = 0
-else:
-    EXP_TIME = 0.001
-    EXP_GAIN = 1
-    COLOR = 1
 
-#EXP_TIME = str(EXP_TIME)
-#EXP_GAIN = str(EXP_GAIN)
 USB_TRAFFIC = 0
-print("EXP_TIME: " + str(EXP_TIME))
-print("EXP_GAIN: " + str(EXP_GAIN))
-#EXP_TIME = sys.argv[1]
-#EXP_GAIN = str(50)
-#EXP_GAIN = sys.argv[2]
  
 class IndiClient(PyIndi.BaseClient):
 
@@ -96,6 +78,31 @@ class IndiClient(PyIndi.BaseClient):
         hdulist = pyfits.open(blobfile)
         scidata = hdulist[0].data
         moyenne = scidata.mean()
+
+        if moyenne > 128:
+            if EXP_GAIN == 1:            
+                EXP_TIME /= 2
+                if EXP_TIME < 0.000001:
+                    EXP_TIME = 0.000001
+                    COLOR =1
+            else :
+                EXP_GAIN /= 2
+                if EXP_GAIN < 1:
+                    EXP_GAIN = 1
+                    COLOR = 1
+        else:
+            if EXP_GAIN == 30:            
+                EXP_TIME *= 2
+                if EXP_TIME > 45:
+                    EXP_TIME = 45
+                    COLOR = 0
+            else :
+                EXP_GAIN *= 2
+                if EXP_GAIN > 30:
+                    EXP_GAIN = 30
+                    COLOR = 1
+
+
         if self.roi is not None:
             scidata = scidata[self.roi[1]:self.roi[1]+self.roi[3], self.roi[0]:self.roi[0]+self.roi[2]]
         hdulist[0].data = scidata
@@ -195,44 +202,9 @@ if __name__ == '__main__':
         luminosity = fi.readline()
         arg = luminosity.split('=')
         lumValue = arg[1]
-        print("Luminosity: " + lumValue)
-        print("Moyenne de la balle: " + str(moyenne))
         fi.close()
-        if moyenne > 128:
-            if EXP_GAIN == 1:            
-                EXP_TIME /= 2
-                if EXP_TIME < 0.000001:
-                    EXP_TIME = 0.000001
-                    COLOR =1
-            else :
-                EXP_GAIN /= 2
-                if EXP_GAIN < 1:
-                    EXP_GAIN = 1
-                    COLOR = 1
-        else:
-            if EXP_GAIN == 30:            
-                EXP_TIME *= 2
-                if EXP_TIME > 45:
-                    EXP_TIME = 45
-                    COLOR = 0
-            else :
-                EXP_GAIN *= 2
-                if EXP_GAIN > 30:
-                    EXP_GAIN = 30
-                    COLOR = 1
-
-        #if float(lumValue) == 0:
-            #EXP_TIME = 19. - (19. / 100 * float(lumValue))
-            #EXP_TIME = 45
-            #EXP_GAIN = 30
-            #COLOR = 0
-        #else:
-            #EXP_TIME = 0.000001
-            #EXP_GAIN = 1
-            #COLOR = 1
-
-        EXP_TIME = str(EXP_TIME)
-        EXP_GAIN = str(EXP_GAIN)
         print("EXP_TIME: " + str(EXP_TIME))
         print("EXP_GAIN: " + str(EXP_GAIN))
+        print("Luminosity: " + lumValue)
+        print("Moyenne: " + moyenne)
         time.sleep(15)
