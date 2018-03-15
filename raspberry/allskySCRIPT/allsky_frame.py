@@ -94,6 +94,7 @@ class IndiClient(PyIndi.BaseClient):
         blobfile = cStringIO.StringIO(img)
         hdulist = pyfits.open(blobfile)
         scidata = hdulist[0].data
+        moyenne = scidata.mean()
         if self.roi is not None:
             scidata = scidata[self.roi[1]:self.roi[1]+self.roi[3], self.roi[0]:self.roi[0]+self.roi[2]]
         hdulist[0].data = scidata
@@ -125,6 +126,7 @@ class IndiClient(PyIndi.BaseClient):
             waterdraw.text((5, 45), "NO COLOR / LUM "+lumValue, font=fnt, fill=(255,255,255,255))
         else:
             waterdraw.text((5, 45), "COLOR / LUM "+lumValue, font=fnt, fill=(255,255,255,255))
+        waterdraw.text((5, 65), "MEAN " + moyenne, font=fnt, fill=(255,255,255,255))
         
         # Make a final composite image
         result = Image.alpha_composite(main, overlay)
