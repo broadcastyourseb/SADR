@@ -196,7 +196,7 @@ if __name__ == '__main__':
         lumValue = arg[1]
         print("Luminosity: " + lumValue)
         fi.close()
-        if mean > 128:
+        if moyenne > 128:
             if EXP_GAIN == 1:            
                 EXP_TIME /= 2
                 if EXP_TIME < 0.000001:
