@@ -26,6 +26,7 @@ fi=open(CHARTPATH+"luminosity.js","r")
 luminosity = fi.readline()
 arg = luminosity.split('=')
 lumValue = arg[1]
+moyenne = 128
 print("Luminosity: " + lumValue)
 fi.close()
 if float(lumValue) == 0:
@@ -119,7 +120,7 @@ class IndiClient(PyIndi.BaseClient):
         waterdraw = ImageDraw.ImageDraw(overlay, "RGBA")
         # get a font
         fnt = ImageFont.truetype('font/Typography Times Bold.ttf', 15)
-        # Place the text at (10, 10) in the upper left corner. Text will be white.
+        # Place the text at (10, 10) in the uppemoyenner left corner. Text will be white.
         waterdraw.text((5, 5), "%s" % datetime.now(), font=fnt, fill=(255,255,255,255))
         waterdraw.text((5, 25), "GAIN "+EXP_GAIN+" / EXP "+EXP_TIME+"s", font=fnt, fill=(255,255,255,255))
         if COLOR == 0:
