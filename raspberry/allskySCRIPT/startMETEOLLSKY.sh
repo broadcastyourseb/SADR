@@ -11,14 +11,14 @@
 source meteollskyconfig.py
 
 ./stopMETEOLLSKY.sh
-if [ "$INDISERVER" = "localhost" ]
-then
-	killall indiserver
-	killall indi_qhy_ccd
-        mkfifo  /tmp/INDIFIFO
-	indiserver -f /tmp/INDIFIFO &
-	echo start indi_qhy_ccd >/tmp/INDIFIFO
-fi
+#if [ "$INDISERVER" = "localhost" ]
+#then
+#	killall indiserver
+#	killall indi_qhy_ccd
+#        mkfifo  /tmp/INDIFIFO
+#	indiserver -f /tmp/INDIFIFO &
+#	echo start indi_qhy_ccd >/tmp/INDIFIFO
+#fi
 if [ -f "$CHARTPATH/meteo.rrd" ];
 then
    echo "RRD file exists."
@@ -29,6 +29,6 @@ fi
 ./meteoRRD_updater.py &
 ./meteoRRD_graph.py &
 ./meteoRRD_MaxMinAvg.py &
-./allsky_frame.py 29 1 &
+#./allsky_frame.py &
 #./sounding.py &
 #./pushetta.py &
