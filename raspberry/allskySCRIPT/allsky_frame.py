@@ -78,29 +78,37 @@ class IndiClient(PyIndi.BaseClient):
         hdulist = pyfits.open(blobfile)
         scidata = hdulist[0].data
         moyenne = scidata.mean()
-
-        if moyenne > 128:
-            if EXP_GAIN == 1:            
-                EXP_TIME /= 2
-                if EXP_TIME < 0.000001:
-                    EXP_TIME = 0.000001
-                    COLOR =1
-            else :
-                EXP_GAIN /= 2
-                if EXP_GAIN < 1:
-                    EXP_GAIN = 1
-                    COLOR = 1
+        if lumValue == 0:
+                EXP_GAIN = 50
+                EXP_TIME = 60
+                COLOR = 0
         else:
-            if EXP_GAIN == 30:            
-                EXP_TIME *= 2
-                if EXP_TIME > 45:
-                    EXP_TIME = 45
-                    COLOR = 0
-            else :
-                EXP_GAIN *= 2
-                if EXP_GAIN > 30:
-                    EXP_GAIN = 30
-                    COLOR = 1
+                EXP_GAIN = 1
+                EXP_TIME = 0.000001
+                COLOR = 1
+
+        #if moyenne > 128:
+        #    if EXP_GAIN == 1:            
+        #        EXP_TIME /= 2
+        #        if EXP_TIME < 0.000001:
+        #            EXP_TIME = 0.000001
+        #            COLOR =1
+        #    else :
+        #        EXP_GAIN /= 2
+        #        if EXP_GAIN < 1:
+        #            EXP_GAIN = 1
+        #            COLOR = 1
+        #else:
+        #    if EXP_GAIN == 30:            
+        #        EXP_TIME *= 2
+        #        if EXP_TIME > 45:
+        #            EXP_TIME = 45
+        #            COLOR = 0
+        #    else :
+        #        EXP_GAIN *= 2
+        #        if EXP_GAIN > 30:
+        #            EXP_GAIN = 30
+        #            COLOR = 1
 
 
         if self.roi is not None:

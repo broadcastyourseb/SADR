@@ -73,6 +73,7 @@ class IndiClient(PyIndi.BaseClient):
         exp[0].value = exposition
         # send new exposure time to server/device
         self.sendNewNumber(exp)
+        #time.sleep(100)
     def imageProcessing(self):
         global exposition  
         self.logger.info("<<<<<<<< Image processing >>>>>>>>>")
@@ -83,25 +84,25 @@ class IndiClient(PyIndi.BaseClient):
         self.logger.info("Ancienne exposition: " + str(exposition))
         gain = self.device.getNumber("CCD_GAIN")
         self.logger.info("Ancien gain: " + str(gain[0].value))
-        if moyenne > 100:
+        if moyenne > 120:
             if gain[0].value == 1:            
                 exposition = float(exposition) / 2
                 if exposition < 0.000001:
                     exposition = 0.000001
                     #COLOR =1
             else :
-                gain[0].value /= 2
+                gain[0].value -= 5
                 if gain[0].value < 1:
                     gain[0].value = 1
                     #COLOR = 1
-        else:
+        elif moyenne < 100:
             if exposition < 120:            
                 exposition *= 2
                 if exposition > 120:
                     exposition = 120
                     #COLOR = 0
             else :
-                gain[0].value *= 2
+                gain[0].value += 5
                 if gain[0].value > 50:
                     gain[0].value = 50
                     #COLOR = 1
