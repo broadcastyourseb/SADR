@@ -105,3 +105,41 @@ td.displaytitle {
     /*width:500px;
     height:820px;*/
 }
+
+.superpose {
+    width:1200px;
+    margin-top:-400px;
+    margin-left:-133px;  
+}
+
+#box1 {
+    position:absolute;
+    left:50px;
+    width:500px;
+    height:500px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align:top;
+    /*z-index:1;*/
+}
+
+#box2 {
+    position:relative;
+    left:50px;
+    width:500px;
+    height:500px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align:top;
+    /*z-index:2;*/
+}
+
+.minisat {
+    width:1200px;
+    margin-top:-400px;
+    margin-left:-133px;  
+}
+
+p.clear {
+    clear: both;
+}
