@@ -45,9 +45,9 @@ IMPORTANT: Customize following values to match your setup
 #define  K5 100.
 
 //Clear sky corrected temperature (temp below means 0% clouds)
-#define CLOUD_TEMP_CLEAR  -10
+#define CLOUD_TEMP_CLEAR  -15
 //Totally cover sky corrected temperature (temp above means 100% clouds)
-#define CLOUD_TEMP_OVERCAST  0  
+#define CLOUD_TEMP_OVERCAST  -5
 //Activation treshold for cloudFlag (%)
 #define CLOUD_FLAG_PERCENT  30
 
