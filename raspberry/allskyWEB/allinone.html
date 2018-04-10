@@ -25,6 +25,7 @@
                 
                 function update() {
                     //$("#allsky").attr("src", "CHART/allsky.jpg?t=" + new Date().getTime());
+                    $("#allskygemini").attr("src", "Chttps://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png?t=" + new Date().getTime());
                     $.get("CHART/RTdata.json", function(data){
                    		$("#time").text(data.TIME);
                    		$("#temp").attr("src", "CHART/temp3.png?t=" + new Date().getTime());
@@ -35,18 +36,20 @@
                     }, "json")
                 }
                 
-                setInterval(function() {update();}, 10000);
+                setInterval(function() {update();}, 60000);
             }
         </script>
     </head>
     <body onload=init()>
         <div id="content">
             <b>Allsky</b>
-            <p>
-                <!--<img alt="allskyframe" id="allsky" />-->
-                <img alt="allskyframe" id="allsky" src="images/allskytemp.jpg" />
-                <img alt="allsky gemini" id="allsky" src="https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png" />
-            </p>
+            <p><table style="width:70%">
+                <tr>
+                    <!--<img alt="allskyframe" id="allsky" />-->
+                    <td><img alt="allskyframe" id="allsky" src="images/allskytemp.jpg" /></td>
+                    <td><img alt="allsky gemini" id="allskygemini" src="https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png" /></td>
+                <tr>
+            </table></p>
             <b>Historique</b>
             <p><table style="width:70%">
               <tr>
