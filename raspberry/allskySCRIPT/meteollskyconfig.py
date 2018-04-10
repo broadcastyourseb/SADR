@@ -30,8 +30,8 @@ SOUNDINGSTATION="07510"
 
 ##### RRD RELATED #####
 #PATH TO GRAPHs
-#CHARTPATH="/var/www/html/CHART/"
-CHARTPATH="/media/freebox/Projets/Astronomie/SADR/Allsky/2_Travail/SADR/raspberry/allskySCRIPT/"
+CHARTPATH="/var/www/html/CHART/"
+#CHARTPATH="/media/freebox/Projets/Astronomie/SADR/Allsky/2_Travail/SADR/raspberry/allskySCRIPT/"
 #EUMETSAT lastimagen. Choose one from:
 #http://oiswww.eumetsat.org/IPPS/html/latestImages.html
 #This is nice but only work at daylight time:
