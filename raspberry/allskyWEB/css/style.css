@@ -114,7 +114,7 @@ td.displaytitle {
 
 #box1 {
     position:absolute;
-    left:50px;
+    left:90px;
     width:500px;
     height:500px;
     overflow: hidden;
@@ -125,7 +125,7 @@ td.displaytitle {
 
 #box2 {
     position:relative;
-    left:50px;
+    left:0px;
     width:500px;
     height:500px;
     overflow: hidden;
@@ -140,6 +140,29 @@ td.displaytitle {
     margin-left:-133px;  
 }
 
-p.clear {
-    clear: both;
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: white;
+    color: #000;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+ 
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 10;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
 }
