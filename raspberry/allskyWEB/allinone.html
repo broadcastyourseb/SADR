@@ -26,6 +26,10 @@
                 function update() {
                     //$("#allsky").attr("src", "CHART/allsky.jpg?t=" + new Date().getTime());
                     $("#allskygemini").attr("src", "https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png?t=" + new Date().getTime());
+                    $("#ESO1").attr("src", "https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/GOES16-GEOCOLOR.gif?t=" + new Date().getTime());
+                    $("#ESO2").attr("src", "https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c03.jpg?t=" + new Date().getTime());
+                    $("#ESO3").attr("src", "https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c04.jpg?t=" + new Date().getTime());
+                    $("#ESO4").attr("src", "https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c11.jpg?t=" + new Date().getTime());
                     $.get("CHART/RTdata.json", function(data){
                    		$("#time").text(data.TIME);
                    		$("#temp").attr("src", "CHART/temp3.png?t=" + new Date().getTime());
@@ -42,21 +46,23 @@
     </head>
     <body onload=init()>
         <div id="content">
-            <b>Allsky</b>
             <p><table style="width:70%">
+                <tr>
+                    <td colspan="2" align="center"><b>Allsky</b></td>
+                </tr>
                 <tr>
                     <!--<img alt="allskyframe" id="allsky" />-->
                     <td><img alt="allskyframe" id="allsky" src="images/allskytemp.jpg" /></td>
                     <td class="tooltip">
-                        <span class="tooltiptext">Cliquer pour afficher la source</span>
+                        <span class="tooltiptext">Click to show the source</span>
                         <a target="_blank" href="https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/">
                             <img alt="allsky gemini" id="allskygemini" src="https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png" />
                         </a>
                     </td>
                 <tr>
-            </table></p>
-            <b>Historique</b>
-            <p><table style="width:70%">
+                <tr>
+                    <td colspan="2" align="center"><b>Measurement data</b></td>
+                </tr>
               <tr>
                 <td><img class="minigraph" id="clouds"/></td>
                 <td><img class="minigraph" id="light"></td>
@@ -68,70 +74,65 @@
               <tr>		
                 <td colspan="2" align="center"><img class="minigraph" id="temp"></td>
               </tr>
-            </table></p>
-            <b>Previsions</b>
-            <p><table style="width:70%">
+                <tr>
+                    <td colspan="2" align="center"><b>Forecasts</b></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <a target="_blank" href="http://clearoutside.com/forecast/-30.53/-70.80">
+                            <img style="width:960px;height:300px" src="http://clearoutside.com/forecast_image_large/-30.53/-70.80/forecast.png" />
+                        </a>
+                    </td>
+                <tr>
                 <tr>
                     <td>
-                        <div id="box1">
-                            <!--<img class="superpose" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom.jpg" />-->
-                            <img class="superpose" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/GOES16-GEOCOLOR.gif" />
-                        </div>
-                        <div id="box2" class="tooltip">
-                            <span class="tooltiptext">Cliquer pour afficher la source</span>
+                        <div id="box1" class="tooltip">
+                            <span class="tooltiptext">Click to show the source</span>
                             <a target="_blank" href="http://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/">
-                                <img class="superpose" src="images/masque.png" />
+                                <img alt="ESO1" id="ESO1" class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/GOES16-GEOCOLOR.gif" />
                             </a>
+                        </div>
+                        <div id="box2">
+                            <img src="images/masque.png" />
                         </div>
                     </td>
                     <td align=center>
-                        <div id="box2" class="tooltip">
-                            <span class="tooltiptext">Cliquer pour afficher la source</span>
+                        <div id="box1" class="tooltip">
+                            <span class="tooltiptext">Click to show the source</span>
                             <a target="_blank" href="http://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/">
-                                <img class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c03.jpg" width='100%'>
+                                <img alt="ESO2" id="ESO2" class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c03.jpg">
                             </a>
+                        </div>
+                        <div id="box2" class="tooltip">
+                            <img src="images/masque.png" />
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td align=center>
-                        <div id="box2" class="tooltip">
-                        <span class="tooltiptext">Cliquer pour afficher la source</span>
+                        <div id="box1" class="tooltip">
+                        <span class="tooltiptext">Click to show the source</span>
                             <a target="_blank" href="http://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/">
-                                <img class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c04.jpg" width='100%'>
+                                <img alt="ESO3" id="ESO3" class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c04.jpg">
                             </a>
+                        </div>
+                        <div id="box2" class="tooltip">
+                            <img src="images/masque.png" />
                         </div>
                     </td>
                     <td align=center>
-                        <div id="box2" class="tooltip">
-                        <span class="tooltiptext">Cliquer pour afficher la source</span>
+                        <div id="box1" class="tooltip">
+                        <span class="tooltiptext">Click to show the source</span>
                             <a target="_blank" href="http://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/">
-                                <img class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c11.jpg" width='100%'>
+                                <img alt="ESO4" id="ESO4" class="minisat" src="https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c11.jpg">
                             </a>
                         </div>
+                        <div id="box2" class="tooltip">
+                            <img src="images/masque.png" />
+                        </div>
                     </td>
-            </table></p>
-                <img style="width:950px" src="http://clearoutside.com/forecast_image_large/-30.53/-70.80/forecast.png" />
+                </tr>
             </p>
-            <p>
-                <iframe src="https://www.meteoblue.com/en/weather/widget/seeing/-30.53N-70.8E1541_America%2FSantiago?geoloc=fixed&noground=0"  frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups" style="width: 520px;height: 754px">
-                </iframe>
-            <iframe src="https://www.meteoblue.com/en/weather/widget/three/-30.53N-70.8E1541_America%2FSantiago?geoloc=fixed&nocurrent=0&nocurrent=1&noforecast=0&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&layout=image"  frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups" style="vertical-align:top;width: 460px;height: 512px">
-            </iframe>
-            </p>
-            
-            <b>Sat visuel</b>
-            <!--<p><img class="extImage" src="http://api.sat24.com/animated/FR/visual/3/Romance%20Standard%20Time/9920844" /></p>-->
-            <b>Sat IR</b>
-            <!--<p><img slass="extImage" src="http://api.sat24.com/animated/FR/infraPolair/3/Romance%20Standard%20Time/2790045" /></p>-->
-            <b>Sat Pluie</b>
-            <!--<p><img class="extImage" src="http://api.sat24.com/animated/FR/rainTMC/3/Romance%20Standard%20Time/1169415" /></p>-->
-            <b>Sat IR</b>
-            <!--<p><img class="extImage" src="http://www.meteo60.fr/satellites/animation-satellite-ir-france.gif" /></p>-->
-            <b>Orages</b>
-            <!--<p><img class="extImage" src="http://www.meteo60.fr/foudre/carte_foudre_blitzortung_france_animation.gif" /></p>-->
-            <b>Durée jour/nuit</b>
-            <p><img class="extImage" src="http://clearoutside.com/annual_darkness_image/-30.53/-70.80/annual_darkness.png"></p>
         </div>
     </body>
 </html>

@@ -89,55 +89,44 @@ td.displaytitle {
 }
 
 #content {
-    /*width:1200px;
-    height:100%;*/
     text-align:center;
 }
 
 #allsky {
     width: 604px;
-    /*width:500px;
-    height:820px;*/
 }
 
 #allskygemini {
     width: 604px;
-    /*width:500px;
-    height:820px;*/
-}
-
-.superpose {
-    width:1200px;
-    margin-top:-400px;
-    margin-left:-133px;  
 }
 
 #box1 {
-    position:absolute;
-    left:90px;
-    width:500px;
-    height:500px;
-    overflow: hidden;
-    text-align: center;
-    vertical-align:top;
-    /*z-index:1;*/
-}
-
-#box2 {
     position:relative;
+    display: inline-block;
     left:0px;
     width:500px;
     height:500px;
     overflow: hidden;
     text-align: center;
     vertical-align:top;
-    /*z-index:2;*/
+}
+
+#box2 {
+    position:relative;
+    display: inline-block;
+    left:-410px;
+    top:350px;
+    width:80px;
+    height:80px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align:top;
 }
 
 .minisat {
     width:1200px;
-    margin-top:-400px;
-    margin-left:-133px;  
+    margin-top:-370px;
+    margin-left:-133px;
 }
 
 /* Tooltip container */
