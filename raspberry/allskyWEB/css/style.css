@@ -20,8 +20,10 @@ table, th, td {
 }
 
 h3 {
+    position:relative;
     color:DarkRed;
     margin:0px;
+    left:-40px;
 }
 
 #main {
