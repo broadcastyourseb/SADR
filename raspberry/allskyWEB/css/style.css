@@ -19,6 +19,11 @@ table, th, td {
     border: 5px solid transparent;
 }
 
+h3 {
+    color:DarkRed;
+    margin:0px;
+}
+
 #main {
     width: 1450px;
 }
