@@ -51,11 +51,8 @@ class uwyoClass:
         s.close()
         document=tidy.parseString(o)    
         fi=open(CHARTPATH+"sounding.html","w")
-	    fi.write(str(document))
-	    fi.close()
-
-def get_gemini_allsky(self):
-    
+        fi.write(str(document))
+        fi.close()
 
 if __name__=='__main__':
    print "Starting internet data downloader"
@@ -72,7 +69,7 @@ if __name__=='__main__':
 	        #s.get_sounding_skewt()
         	#s.get_sounding_data()
 		#urllib.urlretrieve(EUMETSAT_LAST, CHARTPATH+"meteosat.jpg")
-        urllib.urlretrieve("https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png", CHARTPATH+"allsky_gemini.png")
+                urllib.urlretrieve("https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png", CHARTPATH+"allsky_gemini.png")
 	except:
 		print "Fail to retrive internet data"
 	#del s
