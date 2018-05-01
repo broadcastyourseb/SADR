@@ -20,8 +20,8 @@ red="FA2000"
 white="AAAAAA"
 green="00FFFF"
 colorClear="000008"
-colorMedium="0000A7"
-colorHigh="0000FF"
+colorMedium="000050"
+colorHigh="0000C5"
 colorFill="FFFFFF40"
 
 preamble=["--width","600",
@@ -130,10 +130,10 @@ def graphs(time):
                         "DEF:daylightFlag="+CHARTPATH+"meteo.rrd:daylightFlag:AVERAGE",
                         "CDEF:LightV=Light,0.001,*",
                         "CDEF:luminous=LightV,daylightFlag,*",
-                        "AREA:luminous#"+colorFill+":daylightFlag\\r",
                         "AREA:0.25#"+colorClear+":Dark",
                         "AREA:2.5#"+colorMedium+":Light:STACK",
                         "AREA:5#"+colorHigh+":Very Light:STACK",
+                        "AREA:luminous#"+colorFill+":daylightFlag\\r",
                         "LINE1:LightV#"+orange+":Light")
 
     ret = rrdtool.graph(CHARTPATH+"clouds"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
@@ -147,11 +147,11 @@ def graphs(time):
                         "DEF:clouds="+CHARTPATH+"meteo.rrd:clouds:AVERAGE",
                         "DEF:cloudFlag="+CHARTPATH+"meteo.rrd:cloudFlag:AVERAGE",
                         "CDEF:cloudy=clouds,cloudFlag,*",
-                        "LINE1:clouds#"+orange+":Clouds",
-                        "AREA:cloudy#"+colorFill+":CloudyFlag\\r",
                         "AREA:30#"+colorClear+":Clear",
                         "AREA:40#"+colorMedium+":Cloudy:STACK",
-                        "AREA:32#"+colorHigh+":Overcast:STACK")
+                        "AREA:32#"+colorHigh+":Overcast:STACK",
+                        "LINE1:clouds#"+orange+":Clouds",
+                        "AREA:cloudy#"+colorFill+":CloudyFlag\\r")
                         
     ret = rrdtool.graph(CHARTPATH+"wind"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
                         preamble,
@@ -165,12 +165,12 @@ def graphs(time):
                         "DEF:WindMax="+CHARTPATH+"meteo.rrd:WindMax:AVERAGE",
                         "DEF:windFlag="+CHARTPATH+"meteo.rrd:windFlag:AVERAGE",
                         "CDEF:windy=WindMax,windFlag,*",
-                        "LINE1:Wind#"+orange+":Wind",
-                        "LINE1:WindMax#"+red+":WindMax",
-                        "AREA:windy#"+colorFill+":windFlag\\r",
                         "AREA:20#"+colorClear+":Calm",
                         "AREA:15#"+colorMedium+":Windy:STACK",
-                        "AREA:15#"+colorHigh+":Very Windy:STACK")
+                        "AREA:15#"+colorHigh+":Very Windy:STACK",
+                        "LINE1:Wind#"+orange+":Wind",
+                        "LINE1:WindMax#"+red+":WindMax",
+                        "AREA:windy#"+colorFill+":windFlag\\r")
 
     ret = rrdtool.graph(CHARTPATH+"rain"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",preamble,
                         "--title","Rain",
@@ -182,11 +182,11 @@ def graphs(time):
                         "DEF:CRain="+CHARTPATH+"meteo.rrd:CRain:AVERAGE",
                         "DEF:rainFlag="+CHARTPATH+"meteo.rrd:rainFlag:AVERAGE",
                         "CDEF:rainy=CRain,rainFlag,*",
-                        "LINE1:CRain#"+orange+":Rain",
-                        "AREA:rainy#"+colorFill+":RainFlag\\r",
                         "AREA:80#"+colorClear+":Dry",
                         "AREA:80#"+colorMedium+":Wet:STACK",
-                        "AREA:150#"+colorHigh+":Rain:STACK")
+                        "AREA:150#"+colorHigh+":Rain:STACK",
+                        "LINE1:CRain#"+orange+":Rain",
+                        "AREA:rainy#"+colorFill+":RainFlag\\r")
 
     ret = rrdtool.graph(CHARTPATH+"skyT"+str(time)+".png","--start","-"+str(time)+"h","-E",
                         preamble,
