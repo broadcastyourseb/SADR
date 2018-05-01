@@ -130,11 +130,11 @@ def graphs(time):
                         "DEF:daylightFlag="+CHARTPATH+"meteo.rrd:daylightFlag:AVERAGE",
                         "CDEF:LightV=Light,0.001,*",
                         "CDEF:luminous=LightV,daylightFlag,*",
-                        "LINE1:LightV#"+orange+":Light",
                         "AREA:luminous#"+colorFill+":daylightFlag\\r",
                         "AREA:0.25#"+colorClear+":Dark",
                         "AREA:2.5#"+colorMedium+":Light:STACK",
-                        "AREA:5#"+colorHigh+":Very Light:STACK")
+                        "AREA:5#"+colorHigh+":Very Light:STACK"),
+                        "LINE1:LightV#"+orange+":Light"
 
     ret = rrdtool.graph(CHARTPATH+"clouds"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
                         preamble,
