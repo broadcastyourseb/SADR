@@ -133,8 +133,8 @@ def graphs(time):
                         "AREA:luminous#"+colorFill+":daylightFlag\\r",
                         "AREA:0.25#"+colorClear+":Dark",
                         "AREA:2.5#"+colorMedium+":Light:STACK",
-                        "AREA:5#"+colorHigh+":Very Light:STACK"),
-                        "LINE1:LightV#"+orange+":Light"
+                        "AREA:5#"+colorHigh+":Very Light:STACK",
+                        "LINE1:LightV#"+orange+":Light")
 
     ret = rrdtool.graph(CHARTPATH+"clouds"+str(time)+".png","-A","--start","-"+str(time)+"h","-E",
                         preamble,
