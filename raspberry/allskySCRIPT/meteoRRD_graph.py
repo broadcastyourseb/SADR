@@ -21,7 +21,7 @@ white="AAAAAA"
 green="00FFFF"
 colorClear="000008"
 colorMedium="000050"
-colorHigh="0000C5"
+colorHigh="0000A0"
 colorFill="FFFFFF40"
 
 preamble=["--width","600",
