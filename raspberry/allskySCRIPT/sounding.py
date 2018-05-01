@@ -51,27 +51,31 @@ class uwyoClass:
         s.close()
         document=tidy.parseString(o)    
         fi=open(CHARTPATH+"sounding.html","w")
-	fi.write(str(document))
-	fi.close()
+	    fi.write(str(document))
+	    fi.close()
+
+def get_gemini_allsky(self):
+    
 
 if __name__=='__main__':
    print "Starting internet data downloader"
-   try:
- 	print "Retriving SKEW-T diagrams from:",SOUNDINGSTATION
-   except:
-	print "NO sounding station define in meteoconfig.py"
-	exit(0)
+   #try:
+ 	#print "Retriving SKEW-T diagrams from:",SOUNDINGSTATION
+   #except:
+	#print "NO sounding station define in meteoconfig.py"
+	#exit(0)
 
    while (True):
-        today=datetime.datetime.utcnow()
-        s=uwyoClass(today)
+        #today=datetime.datetime.utcnow()
+        #s=uwyoClass(today)
 	try:
-	        s.get_sounding_skewt()
-        	s.get_sounding_data()
-		urllib.urlretrieve(EUMETSAT_LAST, CHARTPATH+"meteosat.jpg")
+	        #s.get_sounding_skewt()
+        	#s.get_sounding_data()
+		#urllib.urlretrieve(EUMETSAT_LAST, CHARTPATH+"meteosat.jpg")
+        urllib.urlretrieve("https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png", CHARTPATH+"allsky_gemini.png")
 	except:
 		print "Fail to retrive internet data"
-	del s
+	#del s
 	time.sleep(600)
 
 

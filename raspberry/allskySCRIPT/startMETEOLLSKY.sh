@@ -30,5 +30,5 @@ fi
 ./meteoRRD_graph.py &
 ./meteoRRD_MaxMinAvg.py &
 #./allsky_frame.py &
-#./sounding.py &
+./sounding.py &
 #./pushetta.py &
