@@ -19,9 +19,9 @@ orange="F08000"
 red="FA2000"
 white="AAAAAA"
 green="00FFFF"
-colorClear="00000A40"
-colorMedium="0000AA40"
-colorHigh="0000FF40"
+colorClear="000008"
+colorMedium="0000A7"
+colorHigh="0000FF"
 colorFill="FFFFFF40"
 
 preamble=["--width","600",
@@ -109,6 +109,7 @@ def graphs(time):
                         "-l","-5",
                         "-r",
                         "--title","All Humidity sensor",
+                        "--watermark","SADR OBSERVATORY",
                         "--vertical-label=%",
                         "DEF:HR="+CHARTPATH+"meteo.rrd:HR:AVERAGE",
                         "DEF:HRint="+CHARTPATH+"meteo.rrd:HRint:AVERAGE",
@@ -190,12 +191,13 @@ def graphs(time):
     ret = rrdtool.graph(CHARTPATH+"skyT"+str(time)+".png","--start","-"+str(time)+"h","-E",
                         preamble,
                         "--title","Sky Temperatures",
+                        "--watermark","SADR OBSERVATORY",
                         "--vertical-label=Celsius ºC",
                         "DEF:skyT="+CHARTPATH+"meteo.rrd:skyT:AVERAGE",
                         "DEF:IR="+CHARTPATH+"meteo.rrd:IR:AVERAGE",
                         "DEF:Thr="+CHARTPATH+"meteo.rrd:Thr:AVERAGE",
                         "CDEF:Tc=IR,skyT,-",
-                        "LINE1:skyT#"+blue+":Corrected Sky T",
+                        "LINE1:skyT#"+green+":Corrected Sky T",
                         "LINE1:IR#"+orange+":Actual Sky T",
                         "LINE1:Thr#"+red+":Ambient T",
                         "LINE1:Tc#"+white+":Correction",
