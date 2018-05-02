@@ -9,6 +9,7 @@ import urllib
 import tidy
 import datetime,time
 import locale
+import Image
 from string import upper 
 from meteollskyconfig import *
 
@@ -70,6 +71,8 @@ if __name__=='__main__':
         	#s.get_sounding_data()
 		#urllib.urlretrieve(EUMETSAT_LAST, CHARTPATH+"meteosat.jpg")
                 urllib.urlretrieve("https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png", CHARTPATH+"allsky_gemini.png")
+                im = Image.open(CHARTPATH+"allsky_gemini.png")
+                im.save("allsky_gemini.jpg")
 	except:
 		print "Fail to retrive internet data"
 	#del s
