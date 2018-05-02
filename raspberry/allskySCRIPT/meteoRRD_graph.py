@@ -38,6 +38,7 @@ def graphs(time):
                         "--title","Temperature",
                         "--watermark","SADR OBSERVATORY",
                         "--vertical-label=Celsius ºC",
+                        "--color", "CANVAS#000000",
                         "DEF:T="+CHARTPATH+"meteo.rrd:T:AVERAGE",
                         "DEF:Tmax="+CHARTPATH+"meteo.rrd:T:MAX",
                         "DEF:Tmin="+CHARTPATH+"meteo.rrd:T:MIN",

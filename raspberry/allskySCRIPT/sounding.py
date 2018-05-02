@@ -10,7 +10,7 @@ import tidy
 import datetime,time
 import locale
 from string import upper 
-from meteoconfig import *
+from meteollskyconfig import *
 
 
 class uwyoClass:
