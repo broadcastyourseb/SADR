@@ -72,7 +72,7 @@ if __name__=='__main__':
 		#urllib.urlretrieve(EUMETSAT_LAST, CHARTPATH+"meteosat.jpg")
                 urllib.urlretrieve("https://www.gemini.edu/sciops/telescopes-and-sites/weather/cerro-pachon/cameras/img.png", CHARTPATH+"allsky_gemini.png")
                 im = Image.open(CHARTPATH+"allsky_gemini.png")
-                im.save("allsky_gemini.jpg")
+                im.save(CHARTPATH+"allsky_gemini.jpg")
 	except:
 		print "Fail to retrive internet data"
 	#del s
