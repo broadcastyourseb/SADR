@@ -9,7 +9,7 @@ import urllib
 import tidy
 import datetime,time
 import locale
-import Image
+from PIL import Image
 from string import upper 
 from meteollskyconfig import *
 

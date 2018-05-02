@@ -203,7 +203,7 @@ def graphs(time):
                         "DEF:IR="+CHARTPATH+"meteo.rrd:IR:AVERAGE",
                         "DEF:Thr="+CHARTPATH+"meteo.rrd:Thr:AVERAGE",
                         "CDEF:Tc=IR,skyT,-",
-                        "LINE1:skyT#"+green+":Corrected Sky T",
+                        "LINE1:skyT#006600:Corrected Sky T",
                         "LINE1:IR#"+orange+":Actual Sky T",
                         "LINE1:Thr#"+red+":Ambient T",
                         "LINE1:Tc#"+white+":Correction",
