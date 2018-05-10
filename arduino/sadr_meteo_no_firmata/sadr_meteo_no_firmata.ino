@@ -85,7 +85,7 @@ IMPORTANT: Customize following values to match your setup
 // On contrôle avec la broche 11
 #define OUTP 11
 // Target temperature
-#define COLD_TEMPERATURE_TARGET 25
+#define COLD_TEMPERATURE_TARGET 10
 #define HOT_TEMPERATURE_TARGET 55
 #define COLD_TEMPERATURE_SECURITY -20 // must be less than COLD_TEMPERATURE_TARGET
 #define HOT_TEMPERATURE_SECURITY 60 // must be greater than HOT_TEMPERATURE_TARGET
@@ -572,7 +572,7 @@ void loop() {
      Consigne = HOT_TEMPERATURE_TARGET;
   } else {
      if (!isnan(T22int)) {
-        int newConsigne = ((T22int / 5) + 2 );
+        int newConsigne = ((T22int / 5) + 1 );
         newConsigne *= 5;
         if (newConsigne > COLD_TEMPERATURE_TARGET && newConsigne < HOT_TEMPERATURE_TARGET) {
             Consigne = max(COLD_TEMPERATURE_TARGET , newConsigne);
