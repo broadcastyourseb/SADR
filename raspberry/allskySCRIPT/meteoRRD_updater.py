@@ -50,6 +50,18 @@ def recv_serial():
     ser.close()
     return arduino
 
+def weather_safe():
+    print("Check if IsSafe.flg is here")
+    if not os.path.isfile(CHARTPATH+"IsSafeTest.flg"):
+    #if not we create it
+        os.mknod(CHARTPATH+"IsSafeTest.flg")
+
+def weather_not_safe():
+    print("Check if IsSafe.flg is here")
+    if os.path.isfile(CHARTPATH+"IsSafeTest.flg"):
+    #if it is, we delete it
+        os.remove(CHARTPATH+"IsSafeTest.flg")
+
 ############# MAIN #############
 
 print "Starting UPDATER"
@@ -91,6 +103,11 @@ while (True):
         fi=open(CHARTPATH+"luminosity.js","w")
         fi.write("var luminosity=%s\n" % splitData[3])
         fi.close()
+        # check if weather (cloud, rain, luminosity) is safe or not
+        if splitData[15] == 1 or splitData[22] == 1 or splitData[4] == 1 or splitData[20] == 1:
+             weather_not_safe()
+        else:
+             weather_safe()
         del data
         del splitData
         del json_dict
