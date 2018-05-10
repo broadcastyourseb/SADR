@@ -51,16 +51,22 @@ def recv_serial():
     return arduino
 
 def weather_safe():
-    print("Check if IsSafe.flg is here")
+    print("Weather is good. Check if IsSafe.flg is here")
     if not os.path.isfile(CHARTPATH+"IsSafeTest.flg"):
     #if not we create it
+        print("File IsSafe.flg created")
         os.mknod(CHARTPATH+"IsSafeTest.flg")
+    else:
+        print("File IsSafe.flg already here")
 
 def weather_not_safe():
-    print("Check if IsSafe.flg is here")
+    print("Weather is bad. Check if IsSafe.flg is here")
     if os.path.isfile(CHARTPATH+"IsSafeTest.flg"):
     #if it is, we delete it
+        print("File IsSafe.flg deleted")
         os.remove(CHARTPATH+"IsSafeTest.flg")
+    else:
+        print("File IsSafe.flg already deleted")
 
 ############# MAIN #############
 
