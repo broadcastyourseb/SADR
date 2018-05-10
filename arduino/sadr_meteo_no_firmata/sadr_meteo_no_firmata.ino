@@ -572,7 +572,7 @@ void loop() {
      Consigne = HOT_TEMPERATURE_TARGET;
   } else {
      if (!isnan(T22int)) {
-        int newConsigne = ((T22int / 5) + 1 );
+        int newConsigne = ((T22int / 5) + 2 );
         newConsigne *= 5;
         if (newConsigne > COLD_TEMPERATURE_TARGET && newConsigne < HOT_TEMPERATURE_TARGET) {
             Consigne = max(COLD_TEMPERATURE_TARGET , newConsigne);
