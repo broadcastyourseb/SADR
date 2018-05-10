@@ -52,19 +52,19 @@ def recv_serial():
 
 def weather_safe():
     print("Weather is good. Check if IsSafe.flg is here")
-    if not os.path.isfile(CHARTPATH+"IsSafeTest.flg"):
+    if not os.path.isfile(CHARTPATH+"IsSafe.flg"):
     #if not we create it
         print("File IsSafe.flg created")
-        os.mknod(CHARTPATH+"IsSafeTest.flg")
+        os.mknod(CHARTPATH+"IsSafe.flg")
     else:
         print("File IsSafe.flg already here")
 
 def weather_not_safe():
     print("Weather is bad. Check if IsSafe.flg is here")
-    if os.path.isfile(CHARTPATH+"IsSafeTest.flg"):
+    if os.path.isfile(CHARTPATH+"IsSafe.flg"):
     #if it is, we delete it
         print("File IsSafe.flg deleted")
-        os.remove(CHARTPATH+"IsSafeTest.flg")
+        os.remove(CHARTPATH+"IsSafe.flg")
     else:
         print("File IsSafe.flg already deleted")
 
@@ -110,7 +110,7 @@ while (True):
         fi.write("var luminosity=%s\n" % splitData[3])
         fi.close()
         # check if weather (cloud, rain, luminosity) is safe or not
-        if splitData[15] == 1 or splitData[22] == 1 or splitData[4] == 1 or splitData[20] == 1:
+        if float(splitData[15]) == 1 or float(splitData[22]) == 1 or float(splitData[4]) == 1 or float(splitData[20]) == 1:
              weather_not_safe()
         else:
              weather_safe()
