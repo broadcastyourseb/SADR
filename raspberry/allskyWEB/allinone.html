@@ -32,7 +32,7 @@
                     $("#ESO4").attr("src", "https://www.eso.org/gen-fac/pubs/astclim/forecast/meteo/CIRA/images/zoom-c11.jpg?t=" + new Date().getTime());
                     $.get("CHART/RTdata.json", function(data){
                    		$("#time").text(data.TIME);
-                   		$("#temp").attr("src", "CHART/temp3.png?t=" + new Date().getTime());
+                   		//$("#temp").attr("src", "CHART/temp3.png?t=" + new Date().getTime());
                    		$("#clouds").attr("src", "CHART/clouds3.png?t=" + new Date().getTime());
                    		$("#rain").attr("src", "CHART/rain3.png?t=" + new Date().getTime());
                    		$("#light").attr("src", "CHART/light3.png?t=" + new Date().getTime());
@@ -64,12 +64,12 @@
                     <td colspan="2" align="center"><b>Measurement data</b></td>
                 </tr>
               <tr>
-                <td><img class="minigraph" id="clouds"/></td>
-                <td><img class="minigraph" id="light"></td>
+                <td><img class="minigraph" id="clouds" src="CHART/clouds3.png"></td>
+                <td><img class="minigraph" id="light" src="CHART/light3.png"></td>
               </tr>
               <tr>		
-                <td><img class="minigraph" id="rain"></td>
-                <td><img class="minigraph" id="wind"></td>
+                <td><img class="minigraph" id="rain" src="CHART/rain3.png"></td>
+                <td><img class="minigraph" id="wind" src="CHART/wind3.png"></td>
               </tr>
               <tr>		
                 <td colspan="2" align="center"><img class="minigraph" id="temp"></td>
