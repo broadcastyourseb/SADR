@@ -143,7 +143,7 @@ IMPORTANT: Customize following values to match your setup
   int samples[NUMSAMPLES];
   // Variables pour PID
   // Measured temperature
-  double Temp;
+  double TempRain;
   // PWM value 0-255 :
   double Mosfet;
 
@@ -152,7 +152,7 @@ IMPORTANT: Customize following values to match your setup
   // Define the aggressive and conservative Tuning Parameters
   double aggKp = 43.7, aggKi = 0.323, aggKd = 7.18;
   double consKp = 4.47, consKi = 0.033, consKd = 0.734;
-  PID myPID(&Temp, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
+  PID myPID(&TempRain, &Mosfet, &Consigne, consKp, consKi, consKd, DIRECT);
 #endif //USE_RAIN_SENSOR*/
 
 float T22int,Hr22int,DewInt,T22ext,Hr22ext,DewExt,Light,Tp,P,T,IR,Clouds,skyT,Tir,WindSpeed,MaxWindSpeed,Capacity,reedSwitchDeltaTime, stringCheck;
@@ -172,8 +172,8 @@ double dewPoint(double celsius, double humidity)
         SUM += 8.1328e-3 * (pow(10,(-3.49149*(AZERO-1)))-1) ;
         SUM += log10(1013.246);
         double VP = pow(10, SUM-3) * humidity;
-        double T = log(VP/0.61078);   // temp var
-        return (241.88 * T) / (17.558-T);
+        double Tvar = log(VP/0.61078);   // temp var
+        return (241.88 * Tvar) / (17.558-Tvar);
 }
 
 // delta max = 0.6544 wrt dewPoint()
@@ -435,7 +435,7 @@ if (T <=2) {
 
 #ifdef USE_RAIN_SENSOR
     //Asking for temperature of the rain sensor
-    Temp = getTemperature();
+    TempRain = getTemperature();
     Capacity = rain(NUMSAMPLES);
     if (Capacity > RAIN_FLAG_TRIGGER) {
       rainy=1;
@@ -463,7 +463,7 @@ bool outputCheck() {
     // Sum output variable
     float checksum = stringCheck = T + frezzing + Light + daylight + T22int + Hr22int + T22ext + Hr22ext + DewExt +
     dewing + Tir + IR + skyT + Clouds + cloudy + P + Tp + WindSpeed + MaxWindSpeed + windy + Capacity +
-    rainy + Consigne + Temp + Mosfet ;
+    rainy + Consigne + TempRain + Mosfet ;
 
     // If everything is ok, function return TRUE
     if (isnan(checksum) || isinf(checksum)) {
@@ -546,7 +546,7 @@ void outputChain() {
     Serial.print(":");
     Serial.print(Consigne);
     Serial.print(":");
-    Serial.print(Temp);
+    Serial.print(TempRain);
     Serial.print(":");
     Serial.println(Mosfet);
 #endif //USE_DHT_RAIN_SENSOR*/
@@ -580,8 +580,8 @@ void loop() {
      }
   }
 
-  if ((Temp <= HOT_TEMPERATURE_SECURITY) | (Temp >= COLD_TEMPERATURE_SECURITY)) {
-    regulHeat(Temp, Consigne);
+  if ((TempRain <= HOT_TEMPERATURE_SECURITY) | (TempRain >= COLD_TEMPERATURE_SECURITY)) {
+    regulHeat(TempRain, Consigne);
   } else {
     if (rainy == 1) {
         Mosfet = 100;
