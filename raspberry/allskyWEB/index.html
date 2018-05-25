@@ -43,7 +43,7 @@
                     ledColor:steelseries.LedColor.RED_LED
                 });
 
-                frezzingLed = new steelseries.Led('frezzingFlag', {
+                freezingLed = new steelseries.Led('freezingFlag', {
                     size:50,
                     ledColor:steelseries.LedColor.RED_LED
                 });
@@ -68,7 +68,7 @@
                 lightLed.setLedOnOff(false);
                 cloudLed.setLedOnOff(false);
                 dewLed.setLedOnOff(false);
-                frezzingLed.setLedOnOff(false);
+                freezingLed.setLedOnOff(false);
                 windLed.setLedOnOff(false);
                 rainLed.setLedOnOff(false);
                 
@@ -102,10 +102,10 @@
                         }
                         
                         if (data.frezzingFlag==1) {
-                            warningText=warningText+"  ****** FREZZING ******  ";
-                            frezzingLed.setLedOnOff(true);
+                            warningText=warningText+"  ****** FREEZING ******  ";
+                            freezingLed.setLedOnOff(true);
                         } else {
-                            frezzingLed.setLedOnOff(false);
+                            freezingLed.setLedOnOff(false);
                         }
                         
                         if (data.windFlag==1) {
@@ -170,10 +170,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <canvas id=frezzingFlag ></canvas>
+                            <canvas id=freezingFlag ></canvas>
                         </td>
                         <td>
-                            <b>Frezzing</b>
+                            <b>Freezing</b>
                         </td>
                     </tr>
                     <tr>
