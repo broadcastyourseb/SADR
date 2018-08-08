@@ -27,7 +27,7 @@ IMPORTANT: Customize following values to match your setup
 //#define T_MAIN_Tp
 
 //DHT Sensor
-#define DHT_HUMIDITY_CORRECTION -15
+#define DHT_HUMIDITY_CORRECTION 0
 
 //IR Sensor
 //Cloudy sky is warmer that clear sky. Thus sky temperature meassure by IR sensor
@@ -581,12 +581,16 @@ void loop() {
   }
 
   if ((TempRain <= HOT_TEMPERATURE_SECURITY) | (TempRain >= COLD_TEMPERATURE_SECURITY)) {
-    regulHeat(TempRain, Consigne);
-  } else {
+    //regulHeat(TempRain, Consigne);
+    Mosfet = 25;
+    analogWrite(OUTP, Mosfet);
+ } else {
     if (rainy == 1) {
-        Mosfet = 100;
+        //Mosfet = 100;
+        Mosfet = 25;
     } else {
-        Mosfet = 60;
+        //Mosfet = 60;
+        Mosfet = 25;
     }
     analogWrite(OUTP, Mosfet);
   }
