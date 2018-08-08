@@ -23,7 +23,7 @@ h3 {
     position:relative;
     color:DarkRed;
     margin:0px;
-    left:-40px;
+    /*left:-40px;*/
 }
 
 #main {
@@ -110,9 +110,9 @@ td.displaytitle {
 #box1 {
     position:relative;
     display: inline-block;
-    left:0px;
-    width:500px;
-    height:500px;
+    /*left:0px;*/
+    /*width:500px;
+    height:500px;*/
     overflow: hidden;
     text-align: center;
     vertical-align:top;
@@ -121,8 +121,8 @@ td.displaytitle {
 #box2 {
     position:relative;
     display: inline-block;
-    left:-410px;
-    top:350px;
+    /*left:-410px;
+    top:350px;*/
     width:80px;
     height:80px;
     overflow: hidden;
@@ -130,11 +130,11 @@ td.displaytitle {
     vertical-align:top;
 }
 
-.minisat {
+/*.minisat {
     width:1200px;
     margin-top:-370px;
     margin-left:-133px;
-}
+}*/
 
 /* Tooltip container */
 .tooltip {
