@@ -1,0 +1,1 @@
+@reboot /home/pi/SADR/raspberry/allskySCRIPT/startMETEOLLSKY.sh  >> /media/data/crontab.log 2>&1
